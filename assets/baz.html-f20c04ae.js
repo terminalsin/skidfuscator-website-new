@@ -1,0 +1,1 @@
+import{ab as e,G as t,H as c,F as o}from"./framework-b3e398e9.js";const s={},_=o("p",null,"功能详情...",-1),a=[_];function n(r,l){return t(),c("div",null,a)}const f=e(s,[["render",n],["__file","baz.html.vue"]]);export{f as default};
