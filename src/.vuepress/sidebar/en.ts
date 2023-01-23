@@ -7,6 +7,12 @@ export const enSidebar = sidebar({
       link: '/docs',
     },
     {
+      text: 'Config',
+      prefix: "docs/config",
+      link: '/docs/config',
+      children: 'structure'
+    },
+    {
       text: 'Exclusions',
       link: '/docs/exclusion',
     },
