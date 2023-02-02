@@ -15,8 +15,8 @@ See attached the default config:
 
 ```javascript
 exempt: []
+
 libs: []
-driver: true
 
 stringEncryption {
   type: STANDARD
@@ -35,6 +35,11 @@ intAnnotationEncryption {
 }
 
 stringAnnotationEncryption {
+  enabled: true
+  exempt: []
+}
+
+exceptionReturn {
   enabled: true
   exempt: []
 }
@@ -80,19 +85,44 @@ native: {
   exempt: []
 }
 
+driver: {
+  enabled: false
+}
+
+reference {
+  enabled: false
+}
+
+fileCrasher: {
+  enabled: false
+}
+
 classRenamer {
   enabled: false
-  exempt: []
+  type: CUSTOM
+  prefix: "skido/"
+  chars: [
+    "K"
+    "oO",
+    "o0"
+  ]
+  depth: 3
 }
 
 methodRenamer {
   enabled: false
-  exempt: []
+  type: CUSTOM
+  chars: [
+    "K"
+    "oO",
+    "o0"
+  ]
+  depth: 3
 }
 
 fieldRenamer {
   enabled: false
-  exempt: []
+  type: ALPHABETICAL
 }
 ```
 
@@ -215,3 +245,26 @@ driver: false
 ## Transformers
 
 You can individually enable/disable each transformer. 
+
+
+#### String Encryption
+
+The string encryption transformer transforms every string into a specific method call, with the purpose of hiding
+it in runtime. This can be practical for non-sensitive URLs, private keys, etc...
+
+::: warning
+You should not trust the client as a basis. Please do not rely on String encryption as the sole protection for your
+software. By default, you should assume that a talented enough reverse-engineer could gain access to these with 
+enough time and patience.
+:::
+
+There are currently two modes for String encryption: `STANDARD` and `POLYMORPHIC`
+
+#### Number Encryption
+
+The number encryption transformer encrypts any integer-based numeral to be hidden. This is perfect for uglifying
+the code in general and making it more of a hardship for reverse-engineers to obtain a clean source code. This
+furthermore reinforces any boolean-based conditionals.
+
+
+#### 
