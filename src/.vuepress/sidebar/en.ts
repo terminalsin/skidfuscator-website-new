@@ -10,7 +10,24 @@ export const enSidebar = sidebar({
       text: 'Config',
       prefix: "docs/config",
       link: '/docs/config',
-      children: 'structure'
+      children: [
+        {
+          text: 'Details',
+          link: '/docs/config'
+        },
+        {
+          text: 'String Encryption',
+          link: '/docs/config/stringencryption'
+        },
+        {
+          text: 'Number Encryption',
+          link: '/docs/config/numberencryption'
+        },
+        {
+          text: 'Flow Exception Range',
+          link: '/docs/config/flowrange'
+        },
+      ]
     },
     {
       text: 'Exclusions',

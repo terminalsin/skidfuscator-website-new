@@ -11,6 +11,7 @@ This technique is often used in conjunction with other obfuscation techniques to
 
 ## IR Representation
 
+```
  Original flow:       Obfuscated Flow:
 
  ┌─────────┐            ┌─────────┐
@@ -37,4 +38,4 @@ This technique is often used in conjunction with other obfuscation techniques to
                         ┌────▼────┐
                         │ Block B │
                         └─────────┘
-
+```

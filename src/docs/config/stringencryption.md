@@ -9,6 +9,9 @@ software. By default, you should assume that a talented enough reverse-engineer 
 enough time and patience.
 :::
 
+
+## Config
+
 There are currently two modes for String encryption: `STANDARD` and `POLYMORPHIC`
 
 ```js
@@ -18,6 +21,8 @@ stringEncryption {
     exempt: []
 }
 ```
+
+## Behind-the-scenes
 
 ### Unobfuscated
 
