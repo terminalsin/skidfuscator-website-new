@@ -27,6 +27,10 @@ export const enSidebar = sidebar({
           text: 'Flow Exception Range',
           link: '/docs/config/flowrange'
         },
+        {
+          text: 'Exception Return',
+          link: '/docs/config/exceptionreturn'
+        },
       ]
     },
     {
