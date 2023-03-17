@@ -10,9 +10,11 @@
     "docs:dev": "vuepress dev src"
   },
   "devDependencies": {
-    "@vuepress/client": "2.0.0-beta.60",
+    "@vuepress/client": "2.0.0-beta.63",
     "vue": "^3.2.45",
-    "vuepress": "2.0.0-beta.60",
-    "vuepress-theme-hope": "2.0.0-beta.149"
+    "vuepress": "2.0.0-beta.63",
+    "vuepress-plugin-seo2": "2.0.0-beta.193",
+    "vuepress-plugin-sitemap2": "^2.0.0-beta.193",
+    "vuepress-theme-hope": "2.0.0-beta.193"
   }
 }
