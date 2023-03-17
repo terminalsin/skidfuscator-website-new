@@ -20,4 +20,5 @@ export const enNavbar = navbar([
       },
     ],*/
   },
+  { text: "Changelog", icon: "tags", link: "/changelog/" },
 ]);
