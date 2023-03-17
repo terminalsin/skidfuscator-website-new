@@ -8,6 +8,14 @@ For example, a simple try-catch block might be transformed into a more complex s
 
 This technique is often used in conjunction with other obfuscation techniques to provide additional layers of protection. However, it should be noted that adding unnecessary complexity to exception handling code can also make it harder to debug and maintain the program, so it should be used judiciously.
 
+## Config 
+
+```js
+flowRange {
+     enabled: true
+     exempt: []
+}
+```
 
 ## Behind-the-scenes
 

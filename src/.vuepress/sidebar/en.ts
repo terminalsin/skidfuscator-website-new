@@ -16,6 +16,10 @@ export const enSidebar = sidebar({
           link: '/docs/config'
         },
         {
+          text: 'Driver Hardening',
+          link: '/docs/config/driverhardening'
+        },
+        {
           text: 'String Encryption',
           link: '/docs/config/stringencryption'
         },
