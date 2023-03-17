@@ -52,7 +52,7 @@ footer: Skidfuscator.dev | Copyright © 2023
 
 # Why Skidfuscator?
 
-Skidfuscator is a worthy investment for software developers and companies seeking to protect their Java-based applications from reverse engineering, tampering, and intellectual property theft. Skidfuscator employs a variety of advanced obfuscation techniques, such as control flow obfuscation, string encryption, and class and method renaming, which render the decompiled code significantly harder to understand and analyze. By utilizing these techniques, Skidfuscator increases the effort required to reverse engineer the application, effectively deterring potential attackers and preserving your competitive edge in the market. 
+Skidfuscator is a java obfuscator for software developers and companies seeking to protect their Java-based applications from reverse engineering, tampering, and intellectual property theft. Skidfuscator employs a variety of advanced obfuscation techniques, such as control flow obfuscation, string encryption, and class and method renaming, which render the decompiled code significantly harder to understand and analyze. By utilizing these techniques, Skidfuscator increases the effort required to reverse engineer the application, effectively deterring potential attackers and preserving your competitive edge in the market. 
 
 # How to use 
 
