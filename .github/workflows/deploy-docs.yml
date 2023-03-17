@@ -26,8 +26,8 @@ jobs:
           node-version: 14
           cache: yarn
 
-      - name: Install Deps
-        run: yarn install --frozen-lockfile
+      - name: Create lockfile
+        run: yarn
 
       - name: Build Docs
         env:
