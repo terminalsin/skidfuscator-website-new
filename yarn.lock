@@ -1831,7 +1831,7 @@
     envinfo "^7.8.1"
     esbuild "~0.16.17"
 
-"@vuepress/client@2.0.0-beta.61", "@vuepress/client@2.0.0-beta.63":
+"@vuepress/client@2.0.0-beta.61":
   version "2.0.0-beta.61"
   resolved "https://registry.yarnpkg.com/@vuepress/client/-/client-2.0.0-beta.61.tgz#d36321495924f19d468b71af48ae3a06ab626b93"
   integrity sha512-C5QbdQkPsurEsKUkLclVucUAKMzBph9kHMUvfKHJqBaAsiXKYVLa61AICTJeyDkhTYF0faOjmpqmaElfMt1S9w==
@@ -5286,7 +5286,7 @@ vuepress-theme-hope@2.0.0-beta.193:
     vuepress-plugin-sitemap2 "2.0.0-beta.193"
     vuepress-shared "2.0.0-beta.193"
 
-vuepress-vite@2.0.0-beta.50-pre.1:
+vuepress-vite@2.0.0-beta.61:
   version "2.0.0-beta.61"
   resolved "https://registry.yarnpkg.com/vuepress-vite/-/vuepress-vite-2.0.0-beta.61.tgz#04058551e6be014e9f2dee14c5d8043b158e032d"
   integrity sha512-4mcR8XSY5b36CYkPqF80WvoeGAEjTw6Cr9bMPHrPVSjG4qqyfVpdSdyRtXD+/5aLJB7r/L60J7PI1pKTci1+3w==
@@ -5296,12 +5296,12 @@ vuepress-vite@2.0.0-beta.50-pre.1:
     "@vuepress/core" "2.0.0-beta.61"
     "@vuepress/theme-default" "2.0.0-beta.61"
 
-vuepress@2.0.0-beta.63:
-  version "2.0.0-beta.50-pre.1"
-  resolved "https://registry.yarnpkg.com/vuepress/-/vuepress-2.0.0-beta.50-pre.1.tgz#26eec90444bb37590f29d10dd5923e75c476189f"
-  integrity sha512-4Finc3GDscIqgRFAZFwa4SUm8tIFSVQIxnPIpQPW3kaM37rKylvUDkLrs2lMvoDPTAAE+Kf+v34tAFX+ZMGKUg==
+vuepress@2.0.0-beta.61:
+  version "2.0.0-beta.61"
+  resolved "https://registry.yarnpkg.com/vuepress/-/vuepress-2.0.0-beta.61.tgz#f89741a505b71fbe49dba83d8319b1fd0d45116c"
+  integrity sha512-gpttL0x5ZvI9eTyR/pexBknIAcgrdjAWoiJc7OYd4bIVfwlXAb4GO4A2EwRSX+pIaNOWdcd+sfZA86EMEbrtNg==
   dependencies:
-    vuepress-vite "2.0.0-beta.50-pre.1"
+    vuepress-vite "2.0.0-beta.61"
 
 wcwidth@^1.0.1:
   version "1.0.1"

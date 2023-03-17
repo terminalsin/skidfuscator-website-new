@@ -113,6 +113,9 @@ export default hopeTheme({
       vuePlayground: true,
     },
 
+    seo: true,
+    sitemap: true
+
     // uncomment these if you want a pwa
     // pwa: {
     //   favicon: "/favicon.ico",
