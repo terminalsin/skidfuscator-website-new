@@ -9,8 +9,32 @@ For example, a simple try-catch block might be transformed into a more complex s
 This technique is often used in conjunction with other obfuscation techniques to provide additional layers of protection. However, it should be noted that adding unnecessary complexity to exception handling code can also make it harder to debug and maintain the program, so it should be used judiciously.
 
 
-## IR Representation
+## Behind-the-scenes
 
+#### Unobfuscated
+```java
+final String uwu = "UwU";
+System.out.println(uwu);
+```
+
+#### Obfuscated
+```java
+final String uwu = "UwU";
+
+while (true) {
+     label1: {
+          try {
+               if (this.a(0x92A8B44, n) >> 8 != 0x97F7F)
+                    throw new IllegalReflectiveException();
+               break label1;
+          } catch (IllegalReflectiveException ex) {
+               System.out.println(uwu);
+          }
+     }
+}
+```
+
+#### IR Representation
 ```
  Original flow:       Obfuscated Flow:
 

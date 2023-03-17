@@ -24,6 +24,10 @@ export const enSidebar = sidebar({
           link: '/docs/config/numberencryption'
         },
         {
+          text: 'Annotation Encryption',
+          link: '/docs/config/annotationencryption'
+        },
+        {
           text: 'Flow Exception Range',
           link: '/docs/config/flowrange'
         },

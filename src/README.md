@@ -6,8 +6,8 @@ heroImage: /logo.png
 heroText: Skidfuscator
 tagline: Powerful Java Obfuscation at the click of your hand
 actions:
-  - text: Download 💡
-    link: /demo/
+  - text: Pricing 💡
+    link: /pricing/
     type: primary
 
   - text: Docs
@@ -50,64 +50,120 @@ copyright: true
 footer: Skidfuscator.dev | Copyright © 2023
 ---
 
-# 🕵️ What is Skidfuscator?
+# Why Skidfuscator?
 
-Skidfuscator is a proof of concept obfuscation tool designed to take advantage of SSA form to optimize and obfuscate Java bytecode code flow. This is done via intra-procedural passes each designed to mingle the code in a shape where neither the time complexity neither the space complexity suffers from a great loss. To achieve the such, we have modeled a couple of well known tricks to add a significant strength to the obfuscation whilst at the same time retaining a stable enough execution time.
+Skidfuscator is a worthy investment for software developers and companies seeking to protect their Java-based applications from reverse engineering, tampering, and intellectual property theft. Skidfuscator employs a variety of advanced obfuscation techniques, such as control flow obfuscation, string encryption, and class and method renaming, which render the decompiled code significantly harder to understand and analyze. By utilizing these techniques, Skidfuscator increases the effort required to reverse engineer the application, effectively deterring potential attackers and preserving your competitive edge in the market. 
 
-# ✨ Features 
+# How to use 
 
-Here are all the cool features I've been adding to Skidfuscator. It's a fun project hence don't expect too much from it. It's purpose is
-not to be commercial but to inspire some more clever approaches to code flow obfuscation, especially ones which make use of SSA and CFGs
+Skidfuscator seeks to be a drag and drop experience, all you need to do is execute the following command to run obfuscation on your project:
+
+```
+java -jar Skidfuscator.jar obfuscate <path to jar>
+```
 
 ![Cool gif](https://i.ibb.co/4MQnj4V/FE185-E3-B-0-D0-D-4-ACC-81-AA-A4862-DF01-FA3.gif)
 
-## Third Generation Flow
+# Features
 
-What is third generation flow obfuscation? Well, contrary to Zelix's [second generation flow obfuscation](https://www.zelix.com/klassmaster/featuresFlowObfuscation.html), we use an even more complex system with private and public seeds. Here's 
-how it works:
+We currently are working on a variety of ways to approach this system using various lightweight obfuscation methods. 
 
-<br>
-<br>
+#### **Skidfuscator is backed by research**
 
-![Exampel](https://i.imgur.com/j2tZavr.png)
+Inspired by the greats, such as Christian Collberg's [Taxonomy of Obfuscation](https://researchspace.auckland.ac.nz/bitstream/handle/2292/3491/TR148.pdf), and many more academic papers, Skidfuscator is the implementation in which theory meets real-world use. 
 
-<sub>_Graph representing the two different approaches towards flow obfuscation between Zelix (17.0) and Skidfuscator (0.0.1)_</sub>
-<br>
-<br>
-<br>
+#### **Skidfuscator is not just-another-obfuscator**
+By leveraging the fact that your program is a culmination of many classes and methods, Skidfuscator is the second obfuscator to introduce interprocedural obfuscation. This makes reverse-engineering exponentially more complex and thwarts most if not all currently available deobfuscation tools. 
 
-We currently are working on a variety of ways to approach this system using various lightweight obfuscation methods. Here are the current ones
-to date:
-Here are the features:
+#### **Skidfuscator is compatible**
+With the optic of stability, Skidfuscator is compatible from Java 1.8 to Java 18. In addition, Skidfuscator offers pre-existing configurations for popular tools, such as Spigot, Forge, and Sponge for Minecraft, JDA for Discord, and various other toolset commonly prevalent in the Java community.
 
-| Feature | Type | Description | Status |
-| --- | --- | --- | --- |
-| `Flow GEN3` | Flow (Community) | Obfuscates methods using the GEN3 Obfuscation methodology | ✅ |
-| `Bogus Jump` | Flow (Community) | Invalid jump to some random generated code to prevent skidding | ✅ |
-| `Bogus Exception`| Flow (Community) | Invalid jump to some random generated exception | ✅ |
-| `Mangled Jump` | Flow (**Enterprise**) | Mutation to the jump condition to make it appear more complex than it actually is | ❌ |
-| `Exception Jump` | Flow (**Enterprise**) | Changes done to flow semantics by forcing an exception then handling all the code in the catch clause | ❌ |
-| `Exception Return`| Flow (**Enterprise**) | Throw an exception with the value and catch it as opposed to returning it (Very heavy) | ❌ |
-| `Strong Opaque Predicate` | Flow (Community) | Use heredity and method invocation to pass a predicate as opposed to declaring it at the beginning of the CFG | ✅ |
-| `Method Inlining` | Flow (**Enterprise**) | Inline uncommon methods which aren't too big | ❌ |
-| `Method Outlining` | Flow (**Enterprise**) | Outline some non-sensitive blocks | ❌ |
-| `Loop Unrolling` | Flow (**Enterprise**) | Rewrite some loops instructions into continuous segments if the loop limit can be pre-determined | ❌ |
-| `Flattening` | Flow (Community) | Use a dispatcher method to harden the semantics of some block ranges (do not use entire method) | ⚠️ |
-| `String Encryption` | String | Encrypt the strings using the opaque predicate | ✅ |
-| `Reference Encryption` | Reference | Encrypt the reference calls using InvokeDynamic using the opaque predicate | ❌ |
-| `Reference Proxying` | Reference | Proxy references using a builder pattern OR dispatcher classes (mostly for initialisation) | ❌ |
+#### **Learn more about Skidfuscator**
 
-### ***NEW*** Number Mutation
-![Graph](https://i.imgur.com/XjUFdRU.png)
+Do not hesitate to ask all sales questions to `mastermind@artemis.ac`or to [join our discord](https://discord.gg/mTaZDCngEW)
 
-### Switch Mutation
-![Graph](https://i.imgur.com/yPjFC8k.png)
 
-### Fake exceptions
-![Graph](https://i.imgur.com/bJcTNHm.png)
+#### **Transformers**
+As of right now, the following transformers are available in Skidfuscator:
 
-### Fake jumps
-![Graph](https://i.imgur.com/780UIIc.png)
+| Obfuscation Strategy          | JObfuscator | Zelix KlassMaster | Skidfuscator Community | Skidfuscator Enterprise |
+|-------------------------------|-------------|-------------------|------------------------|-------------------------|
+| Third Generation Flow         | ❌           | ❌                 | ✅                      | ✅                       |
+| Bogus Jump Obfuscation        | ✅           | ✅                 | ✅                      | ✅                       |
+| Bogus Exception Obfuscation   | ❌           | ✅                 | ✅                      | ✅                       |
+| Mangled Jump Obfuscation      | ❌           | ❌                 | ❌                      | ✅                       |
+| Exception Jump Obfuscation    | ❌           | ✅                 | ✅                      | ✅                       |
+| String Encryption             | ✅           | ✅                 | ✅                      | ✅                       |
+| Polymorphic String Encryption | ❌           | ❌                 | ❌                      | ✅                       |
+| Constant Encryption           | ✅           | ✅                 | ✅                      | ✅                       |
+| Method Inlining               | ❌           | ❌                 | ❌                      | SoonTM                  |
+| Method Outlining              | ❌           | ❌                 | ❌                      | ✅                       |
+| Initialisation Outlining      | ❌           | ❌                 | ❌                      | ✅                       |
+| Annotation Encryption         | ❌           | ❌                 | ❌                      | ✅                       |
+| Reference Encryption          | ❌           | ✅                 | ❌                      | ✅                       |
+| Renaming Obfuscation          | ✅           | ✅                 | ❌                      | ✅                       |
+| Return Obfuscation            | ❌           | ❌                 | ❌                      | ✅                       |
+| Method Parameter Obfuscation  | ❌           | ✅                 | ✅                      | ✅                       |
+| Native Driver Obfuscation     | ❌           | ❌                 | ❌                      | ✅                       |
+| Crasher Obfuscation           | ❌           | ❌                 | ❌                      | ✅                       |
+
+# Examples
+
+### Unobfuscated
+```java
+public void exportLog() throws IOException {
+    File output = new File("calculations.txt");
+
+    try (BufferedWriter writer = new BufferedWriter(new FileWriter(output))) {
+        logs.forEach(log - > {
+            try {
+                boolean shouldPrintNewLine = !log.contains("\n");
+
+                if (shouldPrintNewLine)
+                    writer.write("\n");
+
+                writer.write(log);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+
+        writer.flush();
+    }
+}
+```
+
+### Obfuscated
+```java
+public void KK0oK0o$KK0oKOo$KK0oKK(int var1_1) throws IOException {
+    /*
+     * This method has failed to decompile.  When submitting a bug report, please provide this stack trace, and (if you hold appropriate legal rights) the relevant class file.
+     * 
+     * org.benf.cfr.reader.util.ConfusedCFRException: Extractable last case doesn't follow previous, and can't clone.
+     *     at org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters.SwitchReplacer.examineSwitchContiguity(SwitchReplacer.java:611)
+     *     at org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters.SwitchReplacer.replaceRawSwitches(SwitchReplacer.java:94)
+     *     at org.benf.cfr.reader.bytecode.CodeAnalyser.getAnalysisInner(CodeAnalyser.java:517)
+     *     at org.benf.cfr.reader.bytecode.CodeAnalyser.getAnalysisOrWrapFail(CodeAnalyser.java:278)
+     *     at org.benf.cfr.reader.bytecode.CodeAnalyser.getAnalysis(CodeAnalyser.java:201)
+     *     at org.benf.cfr.reader.entities.attributes.AttributeCode.analyse(AttributeCode.java:94)
+     *     at org.benf.cfr.reader.entities.Method.analyse(Method.java:531)
+     *     at org.benf.cfr.reader.entities.ClassFile.analyseMid(ClassFile.java:1055)
+     *     at org.benf.cfr.reader.entities.ClassFile.analyseTop(ClassFile.java:942)
+     *     at org.benf.cfr.reader.Driver.doClass(Driver.java:84)
+     *     at org.benf.cfr.reader.CfrDriverImpl.analyse(CfrDriverImpl.java:78)
+     */
+    throw new IllegalStateException("Decompilation failed");
+}
+```
+
+# Samples
+
+Don't believe us? Try it yourself! Here below are some samples providing examples of the security we bring.
+
+
+| Sample name | Unobfuscated | Obfuscated | Info                                                     |
+|-------------|--------------|------------|----------------------------------------------------------|
+| Evaluator   | [Download](files/evaluator-unobf.jar) | [Download](files/evaluator-obf.jar) | Prints out various debugging informations and unit tests |
 
 # Credits
 

@@ -6,6 +6,18 @@ furthermore reinforces any boolean-based conditionals.
 
 The number encryption relies on the GEN3 flow obfuscation and may, in decompiled output, show as follows
 
+## Config
+
+Currently, there is only one mode of Number Encryption, `STANDARD`
+
+```js
+numberEncryption {
+    enabled: true
+    exempt: []
+}
+```
+
+## Behind-the-scenes
 #### Unobfuscated
 ```java
 int var = 1000;
