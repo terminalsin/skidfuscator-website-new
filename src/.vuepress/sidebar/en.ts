@@ -53,5 +53,9 @@ export const enSidebar = sidebar({
         text: 'Libraries',
         link: '/docs/libraries',
     },
+    {
+      text: 'Bug Reporting',
+      link: '/docs/bugreporting'
+    }
   ],
 });

@@ -9,3 +9,4 @@ You thought we didn't have much to talk about previously did you? Now we have al
 2. [Exclusions](/docs/exclusion.html)
 3. [Libraries](/docs/libraries.html)
 4. [Transformers](/docs/transformers.html)
+5. [Bug Reporting](/docs/bugreporting.html)
