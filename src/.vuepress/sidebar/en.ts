@@ -53,9 +53,5 @@ export const enSidebar = sidebar({
         text: 'Libraries',
         link: '/docs/libraries',
     },
-    {
-        text: 'Transformers',
-        link: '/docs/transformers',
-    }
   ],
 });
