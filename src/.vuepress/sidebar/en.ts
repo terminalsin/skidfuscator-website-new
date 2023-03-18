@@ -7,6 +7,10 @@ export const enSidebar = sidebar({
       link: '/docs',
     },
     {
+      text: 'Installation',
+      link: '/docs/installation' 
+    },
+    {
       text: 'Config',
       prefix: "docs/config",
       link: '/docs/config',
