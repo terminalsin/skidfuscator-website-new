@@ -7,7 +7,7 @@ You can report the bug by joining our Discord server and opening a ticket.
 <iframe src="https://discord.com/widget?id=904888546609987674&theme=dark" width="350" height="500" allowtransparency="true" frameborder="0" sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"></iframe>
 
 Please make sure you format your bug report in the following way:
-1. Bug you're encountering. 
+1. The bug you're encountering. 
 2. Screenshot of the full stacktrace message.
 3. The original jar you're trying to obfuscate.
 4. The obfuscated jar (if applicable.)

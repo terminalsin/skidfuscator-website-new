@@ -11,6 +11,10 @@ export const enSidebar = sidebar({
       link: '/docs/installation' 
     },
     {
+      text: 'Getting Started',
+      link: '/docs/gettingstarted'
+    },
+    {
       text: 'Config',
       prefix: "docs/config",
       link: '/docs/config',

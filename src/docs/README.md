@@ -6,7 +6,8 @@ You thought we didn't have much to talk about previously did you? Now we have al
 
 # Table of Contents
 1. [Installation](/docs/installation.html)
-2. [Exclusions](/docs/exclusion.html)
-3. [Libraries](/docs/libraries.html)
-4. [Transformers](/docs/transformers.html)
-5. [Bug Reporting](/docs/bugreporting.html)
+2. [Getting Started](/docs/gettingstarted.html)
+3. [Exclusions](/docs/exclusion.html)
+4. [Libraries](/docs/libraries.html)
+5. [Transformers](/docs/transformers.html)
+6. [Bug Reporting](/docs/bugreporting.html)
