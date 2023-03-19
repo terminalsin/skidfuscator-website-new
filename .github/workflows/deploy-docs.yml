@@ -27,6 +27,8 @@ jobs:
 
       - name: Create lockfile
         run: yarn
+      - name: Install Deps
+        run: yarn install --frozen-lockfile
 
       - name: Build Docs
         env:

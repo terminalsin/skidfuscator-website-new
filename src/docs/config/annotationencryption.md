@@ -23,7 +23,7 @@ intAnnotationEncryption {
 }
 ```
 
-## Behind-the-scenes
+## Examples
 
 ### Unobfuscated
 
