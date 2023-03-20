@@ -19,4 +19,19 @@ Control flow obfuscation in Java is a technique used to hide the code structure 
 ### String and number encryption
 Number and string encryption is a type of obfuscation used in Java programming. Number encryption refers to the process of encoding numbers so that they can not be seen in plain text. This is done by transforming the numbers into a different form, such as binary or hexadecimal, or by using a key to encrypt the numbers. This makes it difficult for someone to decrypt the numbers and gain access to the code. String encryption is similar to number encryption, but it is used to protect strings of text. This is done by transforming the characters in the string into a different form, such as a base64 encoding, or by using a key to encrypt the string. This makes it difficult for someone to decrypt the string and understand its contents.
 
+## Evaluating Quality
 
+Making sure that an obfuscator produces a high quality output after applying obfuscation transformers is essential. At Skidfuscator, we assess various factors into what can affect the quality of obfuscated java code.
+
+### Code size and complexity
+The size and complexity of the obfuscated code are essential factors to consider when evaluating the quality of obfuscated Java code. Obfuscation should not significantly increase the size of the code, as this can lead to performance issues and potential bugs. At Skidfuscator, we aim to make your code as obscure as possible without significantly enlarging it whilst maintaining maximum security.
+
+### Security
+Security is a critical factor in evaluating the quality of obfuscated Java code. The obfuscation technique in question should be effective in protecting the code from reverse engineering attempts. This can be evaluated by analyzing the code's resistance to reverse engineering tools, such as decompilers and disassemblers.  
+
+### Performance
+The obfuscated code's performance is another crucial factor in evaluating its quality. Obfuscation should not significantly impact the code's execution time or memory usage. It is also important to note that the obfuscated code should not introduce any new bugs or errors that could affect the code's overall performance. Any performance issues introduced by the obfuscation technique should be identified and addressed.
+
+### Summary 
+
+Overall, the quality of obfuscated Java code can be evaluated based on several factors, including code size and complexity, security, maintainability, and performance. Obfuscation should not significantly impact any of these factors, and any issues introduced by the obfuscation technique should be identified and addressed promptly.
