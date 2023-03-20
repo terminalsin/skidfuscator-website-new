@@ -4,7 +4,7 @@ So, you've now succsessfully downloaded Skidfuscator onto your computer and are 
 
 Skidfuscator runs via the command line, using the Java CLI. We strongly advise you are familiar with this in order to enjoy a seamless Skidfuscator experience. 
 
-## Options for Skidfuscator
+## CLI options for Skidfuscator
 
 Simply run `java -jar <yourSkidfuscatorFile.jar>` and you will be presented with various options: 
 
