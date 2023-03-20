@@ -22,7 +22,7 @@ stringEncryption {
 }
 ```
 
-## Behind-the-scenes
+## Examples
 
 ### Unobfuscated
 

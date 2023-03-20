@@ -17,7 +17,7 @@ exceptionReturn {
 }
 ```
 
-## Behind-the-scenes
+## Examples
 
 ### Unobfuscated
 

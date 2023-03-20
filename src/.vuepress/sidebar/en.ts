@@ -40,12 +40,32 @@ export const enSidebar = sidebar({
           link: '/docs/config/annotationencryption'
         },
         {
-          text: 'Flow Exception Range',
+          text: 'Flow Outliner',
+          link: '/docs/config/flowoutliner'
+        },
+        {
+          text: 'Flow Range',
           link: '/docs/config/flowrange'
         },
         {
-          text: 'Exception Return',
+          text: 'Flow Condition',
+          link: '/docs/config/flowcondition'
+        },
+        {
+          text: 'Flow Exception',
+          link: '/docs/config/flowexception'
+        },
+        {
+          text: 'Flow Exception Return',
           link: '/docs/config/exceptionreturn'
+        },
+        {
+          text: 'Flow Switch',
+          link: '/docs/config/flowswitch'
+        },
+        {
+          text: 'Method Renamer',
+          link: '/docs/config/renamermethod'
         },
       ]
     },
@@ -63,3 +83,5 @@ export const enSidebar = sidebar({
     }
   ],
 });
+
+
