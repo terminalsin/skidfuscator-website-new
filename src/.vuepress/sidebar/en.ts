@@ -7,14 +7,6 @@ export const enSidebar = sidebar({
       link: '/docs',
     },
     {
-      text: 'About Us',
-      link: '/docs/about'
-    },
-    {
-      text: 'Intro to Java Obfuscation',
-      link: '/docs/javaobf'
-    },
-    {
       text: 'Installation',
       link: '/docs/installation' 
     },
@@ -82,13 +74,21 @@ export const enSidebar = sidebar({
       link: '/docs/exclusion',
     },
     {
-        text: 'Libraries',
-        link: '/docs/libraries',
+      text: 'Libraries',
+      link: '/docs/libraries',
+  },
+    {
+      text: 'About Us',
+      link: '/docs/about'
+    },
+    {
+      text: 'Intro to Java Obfuscation',
+      link: '/docs/javaobf'
     },
     {
       text: 'Bug Reporting',
       link: '/docs/bugreporting'
-    }
+    },
   ],
 });
 
