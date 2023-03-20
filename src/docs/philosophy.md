@@ -6,7 +6,7 @@ At Skidfuscator, we are passionate about helping Java developers protect their i
 ## Our mission
 Our mission is to provide Java developers with the tool they need to protect their valuable intellectual property. We understand that the Java platform is widely used for developing high-quality software applications, and we believe that protecting your Java code is essential for maintaining your competitive edge. That is why we have developed Skidfuscator, a reliable and user-friendly java obfuscator that helps you protect your Java applications against reverse engineering and tampering.
 
-## Why we have made Skidfuscator?
+## Why have we made Skidfuscator?
 At Skidfuscator, we believe that Java developers should have access to affordable and effective obfuscation solutions for protecting their intellectual property. Our team is committed to delivering top-quality obfuscation solutions that are easy to use, yet powerful enough to withstand even the most determined attacks. We are constantly working to improve our product and stay up-to-date with the latest developments in software protection and obfuscation.
 
 We understand that obfuscation can be a complex and challenging process, especially for developers who are new to this field. That is why we have designed Skidfuscator to be as user-friendly and intuitive as possible. With our obfuscator, you can quickly and easily obfuscate your Java bytecode, without the need for any special skills or knowledge. Our comprehensive documentation and excellent support services ensure that you can get started with obfuscation in no time and protect your software.
