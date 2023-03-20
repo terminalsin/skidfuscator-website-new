@@ -78,4 +78,3 @@ Outlining can also be used as a form of code obfuscation, as it can make it more
 The fantastic thing about outlining is: it's not *technically* reversible! To be able to return to an original state of a good outline obfuscation, a deobfuscator *has to do inlining*, which is a heuristic and *doesn't* guarantee the output to always be semantically correct with the original source code. Furthermore, this necessites the deobfuscator to mangle with variables and other various forms of sensitive bytecode manipulation which all can lead to frame and computation exceptions. 
 
 Overall, outlining obfuscation is pretty neat :)
-
