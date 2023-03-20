@@ -12,8 +12,17 @@ export const enSidebar = sidebar({
     },
     {
       text: 'Our Methodology',
-      link: 'docs/methodology'
+      link: '/docs/methodology'
     },
+    {
+      text: 'What is Java Obfuscation',
+      link: '/docs/javaobf'
+    },
+    {
+      text: 'Evaluating Quality',
+      link: '/docs/evaluatingquality'
+    },
+
     {
       text: 'Installation',
       link: '/docs/installation' 
