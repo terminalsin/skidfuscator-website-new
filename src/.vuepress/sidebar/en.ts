@@ -7,6 +7,10 @@ export const enSidebar = sidebar({
       link: '/docs',
     },
     {
+      text: 'Our Philosophy',
+      link: '/docs/philosophy'
+    },
+    {
       text: 'Installation',
       link: '/docs/installation' 
     },
