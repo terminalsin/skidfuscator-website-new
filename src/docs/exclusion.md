@@ -39,8 +39,8 @@ To match any string which begins _with_ "uwu", you'd have:
 
 So the following would happen:
 ```java
-kitty-uwu // Matches!
-uwu-kitty // No match!
+kitty-uwu // No match!
+uwu-kitty // Match!
 ```
 
 ***
