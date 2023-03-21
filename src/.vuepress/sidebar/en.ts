@@ -7,12 +7,31 @@ export const enSidebar = sidebar({
       link: '/docs',
     },
     {
-      text: 'Installation',
-      link: '/docs/installation' 
+      text: 'About Us',
+      prefix: "docs/config",
+      children: [
+        {
+          text: 'Intro to Java Obfuscation',
+          link: '/docs/javaobf'
+        },
+        {
+          text: 'Our Philosophy',
+          link: '/docs/about'
+        },
+      ]
     },
     {
       text: 'Getting Started',
-      link: '/docs/gettingstarted'
+      children: [
+        {
+          text: 'Installation',
+          link: '/docs/installation' 
+        },
+        {
+          text: 'Running Skidfuscator',
+          link: '/docs/gettingstarted'
+        },
+      ]
     },
     {
       text: 'Config',
@@ -77,14 +96,6 @@ export const enSidebar = sidebar({
       text: 'Libraries',
       link: '/docs/libraries',
   },
-    {
-      text: 'About Us',
-      link: '/docs/about'
-    },
-    {
-      text: 'Intro to Java Obfuscation',
-      link: '/docs/javaobf'
-    },
     {
       text: 'Bug Reporting',
       link: '/docs/bugreporting'
