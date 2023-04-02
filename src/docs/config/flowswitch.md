@@ -23,7 +23,7 @@ public static void main(String[] args) {
             System.out.println("Oh no!");
             break;
         case 2: 
-            System.ou.println("Hello world!");
+            System.out.println("Hello world!");
             break
         default: 
             throw new IllegalStateException("Something went wrong!");
@@ -41,7 +41,7 @@ public static void main(String[] args) {
 
     switch (number ^ hash(n ^ 0x9932783)) {
         case 0x928EF8C: 
-            System.ou.println("Hello world!");
+            System.out.println("Hello world!");
             break
         case 0x9873783: 
             System.out.println("Oh no!");
