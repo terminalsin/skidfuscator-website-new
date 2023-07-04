@@ -23,14 +23,17 @@ category:
 # Changelog
 
 ## 2.19.9 (Coming soon)
-- NEW ✨ Added new generators for GEN3 flow obfuscation
-- Fixed conflictual issues between reference obfuscation and renamer
-- Fixed various outlining bugs
-- Fixed exception return edge case
-- Improved overall flow obfuscation strength
-- Improved driver compilation speed and reliability
-- Improved polymorphic string encryption
-- Improved configuration options
+- ✨ **NEW** Flow Gen 3.1! New, better, improved. Now supports modularity switch, with 3 random parameters
+- ✨ Improvements to String Encryption, Flow Obfuscation, and more!
+- ✨ New console look!
+- 🐛 Fixed a bug where verification would attempt to check non hierarchal libraries, adding redundancy
+- 🐛 Fixed a bug where Driver would return null due to collision
+- 🐛 Fixed a bug where InterfConstRef would be invalid
+- 🐛 Fixed a bug where clone implicit bridge would be obfuscated, causing conflicts
+- 🐛 Improved hierarchy caching in speed, accuracy and efficiency
+- 🐛 Fixed a bug where hierarchy would conflict method groups and not properly define them
+- 🐛 Fixed a bug where method exemptions for groups would fail to check class parent exemptions
+- 📚 More documentation to wiki
 
 ## 2.19.8
 - Huge improvements to overall stability tested 25x on unit
