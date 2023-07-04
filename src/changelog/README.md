@@ -33,6 +33,7 @@ category:
 - 🐛 Improved hierarchy caching in speed, accuracy and efficiency
 - 🐛 Fixed a bug where hierarchy would conflict method groups and not properly define them
 - 🐛 Fixed a bug where method exemptions for groups would fail to check class parent exemptions
+- 🐛 Fixed a where an exempted local method would break and not properly reflect gen 3 flow changes
 - 📚 More documentation to wiki
 
 ## 2.19.8
