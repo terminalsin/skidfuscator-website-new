@@ -26,6 +26,7 @@ category:
 - ✨ **NEW** Flow Gen 3.1! New, better, improved. Now supports modularity switch, with 3 random parameters
 - ✨ Improvements to String Encryption, Flow Obfuscation, and more!
 - ✨ New console look!
+- ✨ Unintentionally added shrinking mechanics. Bigger jars will be... smaller... with obfuscation (???)
 - 🐛 Fixed a bug where verification would attempt to check non hierarchal libraries, adding redundancy
 - 🐛 Fixed a bug where Driver would return null due to collision
 - 🐛 Fixed a bug where InterfConstRef would be invalid
@@ -33,7 +34,11 @@ category:
 - 🐛 Improved hierarchy caching in speed, accuracy and efficiency
 - 🐛 Fixed a bug where hierarchy would conflict method groups and not properly define them
 - 🐛 Fixed a bug where method exemptions for groups would fail to check class parent exemptions
-- 🐛 Fixed a where an exempted local method would break and not properly reflect gen 3 flow changes
+- 🐛 Fixed a bug where an exempted local method would break and not properly reflect gen 3 flow changes
+- 🐛 Fixed a bug where improperly cached invocation would be attempted to be read as an expression
+- 🐛 Improved outputting speed by caching the output mappings map
+- 🐛 Fixed a bug where exempted classes would never receive any bytecode level modifications
+- 🐛 Fixed a bug where exempted classes would not rename invocations
 - 📚 More documentation to wiki
 
 ## 2.19.8
