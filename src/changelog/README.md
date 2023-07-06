@@ -23,6 +23,7 @@ category:
 # Changelog
 
 ## 2.21.0
+- ✨ **NEW** Added compatibility for J20 and J21. Skidfuscator now supports J7->J21
 - ✨ **NEW** Flow Gen 3.1! New, better, improved. Now supports modularity switch, with 3 random parameters
 - ✨ Improvements to String Encryption, Flow Obfuscation, and more!
 - ✨ New console look!
