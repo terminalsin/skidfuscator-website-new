@@ -51,7 +51,7 @@ under a company name.
 
 ## Updates
 
-Updates may be purchased for 50% of the original price. Please contact `mastermind@artemis.ac` to receive an update link. 
+Updates for 1 additional year may be purchased for 50% of the original price. Please contact `mastermind@artemis.ac` to receive an update link. 
 
 ## Alternatives
 
