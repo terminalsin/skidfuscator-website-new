@@ -1,51 +1,19 @@
-## Annotation Encryption
+## Driver Hardening
 
-Der "Annotation Encryption Transformer" wandelt jeden String und jede Integer innerhalb von annotations zu einem spezifischen Methodenaufruf um, um diese zur Laufzeit zu verbergen. Dies kann für nicht sensible URLs, private keys usw. praktisch sein...
+The driver is the hardening part of Skidfuscator. This feature is reserved to Premium. In a nutshell, per obfuscation, a new driver is generated and compiled for the following architectures:
 
-::: warning
-You should not trust the client as a basis. Please do not rely on String encryption as the sole protection for your software. By default, you should assume that a talented enough reverse-engineer could gain access to these with enough time and patience.
-:::
+| Operating System | Supported Architectures |
+| ---------------- | ----------------------- |
+| Windows          | x64_86                  |
+| MacOS            | x64_86, AARCH64 (ARM)   |
+| Linux            | x64_86 (AMD64)          |
 
 
 ## Config
+To enable this feature (:warning: this significantly increases obfuscation strength), you must toggle the boolean:
 
 ```js
-stringAnnotationEncryption {
-    enabled: true
-    exempt: []
-}
-
-intAnnotationEncryption {
-    enabled: true
-    exempt: []
+driver: {
+    enabled: false // Disabled by default
 }
 ```
-
-## Examples
-
-### Unobfuscated
-
-```java
-@SecretAnnotation(secret = "Super secret", secret2 = 1337)
-public class Fancy {
-    public String getSecret() {
-        return this.getClass().getAnnotation(SecretAnnotation.class).secret();
-    }
-
-    public int getSecre2t() {
-        return this.getClass().getAnnotation(SecretAnnotation.class).secret2();
-    }
-}
-```
-
-### Obfuscated
-
-```java @SecretAnnotation(secret = "oifjaioejaifjea9è!efèaefFEf==", secret2 = 0x9FE7FE7F) public class Fancy { public String getSecret() { /* [...] */ return this.aofheoafo(this.getClass().getAnnotation(SecretAnnotation.class).secret(), n ^ 0x997AF8F); }
-
-    public int getSecre2t() {
-        /* [...] */
-        return this.getClass().getAnnotation(SecretAnnotation.class).secret2() ^ n ^ 0x90AF9F7;
-    }
-    
-    /* [...] */
-}```
