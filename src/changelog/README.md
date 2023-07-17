@@ -21,6 +21,8 @@ category:
 ---
 
 # Changelog
+## 2.21.1
+- 🐛 Fixed a bug where two jars running in the same instance would have overlapping Skidfuscator factories, causing one of them to fail
 
 ## 2.21.0
 - ✨ **NEW** Added compatibility for J20 and J21. Skidfuscator now supports J7->J21
