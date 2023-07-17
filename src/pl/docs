@@ -1,20 +1,25 @@
-# Zgłaszanie błędów
+# Instalacja
 
-Jeżeli napotkasz jakiekolwiek problemy lub odkryjesz błąd w skidfuscatorze, zachęcamy Cię do zgłoszenia go naszemu zespołowi, abyśmy mogli zapewnić Ci jak najlepsze doświadczenie.
+Skidfuscator jest dostępny do pobrania na naszej stronie, GitHubie lub na serwerze Discord.
 
-**Proszę zgłaszać wszelkie problemy / błędy na naszym githubie, którego znajdziesz [tutaj](https://github.com/skidfuscatordev/skidfuscator-java-obfuscator).**
+## Platformy
+- [Strona](https://skidfuscator.dev)
+- [Discord](https://discord.gg/7pVgsRweeh)
+- [GitHub](https://github.com/terminalsin/skidfuscator-java-obfuscator)
 
-Możesz również zgłosić błąd, dołączając do naszego serwera Discord.
+Należy pamiętać, że GitHub dotyczy tylko naszej bezpłatnej, publicznej wersji Skidfuscatora.
 
-Prosimy o przestrzeganie schematu zgłoszenia:
-1. Napotkany błąd.
-2. Zrzut ekranu całego błędu.
-3. Oryginalny plik, który próbujesz zaciemnić.
-4. Zaciemniony plik (jeśli ma zastosowanie).
-5. Pliki konfiguracyjne, których użyłeś.
+## Publiczna wersja
 
-Jeśli uważasz, że potrzebujesz dodatkowej pomocy, dołącz do naszego Discorda i otwórz zgłoszenie.
+Link do pobrania publicznej wersji można znaleźć [tutaj](https://github.com/skidfuscatordev/skidfuscator-java-obfuscator/releases/), a w przypadku edycji enterprise należy odwiedzić naszą stronę internetową lub dołączyć do naszego Discorda.
 
-<iframe src="https://discord.com/widget?id=904888546609987674&theme=dark" width="350" height="500" allowtransparency="true" frameborder="0" sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"></iframe>
+Pamiętaj, że Skidfuscator wymaga Java 8 (tj. JDK 1.8 lub nowszej) do prawidłowego działania.
 
-Nasz zespół skontaktuje się z Tobą i postara się jak najlepiej rozwiązać Twój problem!
+Najprostszym sposobem na uruchomienie Skidfuscatora jest użycie parametru `-jar` w wierszu poleceń, zostaną wyświetlone różne opcje rozpoczęcia obfuskacji pliku.
+
+## Przydzielanie większej ilości pamięci
+Należy zauważyć, że zwykle należy podać JVM więcej niż domyślną ilość pamięci, z którą będzie działać. Jeśli użyjesz parametru -Xmx512m, dasz maszynie JVM maksymalną ilość 512 MB pamięci, która powinna być odpowiednia do większości celów. Należy jednak pamiętać, aby nie udostępniać maszynie JVM więcej pamięci niż jest fizycznie dostępne. W przeciwnym razie wydajność drastycznie spadnie, gdy JVM zacznie korzystać z pamięci wirtualnej.
+
+Zobacz poniżej, jak dodać więcej pamięci:
+
+`java -Xmx4g -jar skidfuscator.jar` w wierszu poleceń.
