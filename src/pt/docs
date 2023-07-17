@@ -1,13 +1,13 @@
-## Criptografia de Anotação
+## Annotation Encryption
 
-O transformador de criptografia de anotação transforma cada string e inteiro contidos em anotações em uma chamada de método específica, com o objetivo de escondê-la em tempo de execução. Isso pode ser prático para URLs não confidenciais, chaves privadas, etc...
+The annotation encryption transformer transforms every string and integer contained in annotations into a specific method call, with the purpose of hiding it in runtime. This can be practical for non-sensitive URLs, private keys, etc...
 
 ::: warning
-You should not trust the client as a basis. Por padrão, você deve assumir que um engenheiro reverso talentoso o suficiente pode obter acesso às strings criptografadas com tempo e paciência. Por padrão, você deve assumir que um engenheiro reverso talentoso o suficiente pode obter acesso às strings criptografadas com tempo e paciência.
+You should not trust the client as a basis. Please do not rely on String encryption as the sole protection for your software. By default, you should assume that a talented enough reverse-engineer could gain access to these with enough time and patience.
 :::
 
 
-## Configuração
+## Config
 
 ```js
 stringAnnotationEncryption {
@@ -21,9 +21,9 @@ intAnnotationEncryption {
 }
 ```
 
-## Exemplos
+## Examples
 
-### Não obfuscado
+### Unobfuscated
 
 ```java
 @SecretAnnotation(secret = "Super secret", secret2 = 1337)
@@ -38,7 +38,7 @@ public class Fancy {
 }
 ```
 
-### Obfuscado
+### Obfuscated
 
 ```java @SecretAnnotation(secret = "oifjaioejaifjea9è!efèaefFEf==", secret2 = 0x9FE7FE7F) public class Fancy { public String getSecret() { /* [...] */ return this.aofheoafo(this.getClass().getAnnotation(SecretAnnotation.class).secret(), n ^ 0x997AF8F); }
 
