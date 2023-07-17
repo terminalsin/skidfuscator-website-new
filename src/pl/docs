@@ -1,25 +1,14 @@
-# Instalacja
+# Biblioteki
 
-Skidfuscator jest dostępny do pobrania na naszej stronie, GitHubie lub na serwerze Discord.
+Wszyscy ich nienawidzimy, ale aby nie zepsuć oprogramowania, musimy z nich korzystać. Pomaga to uprościć konfiguracje i tak dalej. Miejmy nadzieję, że we wtyczce maven będą one obsługiwane automatycznie. Jednak to tylko kolejna rzecz na naszej liście rzeczy do zrobienia.
 
-## Platformy
-- [Strona](https://skidfuscator.dev)
-- [Discord](https://discord.gg/7pVgsRweeh)
-- [GitHub](https://github.com/terminalsin/skidfuscator-java-obfuscator)
+Dodawanie bibliotek jest całkiem proste:
+1. Utwórz folder o nazwie "libs"
+2. Przeciągnij wszystkie biblioteki do wspomnianego folderu
+3. Dodaj "-li=<ścieżka do folderu>" do wiersza poleceń
 
-Należy pamiętać, że GitHub dotyczy tylko naszej bezpłatnej, publicznej wersji Skidfuscatora.
-
-## Publiczna wersja
-
-Link do pobrania publicznej wersji można znaleźć [tutaj](https://github.com/skidfuscatordev/skidfuscator-java-obfuscator/releases/), a w przypadku edycji enterprise należy odwiedzić naszą stronę internetową lub dołączyć do naszego Discorda.
-
-Pamiętaj, że Skidfuscator wymaga Java 8 (tj. JDK 1.8 lub nowszej) do prawidłowego działania.
-
-Najprostszym sposobem na uruchomienie Skidfuscatora jest użycie parametru `-jar` w wierszu poleceń, zostaną wyświetlone różne opcje rozpoczęcia obfuskacji pliku.
-
-## Przydzielanie większej ilości pamięci
-Należy zauważyć, że zwykle należy podać JVM więcej niż domyślną ilość pamięci, z którą będzie działać. Jeśli użyjesz parametru -Xmx512m, dasz maszynie JVM maksymalną ilość 512 MB pamięci, która powinna być odpowiednia do większości celów. Należy jednak pamiętać, aby nie udostępniać maszynie JVM więcej pamięci niż jest fizycznie dostępne. W przeciwnym razie wydajność drastycznie spadnie, gdy JVM zacznie korzystać z pamięci wirtualnej.
-
-Zobacz poniżej, jak dodać więcej pamięci:
-
-`java -Xmx4g -jar skidfuscator.jar` w wierszu poleceń.
+Przykład:
+```console
+java -jar obfuscator-1.0.0-SNAPSHOT.jar -li=libs -ex exception.txt FluffyClicker.jar
+```
+![Przykładowe zdjęcie](https://i.imgur.com/AYxEoYp.png)
