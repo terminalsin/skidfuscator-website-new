@@ -1,0 +1,42 @@
+import{_ as n,W as s,X as a,a0 as e}from"./framework-668aa7f5.js";const t={},p=e(`<h2 id="flow-condition" tabindex="-1"><a class="header-anchor" href="#flow-condition" aria-hidden="true">#</a> Flow Condition</h2><p>This transfomer serves as a first shield to opaque predicate analysis. To prevent static analysis from detecting which integer is an opaque predicate, we use this specific integer to add extra conditions to already existing if statements. Not only does this add extra security to your software, but it hinders the deobfuscation and decompilation process of many tools.</p><p>Compared to the Flow Exception transformer, this is a much more simplified version which only handles one edge case.</p><h2 id="config" tabindex="-1"><a class="header-anchor" href="#config" aria-hidden="true">#</a> Config</h2><div class="language-javascript line-numbers-mode" data-ext="js"><pre class="language-javascript"><code>flowCondition <span class="token punctuation">{</span>
+    <span class="token literal-property property">enabled</span><span class="token operator">:</span> <span class="token boolean">true</span>
+    <span class="token literal-property property">exempt</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+<span class="token punctuation">}</span>
+</code></pre><div class="line-numbers" aria-hidden="true"><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div></div></div><h2 id="examples" tabindex="-1"><a class="header-anchor" href="#examples" aria-hidden="true">#</a> Examples</h2><h4 id="unobfuscated" tabindex="-1"><a class="header-anchor" href="#unobfuscated" aria-hidden="true">#</a> Unobfuscated</h4><div class="language-java line-numbers-mode" data-ext="java"><pre class="language-java"><code><span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token class-name">String</span><span class="token punctuation">[</span><span class="token punctuation">]</span> args<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">int</span> number <span class="token operator">=</span> <span class="token function">callNumber</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>number <span class="token operator">==</span> <span class="token number">1</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token class-name">System</span><span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">&quot;Hello world&quot;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    <span class="token comment">/*[...]*/</span>
+<span class="token punctuation">}</span>
+<span class="token comment">/*[...]*/</span>
+</code></pre><div class="line-numbers" aria-hidden="true"><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div></div></div><h4 id="obfuscated" tabindex="-1"><a class="header-anchor" href="#obfuscated" aria-hidden="true">#</a> Obfuscated</h4><div class="language-java line-numbers-mode" data-ext="java"><pre class="language-java"><code><span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token class-name">String</span><span class="token punctuation">[</span><span class="token punctuation">]</span> args<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token comment">/*[...]*/</span>
+    label1<span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token keyword">while</span> <span class="token punctuation">(</span><span class="token boolean">true</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>n <span class="token operator">^</span> <span class="token number">0x8AF8EF8F</span> <span class="token operator">==</span> <span class="token number">0xA88FFA</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token keyword">break</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+
+            n <span class="token operator">=</span> n <span class="token operator">^</span> <span class="token number">0x28847D</span><span class="token punctuation">;</span>
+            <span class="token keyword">int</span> number <span class="token operator">=</span> <span class="token function">callNumber</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+            label2<span class="token operator">:</span> <span class="token punctuation">{</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>number <span class="token operator">!=</span> <span class="token number">1</span><span class="token punctuation">)</span>
+                    <span class="token keyword">break</span> label1<span class="token punctuation">;</span>
+                
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>n <span class="token operator">^</span> <span class="token number">0xAA9F8FFD</span> <span class="token operator">!=</span> <span class="token number">0x989F7AF</span><span class="token punctuation">)</span>
+                    <span class="token keyword">break</span> label2<span class="token punctuation">;</span>
+
+                <span class="token class-name">System</span><span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">&quot;Hello world&quot;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token keyword">break</span> label1<span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+
+            <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">IllegalStateException</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+    <span class="token comment">/*[...]*/</span>
+<span class="token punctuation">}</span>
+<span class="token comment">/*[...]*/</span>
+</code></pre><div class="line-numbers" aria-hidden="true"><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div></div></div>`,10),o=[p];function i(c,l){return s(),a("div",null,o)}const r=n(t,[["render",i],["__file","flowcondition.html.vue"]]);export{r as default};
