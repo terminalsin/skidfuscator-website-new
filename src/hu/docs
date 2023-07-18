@@ -1,6 +1,6 @@
 ## Annotációk Titkosítása
 
-Az annotáció titkosításra alkalamas átalakító átalakít minden string- és integer értéket, melyek az annotáció tartalmaz. Ezeket egy adott metódussá alakítja, azzal a céllal hogy futtatási időben rejtve maradjanak. This can be practical for non-sensitive URLs, private keys, etc...
+Az annotáció titkosításra alkalamas átalakító átalakít minden string- és integer értéket, melyek az annotáció tartalmaz. Ezeket egy adott metódussá alakítja, azzal a céllal hogy futtatási időben rejtve maradjanak. Ez praktikus lehet nem szenzitív URL-ek, privát kulcsok, stb... esetében.
 
 ::: figyelem
 Alapvetően ne bízz meg a klienben. Ne támaszkodj a String titkosításra, mint egyetlen védelemre a szoftveredhez. Feltételezd, hogy egy eléggé képzett egyén, elegendő idő és türelem függvényében, visszafejtheti és hozzáférhet ezekhez az információkhoz.
