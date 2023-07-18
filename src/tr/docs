@@ -1,73 +1,257 @@
-# Dönüştürücüler
 
-İşte her bir dönüştürücüyü detaylandıracağım yer. Bu, perde arkasında neler olduğunu anlamanıza ve bu tür dönüştürücülerin tersine mühendislik karşısında ne kadar etkili olduğuna dair bir fikir edinmenize yardımcı olacaktır.
+# Yapılandırma
 
-Aşağıdaki konuları ele alacağız:
-- Sayı Şifrelemesi
-- String Şifrelemesi
+Burada yapılandırmanın neler sunduğu hakkında her şeyi öğreneceksin. Buradaki detayları bir kartal gibi keskin oku. Eğer herhangi bir sorunla karşılaşırsan, lütfen destekle iletişime geç. Premium üyeleri, takımımız tarafından ücretsiz yapılandırma hizmetine tabii tutulur.
 
-## Sayı Şifrelemesi
+## Yapılandırmanın temelleri
 
-Aşağıdaki senaryoyu varsayalım:
-- $x$ istediğimiz şifrelemek istediğimiz sayıdır
-- $n$, bloğun "seed"idir
-- $d$, şifrelenmiş sayıdır
+Yapılandırmanın temeli [lightbend config](https://github.com/lightbend/config)'e dayanır. Bu demektir ki varsayılan olarak şu üç yapılandırma formatını destekliyoruz: Java Properties, JSON ve HOCON.
 
-Basit xor mekaniklerine göre: $x\oplus n\oplus n=x$
+Prensip olarak, sade, daha şık ve çok yönlü kolay kullanımı nedeniyle **HOCON kullanmanızı şiddetle tavsiye ediyoruz**. İşte varsayılan yapılandırma:
 
-Tanıma göre, eğer $n$ seed ise, çalışma zamanında $d$'yi $d = x\oplus n$ şeklinde hesaplamalıyız. Daha sonra, bytecode talimatını şu şekilde değiştirmeliyiz:
+```javascript
+exempt: []
 
-```java
-int value = x;
+libs: []
+
+stringEncryption {
+  type: STANDARD
+  enabled: true
+  exempt: []
+}
+
+numberEncryption {
+  enabled: true
+  exempt: []
+}
+
+intAnnotationEncryption {
+  enabled: true
+  exempt: []
+}
+
+stringAnnotationEncryption {
+  enabled: true
+  exempt: []
+}
+
+exceptionReturn {
+  enabled: true
+  exempt: []
+}
+
+flowCondition {
+  enabled: true
+  exempt: []
+}
+
+flowException {
+  enabled: true
+  strength: AGGRESSIVE
+  exempt: []
+}
+
+flowRange {
+  enabled: true
+  exempt: []
+}
+
+flowFactoryMaker {
+  enabled: true
+  exempt: []
+}
+
+flowSwitch {
+  enabled: true
+  exempt: []
+}
+
+outliner {
+  enabled: true
+  exempt: []
+}
+
+ahegao {
+  enabled: true
+  exempt: []
+}
+
+native: {
+  enabled: false
+  exempt: []
+}
+
+driver: {
+  enabled: false
+}
+
+reference {
+  enabled: false
+}
+
+fileCrasher: {
+  enabled: false
+}
+
+classRenamer {
+  enabled: false
+  type: CUSTOM
+  prefix: "skido/"
+  chars: [
+    "K"
+    "oO",
+    "o0"
+  ]
+  depth: 3
+}
+
+methodRenamer {
+  enabled: false
+  type: CUSTOM
+  chars: [
+    "K"
+    "oO",
+    "o0"
+  ]
+  depth: 3
+}
+
+fieldRenamer {
+  enabled: false
+  type: ALPHABETICAL
+}
 ```
 
-becomes
-```java
-int value = d ^ n;
+## Ayrıştırmalar
+
+Ayrıştırmaların kullanımı eski sistemde nasıl yapılıyorsa aynen öyle. Ayrıştırmalar hakkında daha fazla şey öğrenmek için, [şu sayfaya](../exclusion.md) gidin
+
+::: warning 
+Java stringleri ters slaşı ayrıştırarak sunar. Bu da demek ki tüm ters slaşları MUTLAKA çift kullanmalısınız
+:::
+
+### Bir sınıfı ayrıştırmak
+
+Başlarken temel olarak, belli bir sınıfı ayrıştırmak için, sınıf regex ayrıştırmasını kullanmalısın:
+```js
+class{^benim\/sinifim}
 ```
 
-Burada, $d$ önceden hesaplanan bir sabit değer olarak ve $n$ ise opak bir önerme (opaque predicate) olarak kullanılır. Örn:
-```java
-int value = 5;
+Bunu yapılandırmada kullanmak için, bir string olarak girmelisin.
+
+
+```js
+exempt: [
+    "class{^benim\\/sinifim}"
+]
 ```
-becomes
-```java
-int predicate = 0x100;
-int value = 105 ^ predicate;
+
+### Bir metodu ayrıştırmak
+
+Başlarken temel olarak, belli bir metodu ayrıştırmak için, metod regex ayrıştırmasını kullanmalısın:
+```js
+method{^benimMetodum}
 ```
 
-## String Şifrelemesi
+Bunu yapılandırmada kullanmak için, bir string olarak girmelisin.
 
-Dize şifrelemesi, işlenmeden önce üç temel koşula dayanır:
-1. Dize sabiti, sabit havuzunda mevcut olmalıdır
-2. Dize sabiti UTF-8 biçiminde biçimlendirilmelidir
-3. String boş olmamalı
+```js
+exempt: [
+    "method{^benimMetodum}"
+]
+```
 
-Bu şekilde, tipik decompiler/dissassemblers'dan dizeyi gizlemek için kodun içine simetrik bir şifreleme sistemini enjekte edebiliriz.
+### Belli bir sınıfta bir metodu ayrıştırmak
 
-### Xor Algoritması
+Aynı az önce öğrendiğimiz gibi, bir metodu ve bir sınıfı ayrıştırmak için şunu yapmalıyız:
+```js
+class{^benim\/sinifim}
+method{^benimMetodum}
+```
 
-Şu anda, şifreli stringi hesaplamak için oldukça güçlü olan basit bir xor algoritması kullanıyoruz. Bu algoritma matematiksel olarak en düşük kalitede olsa ve muhtemelen polinomial zaman içinde veya lineer zaman içinde çözülebilecek olsa da, buradaki amacımız, bir opak önermenin string şifrelemesini nasıl güçlendirebileceğine dair kolay ve bir konsept-örneği uygulaması sunmaktır. Skidfuscator'ün gelecekteki sürümlerinde, polimorfik bir yöntem kullanacağız.
+Şimdi, belli bir sınıfın İÇİNDE bir metodu ayrıştırmak için, yapılması gereken tek şey bu ikisinin tek bir satırda birleştirilmesidir, örnek olarak:
 
-Şu anda algoritma şu şekilde çalışmaktadır:
+```js
+class{^benim\/sinifim} method{^benimMetodum}
+```
 
-$f_y(x) = x \oplus y \oplus n$, bir karakterin bir String içinde şifrelenmesini ve şifrenin çözülmesini temsil eder, burada $n$ ve $m_ {max} $ değerleri 255 olarak verilmiştir
+Dolayısıyla yapılandırmada şu şekilde olur:
 
-$y=i\mod m$
+```js
+exempt: [
+    "class{^benim\/sinifim} method{^benimMetodum}"
+]
+```
 
-burada $i$, karakterin String içindeki dizinini temsil eder, $m$ rastgele "integerlerin" boyutunu temsil eder, $n$ tamsayı opak önermeyi temsil eder, $x$ ise String'in $i$ karakterini temsil eder.
+## Kütüphaneler
 
-By definition: $$ \begin{align} f_y(f_y(x))&=x\oplus y\oplus n\oplus y\oplus n\\
-&=x\oplus y\oplus y\oplus n\oplus n\\ f_y(f_y(x))&=x \end{align} $$
+Libraries are an important aspect of computing the classpath and ensuring maximum protection for your software. In this instance, you must provide a valid Java path argument as a string
 
-Hence we obtain a usable encryption/decryption algorithm which is hardened by an opaque predicate and a suite of integer keys stored locally. The implementation may be seen [here](https://github.com/terminalsin/skidfuscator-java-obfuscator/blob/master/dev.skidfuscator.obfuscator/obfuscator/src/main/java/dev/skidfuscator/obfuscator/transform/impl/string/BasicEncryptionGenerator.java)
+Here below is the implementation code:
+```java
+public File[] getLibs() {
+    return this.getStringList("libraries", Collections.emptyList())
+                .stream()
+                .map(File::new)
+                .distinct()
+                .toArray(File[]::new);
+}
+```
 
-Outlining refers to the process of extracting code from a method and placing it into a separate, standalone method. This is often done as a way to improve the readability and maintainability of code, as it can make it easier to understand what a method is doing by breaking it down into smaller, more focused pieces of code.
+Here below is an example of valid java paths:
+```
+C:\test.jar
+test.jar
+./test.jar
+/Home/test.jar
+```
 
-Outlining can also be used as a form of code obfuscation, as it can make it more difficult for someone attempting to reverse engineer or understand the code to see the overall flow and structure of the program. By breaking the code into smaller pieces and separating it out into different methods, it can be a much harsher procedure for someone to understand the relationships between different parts of the flow and how they fit together to perform a particular function.
+In the config, these would be represented as follows:
 
-![Outlining graph explanation](https://i.imgur.com/2HMq0a4.png)
+```js
+libraries [
+    "C:\\test.jar",
+    "test.jar",
+    "./test.jar",
+    "/Home/test.jar"
+]
+```
 
-The fantastic thing about outlining is: it's not *technically* reversible! To be able to return to an original state of a good outline obfuscation, a deobfuscator *has to do inlining*, which is a heuristic and *doesn't* guarantee the output to always be semantically correct with the original source code. Furthermore, this necessites the deobfuscator to mangle with variables and other various forms of sensitive bytecode manipulation which all can lead to frame and computation exceptions.
+## Driver
 
-Overall, outlining obfuscation is pretty neat :)
+The driver is the hardening part of Skidfuscator. This feature is reserved to Premium. In a nutshell, per obfuscation, a new driver is generated and compiled for the following architectures:
+
+| Operating System | Supported Architectures |
+| ---------------- | ----------------------- |
+| Windows          | x64_86                  |
+| MacOS            | x64_86, AARCH64 (ARM)   |
+| Linux            | x64_86 (AMD64)          |
+
+To disable this feature (:warning: this significantly decreases obfuscation strength), you must toggle the boolean:
+
+```js
+driver: false
+```
+
+
+## Transformers
+
+You can individually enable/disable each transformer.
+
+
+#### String Encryption
+
+The string encryption transformer transforms every string into a specific method call, with the purpose of hiding it in runtime. This can be practical for non-sensitive URLs, private keys, etc...
+
+::: warning
+You should not trust the client as a basis. Please do not rely on String encryption as the sole protection for your software. By default, you should assume that a talented enough reverse-engineer could gain access to these with enough time and patience.
+:::
+
+There are currently two modes for String encryption: `STANDARD` and `POLYMORPHIC`
+
+#### Number Encryption
+
+The number encryption transformer encrypts any integer-based numeral to be hidden. This is perfect for uglifying the code in general and making it more of a hardship for reverse-engineers to obtain a clean source code. This furthermore reinforces any boolean-based conditionals.
+
+
+#### 
