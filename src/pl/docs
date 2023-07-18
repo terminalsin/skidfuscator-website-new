@@ -1,60 +1,31 @@
-# Pierwsze kroki
+# Nasza Filozofia
 
-Pobrałeś już Skidfuscator na swój komputer i zastanawiasz się, jak go uruchomić?
+## Kim jesteśmy?
+W Skidfuscator z pasją pomagamy programistom Java chronić ich własność intelektualną. Jako zespół doświadczonych deweloperów rozumiemy znaczenie zabezpieczenia Twojego kodu przed odwróconą inżynierią i nieautoryzowanym dostępem. Właśnie dlatego opracowaliśmy Skidfuscator, potężny obfuscator Java bytecode, który chroni Twoje oprogramowanie przed ingerencją osób niepowołanych i odwróconą inżynierią.
 
-Skidfuscator działa za pośrednictwem wiersza poleceń, przy użyciu Java CLI. Zdecydowanie zalecamy zapoznanie się z tym, aby cieszyć się płynnym działaniem.
+## Nasza misja
+Naszym zadaniem jest zapewnienie programistom Java narzędzia, które są im potrzebne do ochrony ich cennej własności intelektualnej. Rozumiemy, że platforma Java jest powszechnie wykorzystywana do rozwijania wysokiej jakości aplikacji oprogramowania, i uważamy, że ochrona Twojego kodu Java jest niezbędna do utrzymania twojej przewagi konkurencyjnej. Dlatego opracowaliśmy Skidfuscator, niezawodny i przyjazny dla użytkownika java obfuscator, który pomaga chronić aplikacje Java przed odwróconą inżynierią i manipulacją.
 
-## Dostępne opcje CLI
+## Dlaczego stworzyliśmy Skidfuscator?
+Jako Skidfuscator uważamy, że programiści Java powinni mieć dostęp do przystępnych cenowo i skutecznych rozwiązań służących ochronie ich własności intelektualnej. Nasz zespół jest zaangażowany w zapewnienie łatwych do użycia rozwiązań o najwyższej jakości, które są jednak wystarczająco potężne, aby wytrzymać nawet najsilniejsze ataki. Ciągle pracujemy nad ulepszeniem naszego produktu i cały czas aktualizujemy swoją wiedzę zgodnie z najnowszymi zmianami w zakresie ochrony oprogramowania i zaciemniania kodu.
 
-Wystarczy uruchomić `java -jar <yourSkidfuscatorFile.jar>` i zostaną wyświetlone różne opcje:
+Rozumiemy, że zaciemnianie kodu może być skomplikowanym i trudnym procesem, zwłaszcza dla programistów, którzy są nowi w tej dziedzinie. Dlatego właśnie zaprojektowaliśmy Skidfuscator tak, aby był przyjazny dla użytkownika i intuicyjny w użyciu. Z naszym obfuscatorem możesz szybko i łatwo zaciemnić swój kod Java, bez potrzeby posiadania żadnych szczególnych umiejętności lub wiedzy. Nasza kompleksowa dokumentacja i wspaniała pomoc techniczna gwarantują, że możesz zacząć zacemnianie swojego kodu bez poświęcenia wielu godzin na naukę, aby chronić swoje oprogramowanie.
 
-![Opcje Skidfuscator](https://i.imgur.com/Yu70Pcq.png)
+W Skidfuscator wierzymy w siłę współpracy i otwartej komunikacji. Ściśle współpracujemy z naszymi klientami, aby zrozumieć ich unikalne potrzeby i wyzwania, i zawsze jesteśmy gotowi zapewnić spersonalizowane wsparcie i porady. Nasz zespół jest zaangażowany w pomoc w ochronie własności intelektualnej i osiąganiu celów, bez względu na to, jak duże lub małe mogą one być.
 
+Skidfuscator to najlepsze rozwiązanie do ochrony kodu Java. Nasz potężny obfuscator został zaprojektowany w celu ochrony oprogramowania przed inżynierią wsteczną i manipulacją, zapewniając, że własność intelektualna pozostaje bezpieczna. Dokładamy wszelkich starań, aby zapewnić naszym klientom najwyższej jakości rozwiązanie do obfuskacji, doskonałe wsparcie i przyjazny dla użytkownika obfuscator, który jest łatwy w użyciu i wysoce skuteczny. Wybierz Skidfuscator już dziś i chroń swoje aplikacje Java przed kradzieżą kodu.
 
-#### Twój wybrany plik
-Plik, który chcesz zaciemnić za pomocą Skidfuscator.
-```cli
-<input>
-```
+## Nasza metodologia
 
-#### Twoje wykluczenia
-Ścieżka do pliku zawierającego wykluczenia.
-```cli
---exempt=<exempt>
-```
+W Skidfuscator uważamy, że długoterminowe i odporne podejście do rozwiązywania problemów ma zasadnicze znaczenie dla osiągnięcia trwałego sukcesu. Podczas gdy krótkoterminowe rozwiązania i szybkie rozwiązania mogą stanowić tymczasową pomoc, często stwarzają więcej problemów i utrudniają postępy w dłuższej perspektywie.
 
-#### Pomiń obliczenie
-**UŻYWAJ TEGO NA WŁASNE RYZYKO** Całkowicie pomija krytyczne formy obliczeń, takie jak biblioteki. Wsparcie może być ograniczone, jeśli zdecydujesz się skorzystać z tej opcji.
-```cli
-`--fuckit
-```
+### Nasze podejście
+Aby mieć pewność, że podchodzimy do problemów w sposób odporny i zrównoważony, naszym priorytetem jest zrozumienie pierwotnej przyczyny problemu, a nie tylko zajęcie się jego objawami. Poświęcając czas na dokładną analizę problemu, możemy zidentyfikować podstawowe czynniki, które przyczyniają się do jego wystąpienia i opracować ukierunkowane rozwiązania, które bezpośrednio odnoszą się do tych czynników.
 
-#### Twoje biblioteki
-Ścieżka do folderu zawierającego biblioteki / zależności wymagane do zaciemnienia pliku jar.
-```cli
---libs=<libs>
-```
+Oprócz identyfikowania pierwotnej przyczyny problemu, priorytetowo traktujemy również współpracę i dzielenie się wiedzą przy rozwiązywaniu złożonych problemów. Zdajemy sobie sprawę, że nikt nie ma wszystkich odpowiedzi, oraz że rozwiązania często powstają dzięki wspólnym wysiłkom i spostrzeżeniom różnych grup. Zachęcamy nasze zespoły do współpracy w różnych dziedzinach i wykorzystywania wiedzy partnerów zewnętrznych, gdy jest to konieczne, w celu wypracowania kompleksowych rozwiązań, które odnoszą się do wszystkich aspektów danej kwestii.
 
-#### Rezygnacja z analizy
-Ta opcja nie zapewni nam żadnych analiz, takich jak napotkane błędy lub statystyki użytkowania obfuscatora.
-```cli
---notrack
-```
+### Nacisk
+Ponadto kładziemy silny nacisk na ciągłe doskonalenie i naukę. Zdajemy sobie sprawę, że nawet najbardziej kompleksowe rozwiązania można z czasem ulepszyć, a świat stale się zmienia i ewoluuje. W związku z tym zachęcamy nasze zespoły do regularnej oceny skuteczności naszych rozwiązań i identyfikowania możliwości ulepszeń. Naszym priorytetem jest również ciągły rozwój, aby zapewnić, że nasze zespoły są na bieżąco z najnowszymi badaniami i najlepszymi praktykami w swoich dziedzinach.
 
-#### Zaciemniony plik
-Ścieżka do miejsca, w którym ma zostać stworzony zaciemniony plik, jeśli ta opcja pozostanie pusta, zostanie stworzony w katalogu, w którym został uruchomiony Skidfuscator.
-```cli
---output=<output>
-```
-
-#### Phantom computation
-Umożliwia włączenie obliczeń dla klas, ponownie, jeśli ta opcja jest używana, wsparnie może być ograniczone. Zdecydowanie zalecamy dostarczenie wymaganych bibliotek.
-```cli
---phantom
-```
-
-#### Specifying runtime
-Ścieżka do java runtime.
-```cli
---runtime=<runtime>
-```
+### Nasze priorytety
+Stawiając na długoterminowe i odporne podejście do rozwiązywania problemów, wierzymy, że możemy tworzyć zrównoważone rozwiązania, które przyniosą korzyści naszej społeczności i przyczynią się do większego dobra. Chociaż kuszące może być dążenie do szybkich rozwiązań i krótkoterminowych heurystyk, zdajemy sobie sprawę, że takie podejścia często prowadzą do niezamierzonych negatywnych konsekwencji i utrudniają długoterminowy postęp. Zamiast tego stawiamy na współpracę, ciągłe doskonalenie i zrównoważone praktyki, aby zapewnić, że nasze rozwiązania są skuteczne i wydajne.
