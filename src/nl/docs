@@ -1,19 +1,60 @@
-## Driver verharding
+## Flow Exceptions
 
-De driver is het harde deel van Skidfuscator. Deze functie is voorbehouden aan Premium. In een notendop: per obfuscation, word een nieuwe Driver gegenereerd en gecompileerd voor de volgende architectonen:
+Flow Exception is an obfuscation transformation that adds additional layers of security to your Java code to make it harder for decompilers to output valid Java code. It does this by altering the control flow and introducing exception fall-though code in a way that complicates the logic without changing the program's functionality.
 
-| Operating systeem | Ondersteunde Architecturen |
-| ----------------- | -------------------------- |
-| Windows           | x64_86                     |
-| MacOS             | x64_86, AARCH64 (ARM)      |
-| Linux             | x64_86 (AMD64)             |
-
+At a high-level, the transformer works in the following way:
+- First, the transformer examines methods in your code and skips abstract methods, init methods, and those with no code to avoid compatibility issues.
+- Then, the transformer then determines the appropriate obfuscation strategy (Weak, Good, or Aggressive) based on the configuration settings. Each strategy offers a different level of obfuscation and impacts how often exception-related code is inserted.
+- Once such is done, dor each block in the control flow graph, the transformer checks whether it should be exempt from obfuscation. It skips empty blocks, proxy blocks, and exception-sensitive blocks. If a block is eligible for obfuscation, the transformer decides whether to apply the obfuscation based on the chosen strategy.
+- When applied, the transformer generates a unique seed and uses hashing to secure the opaque predicate. It then inserts a bogus conditional jump to a throw statement, causing the flow to fall-through.
+- In some cases, the transformer may add an additional layer of obfuscation by inserting a secondary conditional jump statement at both the beginning and random locations in the block.
 
 ## Config
-To enable this feature (:warning: this significantly increases obfuscation strength), you must toggle the boolean:
+
+There are three modes available for this specific transformer:
+- `WEAK`: Als eerder is geëxecuteerd, voer dan een willekeurige booleaan uit, bij laatste uitslag, loop (75% gemiddelde insteeksnelheid)
+- `GOED`: Altijd eenmalig uitvoeren (100% gemiddelde insertion ratio)
+- `AGGRESSIVE`: Altijd tweemaal draaien (200% gemiddelde insertion ratio)
 
 ```js
-driver: {
-    enabled: false // Disabled by default
+flowException {
+    enabled: true
+    strength: AGGRESSIVE // Can be 'WEAK', 'GOOD' or 'AGGRESSIVE'
+    exempt: []
 }
+```
+
+## Voorbeelden
+
+#### Unobfuscated
+```java
+public static void main(String[] args) {
+    int number = callNumber();
+    /*[...]*/
+}
+/*[...]*/
+```
+
+#### Obfuscated
+```java
+public static void main(String[] args) {
+    /*[...]*/
+    while (true) {
+        if (n ^ 0x8AF8EF8F == 0xA88FFA) {
+            break;
+        }
+
+        n = n ^ 0x28847D;
+        int number = callNumber();
+
+        if (n ^ 0xAA9F8FFD == 0x989F7AF) {
+            break;
+        }
+
+        throw new IllegalStateException();
+    }
+
+    /*[...]*/
+}
+/*[...]*/
 ```
