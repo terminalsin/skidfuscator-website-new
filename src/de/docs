@@ -1,49 +1,60 @@
-## Exception Return
+## Flow Exceptions
 
-Exception return obfuscation ist eine Programmiertechnik, die verwendet wird, um den Kontrollfluss eines Programms durch Obfuscation von Rückgabeergebnissen zu verstehen und zu analysieren, dafür wird jede Methode standardisiert keinen Rückgabewert zu haben.
+Flow Exception is an obfuscation transformation that adds additional layers of security to your Java code to make it harder for decompilers to output valid Java code. It does this by altering the control flow and introducing exception fall-though code in a way that complicates the logic without changing the program's functionality.
 
-Kurz gesagt, diese Technik ersetzt normale Rückgabewerte durch exception handling Blöcke, welche den Kontrol Fluss eines Programmes schwerer vorhersehbar machen. Wenn eine Ausnahme geworfen wird, springt das Programm zu einem angegebenen exception handler, der dann den gewünschten Wert zurückgibt oder die beabsichtigte Aktion ausführt. Das erschwert das Lesen, Analysieren und reversen und bietet so einen gewissen Schutz gegen Manipulation oder Piraterie des Codes.
-
-'''Warnung Diese Obfuscation Technik ist noch experimentell und kann zu fehlern in größeren Programmen führen. Deshalb ist sie standardmäßig deaktiviert. '''
+Auf hoher Ebene funktioniert der Transformator wie folgt:
+- Zunächst untersucht der Transformator Methoden und überspringt abstrakte Methoden, Konstruktor und Methoden ohne Code, um Kompatibilitätsprobleme zu vermeiden.
+- Dann bestimmt der Transformator basierend auf der Konfiguration die entsprechende Obfuscations Strategie (Schwach, Gut oder Aggressiv). Jede Strategie bietet eine andere Ebene der Obfsucation und wirkt sich darauf aus, wie oft Code eingefügt wird.
+- Once such is done, dor each block in the control flow graph, the transformer checks whether it should be exempt from obfuscation. It skips empty blocks, proxy blocks, and exception-sensitive blocks. If a block is eligible for obfuscation, the transformer decides whether to apply the obfuscation based on the chosen strategy.
+- When applied, the transformer generates a unique seed and uses hashing to secure the opaque predicate. It then inserts a bogus conditional jump to a throw statement, causing the flow to fall-through.
+- In some cases, the transformer may add an additional layer of obfuscation by inserting a secondary conditional jump statement at both the beginning and random locations in the block.
 
 ## Konfiguration
 
+Es sind drei Modi verfügbar für diesen Transformer:
+- `WEAK`: If was previously executed, run a random boolean, if last wasn't, run (75% average insertion rate)
+- `GOOD`: Immer einmal ausführen (100% durchschnittliche Einfügerate)
+- `AGGRESSIVE`: Immer zweimal ausführen (200% durchschnittliche Einfügerate)
+
 ```js
-exceptionReturn {
-    enabled: false
+flowException {
+    enabled: true
+    strength: AGGRESSIVE // Can be 'WEAK', 'GOOD' or 'AGGRESSIVE'
     exempt: []
 }
 ```
 
 ## Beispiele
 
-### Unobfuscated
-
+#### Unobfuscated
 ```java
-int number = callNumber();
- [...]
+public static void main(String[] args) {
+    int number = callNumber();
+    /*[...]*/
 }
-
-int callNumber() {
-    return 1;
-}
+/*[...]*/
 ```
 
-### Obfuscated
+#### Obfuscated
 ```java
-try {
-    callNumber();
-} catch (IntNumberException ex) {
-    int number = ex.getValue();
-}
+public static void main(String[] args) {
+    /*[...]*/
+    while (true) {
+        if (n ^ 0x8AF8EF8F == 0xA88FFA) {
+            break;
+        }
 
-[...]
+        n = n ^ 0x28847D;
+        int number = callNumber();
 
-void callNumber() {
-    throw new IntNumberException(1);
+        if (n ^ 0xAA9F8FFD == 0x989F7AF) {
+            break;
+        }
+
+        throw new IllegalStateException();
+    }
+
+    /*[...]*/
 }
+/*[...]*/
 ```
-
-
-
-
