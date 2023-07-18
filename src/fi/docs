@@ -1,60 +1,25 @@
-# Aloittaminen
+# Asennus
 
-Joten, olet nyt onnistuneesti ladattu Skidfuscator tietokoneeseen ja ihmettelevät, miten ajaa se?
+Skidfuscatoria jaetaan verkkosivustomme, GitHubin tai Discord-palvelimemme omistajan suorien viestien kautta.
 
-Skidfuscator kulkee komentorivin kautta käyttäen Java-CLItä. Suosittelemme vahvasti, että olet perehtynyt tähän, jotta voit nauttia saumaton Skidfuscator kokemus.
+## Meidän alustamme
+- [Verkkosivu](https://skidfuscator.dev)
+- [Discordi](https://discord.gg/7pVgsRweeh)
+- [GitHub](https://github.com/terminalsin/skidfuscator-java-obfuscator)
 
-## CLI vaihtoehdot Skidfuscatorille
+Huomaa, että GitHub on vain meidän ilmaiseksi, yhteisön painos versio Skidfuscator.
 
-Yksinkertaisesti ajaa `java -jar <yourSkidfuscatorFile.jar>` ja sinulle esitetään erilaisia vaihtoehtoja:
+## Community Edition
 
-![Skidfuscator asetukset](https://i.imgur.com/Yu70Pcq.png)
+You can find the download link for community edition [here](https://github.com/skidfuscatordev/skidfuscator-java-obfuscator/releases/), for premium edition please visit our website or join our Discord.
 
+Note that Skidfuscator requires Java 8 (ie. JDK 1.8 or better) to run properly.
 
-#### Syöttö purkki
-Syöttöpurkki, jonka haluat suojata Skidfuscatorilla.
-```cli
-<input>
-```
+The cleanest way to run Skidfuscator is use the `-jar` parameter in your command line interface tool, you will be presented with various options on how to start with the obfuscation of your file.
 
-#### Sinun poissulkemisesi
-Polku tiedostoon, joka sisältää sinun poissulkemisesi.
-```cli
---exempt=<exempt>
-```
+## Allocating more memory
+It is important to note that typically you should give the JVM more than the default amount of memory to work with. If you use the -Xmx512m parameter then you will give the JVM a maximum amount of 512MB of memory which should be suitable for most purposes. However, you should be sure not to give the JVM more memory than is physically available. Otherwise performance will deteriorate dramatically as the JVM starts to use virtual memory.
 
-#### Ohita laskenta
-**KÄYTÄ TÄMÄ OMA RISKI** täysin ohittaa kriittiset laskentamuodot, kuten kirjastot. Tuki voi olla rajoitettua, jos päätät käyttää tätä vaihtoehtoa.
-```cli
-`--fuckit
-```
+See below on how to add more memory to Skidfuscator:
 
-#### Sinun kirjastot
-Polku kansioon, joka sisältää kirjastot/riippuvuudet, joita tarvitaan jar-tiedoston häivyttämiseen.
-```cli
---libs=<libs>
-```
-
-#### Kieltäydy seurannasta
-Tämä vaihtoehto ei vakoile sinua eikä raportoi tietoja, kuten kohtaamiasi virheitä tai käyttötilastoja.
-```cli
---notrack
-```
-
-#### Suojattu lähtö
-Polku sinne, minne haluat obfuskuroidun purkin tulostettavan, jos tämä vaihtoehto jätetään tyhjäksi, se tulostetaan siihen hakemistoon, jossa koodisuojaus suoritettiin.
-```cli
---output=<output>
-```
-
-#### Automaattinen riippuvuuslaskenta
-Mahdollistaa suojaimen edistyneen automaattisen luokkakohtaisen laskennan käyttöönoton, mutta jos tätä vaihtoehtoa käytetään, asiakastuki voi olla rajallista. Kehotamme sinua tarjoamaan tarvittavat kirjastot ja hämärtää purkki tiedosto.
-```cli
---phantom
-```
-
-#### Määritellään ajoaikaa
-Polku java ajon aikana.
-```cli
---runtime=<runtime>
-```
+`java -Xmx4g -jar skidfuscator.jar` in your command line interface tool.
