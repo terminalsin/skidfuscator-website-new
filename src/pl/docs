@@ -1,60 +1,58 @@
-## Flow Exceptions
+## Number Encryption
 
-Flow Exception to zaciemnienie, które dodaje dodatkowe warstwy zabezpieczeń do kodu Java, aby utrudnić dekompilatorom odczytanie prawidłowego kodu. Robi to poprzez zmianę przepływu sterowania i wprowadzenie kodu obsługi wyjątków w sposób, który komplikuje logikę bez zmiany funkcjonalności programu.
+Transformer szyfrowania liczb szyfruje dowolne liczby, które mają zostać ukryte. Jest to idealne rozwiązanie i utrudnianie osobom dekompilującym uzyskanie czystego kodu źródłowego. Ponadto wzmacnia to wszelkie warunki oparte na wartościach boolean.
 
-Opis działania:
-- Po pierwsze, transformator sprawdza metody w kodzie i pomija metody abstrakcyjne, metody inicjujące i te bez kodu, aby uniknąć problemów z kompatybilnością.
-- Następnie transformator określa odpowiednią strategię zaciemniania (słaba, dobra lub agresywna) na podstawie ustawień konfiguracji. Każda strategia oferuje inny poziom zaciemniania.
-- Po wykonaniu tych czynności należy wykonać każdy blok na wykresie przepływu sterowania, transformator sprawdza, czy powinien być zwolniony z obowiązku zaciemniania. Pomija puste bloki, bloki proxy i bloki wrażliwe na wyjątki. Jeśli blok kwalifikuje się do zaciemnienia, transformer decyduje, czy zastosować zaciemnienie w oparciu o wybraną strategię.
-- Po zastosowaniu, transformator generuje unikalny seed i używa hashowania. Następnie wstawia fałszywy skok warunkowy do instrukcji throw, powodując przerwanie przepływu.
-- W niektórych przypadkach transformator może dodać dodatkową warstwę zaciemniającą, wstawiając dodatkową instrukcję skoku warunkowego zarówno na początku, jak i w losowych miejscach bloku.
+Szyfrowanie liczb opiera się na zaciemnianiu przepływu GEN3 i może, w zdekompilowanych danych wyjściowych, wyglądać następująco
+
+Przyjmijmy następujący scenariusz:
+- $x$ to liczba, którą chcemy zaszyfrować
+- $n$ to "ziarno" bloku
+- $d$ jest zaszyfrowaną liczbą
+
+Zgodnie z prostą mechaniką xor: $x\oplus n\oplus n=x$
+
+Tak więc, z definicji, jeśli $n$ jest naszym seedem, w czasie wykonywania musimy obliczyć $d$ w taki sposób, że $d = x\oplus n$. Następnie musimy zmodyfikować instrukcję kodu bajtowego, np:
+
+```java
+int value = x;
+```
+
+staje się
+```java
+int value = d ^ n;
+```
+
+Gdzie $d$ jest wartością obliczoną z wyprzedzeniem w postaci stałej, a $n$ nieprzezroczystym predykatem. Np.
+```java
+int value = 5;
+```
+staje się
+```java
+int predicate = 0x100;
+int value = 105 ^ predicate;
+```
 
 ## Konfiguracja
 
-Dla tego konkretnego transformatora dostępne są trzy tryby:
-- `ŚREDNI`: Jeśli był wcześniej wykonywany, uruchamia losową wartość boolean, jeśli nie był ostatnio wykonywany, uruchamia (średni współczynnik wstawiania - 75%).
-- `DOBRY`: Zawsze uruchamiaj raz (średni współczynnik wstawiania - 100%)
-- `AGRESYWNY`: Zawsze uruchamiaj dwa razy (średni współczynnik wstawiania - 200%)
+Obecnie dostępny jest tylko jeden tryb szyfrowania liczb, `STANDARD`.
 
 ```js
-flowException {
+numberEncryption {
     enabled: true
-    strength: AGGRESSIVE // Can be 'WEAK', 'GOOD' or 'AGGRESSIVE'
     exempt: []
 }
 ```
 
 ## Przykłady
-
 #### Brak zaciemnienia
 ```java
-public static void main(String[] args) {
-    int number = callNumber();
-    /*[...]*/
-}
-/*[...]*/
+int var = 1000;
+System.out.println(var + 1 + 2 + 3);
 ```
 
 #### Zaciemniony kod
 ```java
-public static void main(String[] args) {
-    /*[...]*/
-    while (true) {
-        if (n ^ 0x8AF8EF8F == 0xA88FFA) {
-            break;
-        }
-
-        n = n ^ 0x28847D;
-        int number = callNumber();
-
-        if (n ^ 0xAA9F8FFD == 0x989F7AF) {
-            break;
-        }
-
-        throw new IllegalStateException();
-    }
-
-    /*[...]*/
-}
-/*[...]*/
+int var = 0xA0290233 ^ n;
+System.out.println(var + 0x92083838 ^ n + 0x92083839 ^ n + 0x92083840 ^ n);
 ```
+
