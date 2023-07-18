@@ -1,6 +1,15 @@
-# Forge 1.8.8
+# Hello Stranger
 
-## Introduction
-Forge Minecraft 1.8.8, utilisé de manière notoire pour les mods Skyblock, les anciens mods et les clients hackés, fonctionne spécifiquement différemment en conjonction avec d'autres versions de Forge. Le plus typiquement, vous devrez configurer un environnement complet pour obtenir la version décompilée de Minecraft pour pouvoir obtenir la dépendance, qui est requise pour passer le statut de construction.
+Bienvenue sur le wiki de skidfuscator-java-obfuscator !
 
-## 
+Vous pensiez que nous n'avions pas grand-chose à dire, n'est-ce pas ? Maintenant, nous avons tous les bons sujets, ahah.
+
+# Table des matières
+1. [Installation](/docs/installation.html)
+2. [Démarrage](/docs/gettingstarted.html)
+3. [Exclusions](/docs/exclusion.html)
+4. [Bibliothèques](/docs/libraries.html)
+5. [À propos de nous](/docs/about.html)
+6. [Introduction à l'obfuscation Java](/docs/javaobf.html)
+7. [Signalement de bugs](/docs/bugreporting.html)
+8. [Transformateurs](/docs/transformers.html)
