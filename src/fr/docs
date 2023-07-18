@@ -1,60 +1,60 @@
-## Exceptions de flux
+## Détourage
 
-Les exceptions de flux sont une transformation d'obfuscation qui ajoute des couches de sécurité supplémentaires à votre code Java pour rendre plus difficile la génération de code Java valide par les décompileurs. Elle le fait en modifiant le flux de contrôle et en introduisant du code de dérivation des exceptions de manière à complexifier la logique sans modifier la fonctionnalité du programme.
+Le détourage fait référence au processus d'extraction de code d'une méthode et de placement dans une méthode séparée et indépendante. Cela est souvent fait pour améliorer la lisibilité et la maintenabilité du code, car cela peut rendre plus facile de comprendre ce qu'une méthode fait en la divisant en parties plus petites et plus ciblées.
 
-De manière générale, le transformateur fonctionne de la manière suivante :
-- Tout d'abord, le transformateur examine les méthodes de votre code et saute les méthodes abstraites, les méthodes d'initialisation et celles sans code pour éviter les problèmes de compatibilité.
-- Ensuite, le transformateur détermine la stratégie d'obfuscation appropriée (Faible, Bonne ou Aggressive) en fonction des paramètres de configuration. Chaque stratégie offre un niveau d'obfuscation différent et impacte la fréquence à laquelle le code lié aux exceptions est inséré.
-- Une fois cela fait, pour chaque bloc dans le graphe de flux de contrôle, le transformateur vérifie s'il doit être exempté de l'obfuscation. Il saute les blocs vides, les blocs proxy et les blocs sensibles aux exceptions. Si un bloc est éligible à l'obfuscation, le transformateur décide d'appliquer ou non l'obfuscation en fonction de la stratégie choisie.
-- Lorsqu'elle est appliquée, le transformateur génère une graine (seed) unique et utilise le hachage pour sécuriser le prédicat opaque. Il insère ensuite un saut conditionnel bidon vers une instruction "throw", provoquant une dérivation du flux.
-- Dans certains cas, le transformateur peut ajouter une couche supplémentaire d'obfuscation en insérant une deuxième instruction de saut conditionnel à la fois au début et à des emplacements aléatoires dans le bloc.
+Le détourage peut également être utilisé comme une forme d'obfuscation du code, car il peut rendre plus difficile pour quelqu'un qui tente de décompiler ou de comprendre le code de voir le flux global et la structure du programme. En divisant le code en morceaux plus petits et en le séparant dans différentes méthodes, il peut être beaucoup plus difficile pour quelqu'un de comprendre les relations entre différentes parties du flux et comment elles s'assemblent pour effectuer une fonction particulière.
+
+![Explication du graphe de détourage](https://i.imgur.com/2HMq0a4.png)
+
+La chose fantastique à propos du détourage, c'est que ce n'est pas *techniquement* réversible ! Pour pouvoir revenir à un état original d'une bonne obfuscation par détourage, un désobfuscateur *doit effectuer l'insertion de code (inlining)*, qui est une heuristique et *ne garantit pas* que la sortie soit toujours sémantiquement correcte par rapport au code source original. De plus, cela nécessite au désobfuscateur de manipuler les variables et autres formes de manipulation délicate du bytecode, ce qui peut entraîner des exceptions de cadre et de calcul.
+
+Dans l'ensemble, l'obfuscation par détourage est plutôt astucieuse :)
+
+::: warning
+Le transformateur d'extraction est encore au tout début de son développement. En raison du fonctionnement du vérificateur Java, tous les scénarios peuvent ne pas être correctement vérifiés, ce qui peut entraîner des problèmes de compilation. Veuillez l'utiliser à vos propres risques, et si vous rencontrez des problèmes, veuillez les signaler.
+
+Note pour moi-même : Je déteste les cadres de pile
+:::
 
 ## Configuration
 
-Il existe trois modes disponibles pour ce transformateur spécifique :
-- `WEAK` : Si elle a été exécutée précédemment, exécute un booléen aléatoire. Sinon, exécute (taux d'insertion moyen de 75%)
-- `GOOD` : Exécute toujours une fois (taux d'insertion moyen de 100%)
-- `AGGRESSIVE` : Exécute toujours deux fois (taux d'insertion moyen de 200%)
-
 ```js
-flowException {
-    enabled: true
-    strength: AGGRESSIVE // Peut être 'WEAK', 'GOOD' ou 'AGGRESSIVE'
-    exempt: []
+outliner {
+     enabled: true
+     exempt: []
 }
 ```
 
 ## Examples
 
 #### Non obfusqué
+
 ```java
 public static void main(String[] args) {
     int number = callNumber();
     /*[...]*/
 }
-/*[...]*/
+
+static int callNumber() {
+    return 1;
+}
 ```
 
 #### Obfusqué
 ```java
 public static void main(String[] args) {
-    /*[...]*/
-    while (true) {
-        if (n ^ 0x8AF8EF8F == 0xA88FFA) {
-            break;
-        }
-
-        n = n ^ 0x28847D;
-        int number = callNumber();
-
-        if (n ^ 0xAA9F8FFD == 0x989F7AF) {
-            break;
-        }
-
-        throw new IllegalStateException();
-    }
-
+    step1_AF8FZE8EF7Z89F();
     /*[...]*/
 }
-/*[...]*/
+
+static void step1_AF8FZE8EF7Z89F() {
+    int number = callNumber();
+}
+
+
+static int callNumber() {
+    return 1;
+}
 ```
+
+
