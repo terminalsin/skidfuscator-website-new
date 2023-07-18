@@ -1,61 +1,25 @@
-## Flow Condition
+# Installation
 
-Dieser Transformer dient als erstes Schild gegen opaque predicate Analyse. Um statische Analyse daran zu hindern zu erkennen, welcher Integer ein opaque predicate ist, benutzen wir diese Integer in bereits existierenden "if" statements. Das fügt nicht nur extra Security zur Software hinzu, sondern behindert zusätzlich deobfuscation und decompilation von vielen Tools.
+Skidfuscator wird über unsere Website, GitHub oder unseren Discord Server vertrieben.
 
-Im Vergleich zum "Flow Exception Zransformer" ist das hier eine deutlich simplere Version welche sich nur um den Randfall kümmert.
+## Unsere Plattformen
+- [Website](https://skidfuscator.dev)
+- [Discord](https://discord.gg/7pVgsRweeh)
+- [GitHub](https://github.com/terminalsin/skidfuscator-java-obfuscator)
 
-## Konfiguration
+Bitte beachte, dass auf GitHub nur unsere kostenlose Community Version von Skidfuscator ist.
 
-```js
-flowCondition {
-    enabled: true
-    exempt: []
-}
-```
+## Community Edition
 
-## Beispiele
+Du kannst den Download Link für die Community Edition [hier](https://github.com/skidfuscatordev/skidfuscator-java-obfuscator/releases/) finden, für die Premium Edition besuche bitte unsere Website oder trete unseren Discord bei.
 
-#### Unobfuscated
-```java
-public static void main(String[] args) {
-    int number = callNumber();
+Beachte, dass Skidfuscator Java 8 (JDK 1.8 oder neuer) benötigt, um korrekt zu funktionieren.
 
-    if (number == 1) {
-        System.out.println("Hello world");
-    }
-    /*[...]*/
-}
-/*[...]*/
-```
+Der sauberste Weg, Skidfuscator zu starten ist, die `-jar` Parameter in der Kommandozeile zu benutzen, dir werden verschiedene Optionen angezeigt, wie du mit der Obfuscation der Datei beginnen kannst.
 
-#### Obfuscated
-```java
-public static void main(String[] args) {
-    /*[...]*/
-    label1: {
-        while (true) {
-            if (n ^ 0x8AF8EF8F == 0xA88FFA) {
-                break;
-            }
+## Mehr Speicher zuweisen
+Es ist wichtig zu beachten, dass man der JVM meist mehr als die Standardmenge an Arbeitsspeicher geben sollte. Wenn du die Parameter -Xmx512m verwendest, gibst du der JVM einen maximalen Arbeitsspeicher von 512MB, der für die meisten Zwecke reichen sollte. Achte aber darauf, dass die JVM nicht mehr Speicher zugewiesen bekommt als physisch verfügbar ist. Sonst wird sich die Leistung dramatisch verschlechtern, sobald die JVM beginnt, virtuellen Speicher zu nutzen.
 
-            n = n ^ 0x28847D;
-            int number = callNumber();
+Sehen Sie unten, wie man Skidfuscator mehr Speicher zu Verfügung stellt:
 
-            label2: {
-                if (number != 1)
-                    break label1;
-
-                if (n ^ 0xAA9F8FFD != 0x989F7AF)
-                    break label2;
-
-                System.out.println("Hello world");
-                break label1;
-            }
-
-            throw new IllegalStateException();
-        }
-    }
-    /*[...]*/
-}
-/*[...]*/
-```
+`java -Xmx4g -jar skidfuscator.jar` in der Kommandozeile.
