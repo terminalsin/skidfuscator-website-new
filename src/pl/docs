@@ -1,58 +1,31 @@
-## Number Encryption
+# Nasza Filozofia
 
-Transformer szyfrowania liczb szyfruje dowolne liczby, które mają zostać ukryte. Jest to idealne rozwiązanie i utrudnianie osobom dekompilującym uzyskanie czystego kodu źródłowego. Ponadto wzmacnia to wszelkie warunki oparte na wartościach logicznych.
+## Kim jesteśmy?
+W Skidfuscator z pasją pomagamy programistom Java chronić ich własność intelektualną. Jako zespół doświadczonych deweloperów rozumiemy znaczenie zabezpieczenia Twojego kodu przed odwróconą inżynierią i nieautoryzowanym dostępem. Właśnie dlatego opracowaliśmy Skidfuscator, potężny obfuscator Java bytecode, który chroni Twoje oprogramowanie przed ingerencją osób niepowołanych i odwróconą inżynierią.
 
-Szyfrowanie liczb opiera się na zaciemnianiu przepływu GEN3 i może, w zdekompilowanych danych wyjściowych, wyglądać następująco
+## Nasza misja
+Naszym zadaniem jest zapewnienie programistom Java narzędzia, które są im potrzebne do ochrony ich cennej własności intelektualnej. Rozumiemy, że platforma Java jest powszechnie wykorzystywana do rozwijania wysokiej jakości aplikacji oprogramowania, i uważamy, że ochrona Twojego kodu Java jest niezbędna do utrzymania twojej przewagi konkurencyjnej. Dlatego opracowaliśmy Skidfuscator, niezawodny i przyjazny dla użytkownika java obfuscator, który pomaga chronić aplikacje Java przed odwróconą inżynierią i manipulacją.
 
-Przyjmijmy następujący scenariusz:
-- $x$ to liczba, którą chcemy zaszyfrować
-- $n$ to "ziarno" bloku
-- $d$ jest zaszyfrowaną liczbą
+## Dlaczego stworzyliśmy Skidfuscator?
+Jako Skidfuscator uważamy, że programiści Java powinni mieć dostęp do przystępnych cenowo i skutecznych rozwiązań służących ochronie ich własności intelektualnej. Nasz zespół jest zaangażowany w zapewnienie łatwych do użycia rozwiązań o najwyższej jakości, które są jednak wystarczająco potężne, aby wytrzymać nawet najsilniejsze ataki. Ciągle pracujemy nad ulepszeniem naszego produktu i cały czas aktualizujemy swoją wiedzę zgodnie z najnowszymi zmianami w zakresie ochrony oprogramowania i zaciemniania kodu.
 
-Zgodnie z prostą mechaniką xor: $x\oplus n\oplus n=x$
+Rozumiemy, że zaciemnianie kodu może być skomplikowanym i trudnym procesem, zwłaszcza dla programistów, którzy są nowi w tej dziedzinie. Dlatego właśnie zaprojektowaliśmy Skidfuscator tak, aby był przyjazny dla użytkownika i intuicyjny w użyciu. Z naszym obfuscatorem możesz szybko i łatwo zaciemnić swój kod Java, bez potrzeby posiadania żadnych szczególnych umiejętności lub wiedzy. Nasza kompleksowa dokumentacja i wspaniała pomoc techniczna gwarantują, że możesz zacząć zacemnianie swojego kodu bez poświęcenia wielu godzin na naukę, aby chronić swoje oprogramowanie.
 
-Tak więc, z definicji, jeśli $n$ jest naszym seedem, w czasie wykonywania musimy obliczyć $d$ w taki sposób, że $d = x\oplus n$. Następnie musimy zmodyfikować instrukcję kodu bajtowego, np:
+W Skidfuscator wierzymy w siłę współpracy i otwartej komunikacji. We work closely with our clients to understand their unique needs and challenges, and we are always ready to provide personalized support and advice. Our team is dedicated to helping you protect your intellectual property and achieve your goals, no matter how big or small they may be.
 
-```java
-int value = x;
-```
+Skidfuscator is the ultimate solution for you to protect your Java code. Our powerful obfuscator is designed to safeguard your software against reverse engineering and tampering, ensuring that your intellectual property remains safe and secure. We are committed to providing our clients with a top-quality obfuscation solution, excellent support, and user-friendly obfuscator that is easy to use and highly effective. Choose Skidfuscator today and protect your Java applications against unauthorized access and theft.
 
-staje się
-```java
-int value = d ^ n;
-```
+## Our Methodology
 
-Gdzie $d$ jest wartością obliczoną z wyprzedzeniem w postaci stałej, a $n$ nieprzezroczystym predykatem. Np.
-```java
-int value = 5;
-```
-staje się
-```java
-int predicate = 0x100;
-int value = 105 ^ predicate;
-```
+At Skidfuscator, we believe that a long-term and resilient approach to problem-solving is essential for sustainable success. While short-term fixes and quick solutions may provide temporary relief, they often create more problems down the line and hinder long-term progress.
 
-## Konfiguracja
+### Our approach
+To ensure that we approach problems in a resilient and sustainable manner, we prioritize understanding the root cause of an issue rather than simply addressing its symptoms. By taking the time to analyze a problem thoroughly, we can identify the underlying factors that contribute to its occurrence and develop targeted solutions that address those factors directly.
 
-Obecnie dostępny jest tylko jeden tryb szyfrowania liczb, `STANDARD`.
+In addition to identifying the root cause of a problem, we also prioritize collaboration and knowledge-sharing when approaching complex issues. We recognize that no one person or team has all the answers, and that solutions often arise through the collective efforts and insights of diverse groups. We encourage our teams to collaborate across various fields and leverage the expertise of external partners when necessary to arrive at comprehensive solutions that address all facets of an issue.
 
-```js
-numberEncryption {
-    enabled: true
-    exempt: []
-}
-```
+### Our emphasis
+Furthermore, we place a strong emphasis on continuous improvement and learning. We recognize that even the most comprehensive solutions can be improved upon over time, and that the world is constantly changing and evolving. As such, we encourage our teams to regularly evaluate the efficacy of our solutions and identify opportunities for improvement. We also prioritize ongoing education and development to ensure that our teams stay up-to-date with the latest research and best practices in their respective fields.
 
-## Przykłady
-#### Brak obfuskacji
-```java
-int var = 1000;
-System.out.println(var + 1 + 2 + 3);
-```
-
-#### Z obfuskacją
-```java
-int var = 0xA0290233 ^ n;
-System.out.println(var + 0x92083838 ^ n + 0x92083839 ^ n + 0x92083840 ^ n);
-```
-
+### Our priority
+By prioritizing a long-term and resilient approach to problem-solving, we believe that we can create sustainable solutions that benefit our community and contribute to the greater good. While it may be tempting to pursue quick fixes and short-term heuristics, we recognize that these approaches often lead to unintended negative consequences and hinder long-term progress. Instead, we prioritize collaboration, continuous improvement, and sustainable practices to ensure that our solutions are effective and efficient.
