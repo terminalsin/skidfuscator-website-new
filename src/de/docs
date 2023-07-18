@@ -1,22 +1,16 @@
-## Annotation Verschlüsselung
+## Exception Return
 
-Der "Annotation Encryption Transformer" wandelt jeden String und jeden Integer innerhalb von annotations zu einem spezifischen Methodenaufruf um, um diese zur Laufzeit zu verbergen. Dies kann für nicht sensible URLs, private keys usw. praktisch sein...
+Exception return obfuscation is a programming technique used to make the control flow of a program more difficult to understand and analyze by obfuscating return results and standardizing every method to have a void return value.
 
-::: Warnung
-Man sollte niemals dem Client vertrauen. Bitte verlasse dich nicht auf die String Verschlüsselung als einzigen Schutz für die Software. Man sollte immer davon ausgehen, dass ein talentierter genuger Reverse Engineer mit genug Zeit und Geduld auf diese zugreifen kann.
-:::
+In a nutshell, this technique replaces normal return statements with exception handling blocks that make the program's control flow less predictable. When an exception is raised, the program jumps to a designated exception handler, which then returns the desired value or performs the intended action. This makes the code harder to read, analyze, and reverse engineer, thus providing a level of protection against tampering or piracy.
 
+'''Warnung Diese Obfuscation Technik ist noch experimentell und kann zu fehlern in größeren Programmen führen. Deshalb ist sie standardmäßig deaktiviert. '''
 
 ## Konfiguration
 
 ```js
-stringAnnotationEncryption {
-    enabled: true
-    exempt: []
-}
-
-intAnnotationEncryption {
-    enabled: true
+exceptionReturn {
+    enabled: false
     exempt: []
 }
 ```
@@ -26,26 +20,30 @@ intAnnotationEncryption {
 ### Unobfuscated
 
 ```java
-@SecretAnnotation(secret = "Super secret", secret2 = 1337)
-public class Fancy {
-    public String getSecret() {
-        return this.getClass().getAnnotation(SecretAnnotation.class).secret();
-    }
+int number = callNumber();
+ [...]
+}
 
-    public int getSecre2t() {
-        return this.getClass().getAnnotation(SecretAnnotation.class).secret2();
-    }
+int callNumber() {
+    return 1;
 }
 ```
 
 ### Obfuscated
+```java
+try {
+    callNumber();
+} catch (IntNumberException ex) {
+    int number = ex.getValue();
+}
 
-```java @SecretAnnotation(secret = "oifjaioejaifjea9è!efèaefFEf==", secret2 = 0x9FE7FE7F) public class Fancy { public String getSecret() { /* [...] */ return this.aofheoafo(this.getClass().getAnnotation(SecretAnnotation.class).secret(), n ^ 0x997AF8F); }
+[...]
 
-    public int getSecre2t() {
-        /* [...] */
-        return this.getClass().getAnnotation(SecretAnnotation.class).secret2() ^ n ^ 0x90AF9F7;
-    }
-    
-    /* [...] */
-}```
+void callNumber() {
+    throw new IntNumberException(1);
+}
+```
+
+
+
+
