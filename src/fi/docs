@@ -1,53 +1,14 @@
-## Toiminto Metodin Uudelleennimeäjä
+# Kirjastot
 
-Menetelmän uudelleennimeäjä pyrkii täsmällisesti nimeämään kokonaisuuden menetelmäksi, joka estää menetelmän nimien säilyttämisen. Tämän saavuttamiseksi Skidfuscator luo "metodiryhmiä" säilyttämään tehokkaasti menetelmähierarkian. For example, if `class B` extends `class A`, and `class A` implements `methodA()`, all calls to `methodA()` for both `class A` and `class B` will need to be renamed.
+Ahhh me kaikki vihaamme niitä, mutta jotta emme sotke ohjelmistoasi, meidän on käytettävä näitä. Se auttaa yksinkertaistamaan kokoonpanot ja niin edelleen. Toivottavasti maven-laajennuksessa nämä käsitellään automaattisesti. Se on kuitenkin vain Toinen asia tehtävälistallamme toistaiseksi.
 
-## Konfiguroi
-Menetelmä uudelleennimeäjä tukee tällä hetkellä yksi sanakirja, `ALPHABETICAL`, rinnalla perinteisen mukautetun sanakirjan, `CUSTOM`, perustuu syötteeseen. Tässä skenaariossa on käytettävissä seuraavat vaihtoehdot:
-- Syvyys: Kuinka monta kirjainta käytetään oletusarvoisesti (esim: 3 syvyys johtaa o0o0o0 ensimmäiselle kohteelle, tai 1 syvyys johtaa o0 ensimmäisen kohteen)
-- Merkki: Muuntajan käyttämät merkit.
+Riippuvuuksien lisääminen on melko yksinkertaista:
+1. Luo kansio nimeltä "libs"
+2. Vedä kaikki riippuvuudet mainittuun kansioon
+3. Lisää skidfuscatorin komentorivin suoritukseen "-li=\<path to folder\>"
 
-::: warning
-Tällä hetkellä muuntaja ei käsittele päällekkäisiä merkkejä ja luo virheellisesti identtisiä metodien nimiä. Älä esimerkiksi käytä "o", "0" ja "o0", sillä jälkimmäinen on kahden edellisen merkin yhdistelmä.
-:::
-
-```js
-methodRenamer {
-    enabled: false
-    type: CUSTOM // or 'ALPHABETICAL'
-    chars: [
-        "K"
-        "oO",
-        "o0"
-    ]
-    depth: 3
-}
+Esimerkki:
+```console
+java -jar obfuscator-1.0.0-SNAPSHOT.jar -li=libs -ex exception.txt FluffyClicker.jar
 ```
-
-## Esimerkkejä
-
-#### Suojaamaton
-
-```java
-public static void main(String[] args) {
-    int number = callNumber();
-    /*[...]*/
-}
-
-static int callNumber() {
-    return 1;
-}
-```
-
-#### Suojattu
-```java
-public static void main(String[] args) {
-    int number = o0k0k0Kk();
-    /*[...]*/
-}
-
-
-static int o0k0k0Kk() {
-    return 1;
-}
-```
+![Kuva esimerkistä](https://i.imgur.com/AYxEoYp.png)
