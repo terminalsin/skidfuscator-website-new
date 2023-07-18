@@ -1,51 +1,60 @@
-## Chiffrement de chaîne de caractères (String Encryption)
+# Démarrage
 
-Le transformateur de chiffrement d'annotation transforme chaque chaîne de caractères et entier contenu dans les annotations en un appel de méthode spécifique, dans le but de le masquer à l'exécution. Cela peut être pratique pour les URL non sensibles, les clés privées, etc...
+Vous avez donc réussi à télécharger Skidfuscator sur votre ordinateur et vous vous demandez comment le faire fonctionner?
 
-::: warning
-Vous ne devriez pas faire confiance au client. Ne comptez pas sur le cryptage de chaînes de caractères comme seule protection pour votre logiciel . En règle générale, vous devriez supposer qu'un rétro-ingénieur suffisamment talentueux pourrait y accéder avec suffisamment de temps et de patience.
-:::
+Skidfuscator s'exécute en ligne de commande, en utilisant le CLI. Nous vous conseillons fortement de le connaître afin de profiter d'une expérience de Skidfuscator fluide.
+
+## Options du CLI pour Skidfuscator
+
+Lancez simplement `java -jar <yourSkidfuscatorFile.jar>` et vous obtiendrez diverses options :
+
+![Skidfuscator options](https://i.imgur.com/Yu70Pcq.png)
 
 
-## Configuration
-
-Il y a actuellement deux modes pour le chiffrement des chaînes de caractères : `STANDARD` et `POLYMORPHIC`
-
-```js
-stringEncryption {
-    enabled: true
-    type: POLYMORPHIC
-    exempt: []
-}
+#### Votre jar d'entrée
+Le jar d'entrée que vous voulez obfusquer avec Skidfuscator.
+```cli
+<input>
 ```
 
-## Examples
-
-### Non obfusqué
-
-```java
-System.out.println("Hello world");
+#### Vos exclusions
+Le chemin vers le fichier qui contient vos exclusions.
+```cli
+--exempt=<exempt>
 ```
 
-### Standard
-
-```java
-System.out.println(superDuperMethod("\u2be6\uabec\uebfe\uebfe\uabe0\uabf7\ue7f1", n ^ 0x9F878R));
+#### Ignorer le calcul
+**UTILISEZ CECI À VOTRE PROPRES RISQUES** Saute complètement les formes critiques de calcul telles que les bibliothèques. Le support peut être limité si vous choisissez d'utiliser cette option.
+```cli
+`--fuckit
 ```
 
-### Polymorphic
-```java
-StringBuilder string = new StringBuilder("\u2be6\uabec\uebfe\uebfe\uabe0\uabf7\ue7f1\uabe0\u6bfa\uebfe\uabee\uabf5");
-for (int a=0, b, c; a < string.length(); a++) {
-    b = string.charAt(a);
-    b = (((b & 0xffff) << 0x6) | (b >> 0xa)) & 0xffff;
-    c = ((b >> 0x0) ^ (b >> 0x7)) & ((1 << 0x4) - 1);
-    b ^= (c << 0x0) | (c << 0x7);
-    b ^= 0x600f ^ n;
-    b -= 0x2aa2 ^ n;
-    b += 0x25b0 ^ n;
-    b ^= 0x9852 ^ n;
-    string.setCharAt(a, (char) b);
-}
-System.out.println(string)
+#### Vos bibliothèques
+Le chemin vers le dossier qui contient les bibliothèques / dépendances nécessaires pour obfusquer votre fichier jar.
+```cli
+--libs=<libs>
+```
+
+#### Opt out of analytics
+Cette option ne nous fournira aucune analyse telle que les erreurs que vous pourriez rencontrer, ou des statistiques d'utilisation.
+```cli
+--notrack
+```
+
+#### Votre sortie
+Le chemin vers lequel vous voulez que votre jar obfusqué soit généré, si cette option est laissée vide, il sera généré dans le répertoire dans lequel Skidfuscator a été exécuté.
+```cli
+--output=<output>
+```
+
+#### Calcul fantôme
+Permet d'activer le calcul fantôme pour les classes, encore une fois, si cette option est utilisée, le support peut être limité. Nous vous conseillons fortement de fournir les bibliothèques nécessaires et d'obfusquer votre fichier jar.
+```cli
+--phantom
+```
+
+#### Specifying runtime
+Le chemin vers votre executable java.
+```cli
+--runtime=<runtime>
 ```
