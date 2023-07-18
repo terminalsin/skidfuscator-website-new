@@ -1,15 +1,14 @@
-# Üdv Idegen
+# Könyvtárak
 
-Üdvözöljük a skidfuscator-java-obfuscator wikiben!
+Ahhh we all hate 'em but for the sake of not screwing up your software, we have to make use of these. It helps simplify your configurations and so and forth. Hopefully, in the maven plugin, these will be handled automatically. However that's just another thing on our todo list for now.
 
-Azt hitted, hogy korábban nem sok megbeszélnivalónk volt, ugye? Most már minden finomság megvan, ha.
+To add dependencies, it's quite simple:
+1. Create a folder called "libs"
+2. Drag all your dependencies into said folder
+3. Add "-li=\<path to folder\>" to your command line execution for skidfuscator
 
-# Tartalomjegyzék
-1. [Telepítés](/docs/installation.html)
-2. [Kezdő Lépések](/docs/gettingstarted.html)
-3. [Kivételek](/docs/exclusion.html)
-4. [Könyvtárak](/docs/libraries.html)
-5. [Rólunk](/docs/about.html)
-6. [Bevezetés a Java obfuscationbe](/docs/javaobf.html)
-7. [Hibajelentés](/docs/bugreporting.html)
-8. [Transformerek](/docs/transformers.html)
+Example:
+```console
+java -jar obfuscator-1.0.0-SNAPSHOT.jar -li=libs -ex exception.txt FluffyClicker.jar
+```
+![Image of example](https://i.imgur.com/AYxEoYp.png)
