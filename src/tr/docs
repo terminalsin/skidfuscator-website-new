@@ -1,60 +1,73 @@
-# Başlarken
+# Dönüştürücüler
 
-Demek Skidfuscator'ı bilgisayarına başarıyla indirdin ve nasıl çalıştıracağını merak ediyorsun?
+İşte her bir dönüştürücüyü detaylandıracağım yer. Bu, perde arkasında neler olduğunu anlamanıza ve bu tür dönüştürücülerin tersine mühendislik karşısında ne kadar etkili olduğuna dair bir fikir edinmenize yardımcı olacaktır.
 
-Skidfuscator Java CLI'sini kullanarak komut satırı ile çalışır. Sorunsuz bir Skidfuscator deneyimi yaşamanız için buna alışık olmanızı tavsiye ederiz.
+Aşağıdaki konuları ele alacağız:
+- Sayı Şifrelemesi
+- String Şifrelemesi
 
-## Skidfuscator için CLI seçenekleri
+## Sayı Şifrelemesi
 
-Basitçe `java -jar <yourSkidfuscatorFile.jar>` komutunu çalıştırın, sizi çeşitli seçenekler karşılayacak:
+Aşağıdaki senaryoyu varsayalım:
+- $x$ istediğimiz şifrelemek istediğimiz sayıdır
+- $n$, bloğun "seed"idir
+- $d$, şifrelenmiş sayıdır
 
-![Skidfuscator seçenekleri](https://i.imgur.com/Yu70Pcq.png)
+Basit xor mekaniklerine göre: $x\oplus n\oplus n=x$
 
+Tanıma göre, eğer $n$ seed ise, çalışma zamanında $d$'yi $d = x\oplus n$ şeklinde hesaplamalıyız. Daha sonra, bytecode talimatını şu şekilde değiştirmeliyiz:
 
-#### Jar dosyanız
-Skidfuscator kullanarak kodunu gizlemek istediğiniz jar dosyası.
-```cli
-<input>
+```java
+int value = x;
 ```
 
-#### Ayrıştırmalarınız
-Ayrıştırmalarınızı içeren dosyaya giden yol.
-```cli
---exempt=<exempt>
+becomes
+```java
+int value = d ^ n;
 ```
 
-#### Hesaplamayı atla
-**ÇIKABİLECEK RİSKLERİ GÖZE ALARAK KULLANIN** Hesaplamanın kütüphaneler gibi kritik formlarını atlar. Eğer bu seçeneği kullanmak isterseniz destek limitli olabilir.
-```cli
---fuckit
+Burada, $d$ önceden hesaplanan bir sabit değer olarak ve $n$ ise opak bir önerme (opaque predicate) olarak kullanılır. Örn:
+```java
+int value = 5;
+```
+becomes
+```java
+int predicate = 0x100;
+int value = 105 ^ predicate;
 ```
 
-#### Kütüphaneleriniz
-Jar dosyanızın kodunu gizlemek için gerekli olan kütüphaneleri / bağımlılıkları içeren klasöre giden yol.
-```cli
---libs=<libs>
-```
+## String Şifrelemesi
 
-#### Analitikleri devre dışı bırakma
-Bu seçenek bize karşılaşabileceğiniz sorunlar, veya kod gizleyicisi kullanım istatistikleri gibi herhangi bir analitiği sağlamayacak.
-```cli
---notrack
-```
+Dize şifrelemesi, işlenmeden önce üç temel koşula dayanır:
+1. Dize sabiti, sabit havuzunda mevcut olmalıdır
+2. Dize sabiti UTF-8 biçiminde biçimlendirilmelidir
+3. String boş olmamalı
 
-#### Çıktınız
-Kodu gizlenen jar dosyasının çıktısına giden yol, eğer bu seçenek boş bırakılırsa çıktı dosya Skidfuscator'ın kullanıldığı klasörde olacaktır.
-```cli
---output=<output>
-```
+Bu şekilde, tipik decompiler/dissassemblers'dan dizeyi gizlemek için kodun içine simetrik bir şifreleme sistemini enjekte edebiliriz.
 
-#### Phantom computation
-Allows you to enable phantom computation for classes, again, if this option is used, supported may be limited. We strongly advise you provide the necessary libraries required and obfuscate your jar file.
-```cli
---phantom
-```
+### Xor Algoritması
 
-#### Specifying runtime
-The path to your java runtime.
-```cli
---runtime=<runtime>
-```
+Şu anda, şifreli stringi hesaplamak için oldukça güçlü olan basit bir xor algoritması kullanıyoruz. Bu algoritma matematiksel olarak en düşük kalitede olsa ve muhtemelen polinomial zaman içinde veya lineer zaman içinde çözülebilecek olsa da, buradaki amacımız, bir opak önermenin string şifrelemesini nasıl güçlendirebileceğine dair kolay ve bir konsept-örneği uygulaması sunmaktır. Skidfuscator'ün gelecekteki sürümlerinde, polimorfik bir yöntem kullanacağız.
+
+Şu anda algoritma şu şekilde çalışmaktadır:
+
+$f_y(x) = x \oplus y \oplus n$, bir karakterin bir String içinde şifrelenmesini ve şifrenin çözülmesini temsil eder, burada $n$ ve $m_ {max} $ değerleri 255 olarak verilmiştir
+
+$y=i\mod m$
+
+burada $i$, karakterin String içindeki dizinini temsil eder, $m$ rastgele "integerlerin" boyutunu temsil eder, $n$ tamsayı opak önermeyi temsil eder, $x$ ise String'in $i$ karakterini temsil eder.
+
+By definition: $$ \begin{align} f_y(f_y(x))&=x\oplus y\oplus n\oplus y\oplus n\\
+&=x\oplus y\oplus y\oplus n\oplus n\\ f_y(f_y(x))&=x \end{align} $$
+
+Hence we obtain a usable encryption/decryption algorithm which is hardened by an opaque predicate and a suite of integer keys stored locally. The implementation may be seen [here](https://github.com/terminalsin/skidfuscator-java-obfuscator/blob/master/dev.skidfuscator.obfuscator/obfuscator/src/main/java/dev/skidfuscator/obfuscator/transform/impl/string/BasicEncryptionGenerator.java)
+
+Outlining refers to the process of extracting code from a method and placing it into a separate, standalone method. This is often done as a way to improve the readability and maintainability of code, as it can make it easier to understand what a method is doing by breaking it down into smaller, more focused pieces of code.
+
+Outlining can also be used as a form of code obfuscation, as it can make it more difficult for someone attempting to reverse engineer or understand the code to see the overall flow and structure of the program. By breaking the code into smaller pieces and separating it out into different methods, it can be a much harsher procedure for someone to understand the relationships between different parts of the flow and how they fit together to perform a particular function.
+
+![Outlining graph explanation](https://i.imgur.com/2HMq0a4.png)
+
+The fantastic thing about outlining is: it's not *technically* reversible! To be able to return to an original state of a good outline obfuscation, a deobfuscator *has to do inlining*, which is a heuristic and *doesn't* guarantee the output to always be semantically correct with the original source code. Furthermore, this necessites the deobfuscator to mangle with variables and other various forms of sensitive bytecode manipulation which all can lead to frame and computation exceptions.
+
+Overall, outlining obfuscation is pretty neat :)
