@@ -1,257 +1,51 @@
+## @Merkintä Salaus
 
-# Konfiguroi
+Seuraavan sukupolven annotaatioiden salausmuuntaja muuttaa jokaisen annotaatioiden sisältämän merkkijonon ja kokonaisluvun tietyksi metodikutsuksi, jonka tarkoituksena on piilottaa se ajonaikana. Tämä voi olla käytännöllistä ei-arkaluonteisille verkko-osoitteille, yksityisille avaimille jne.
 
-Täällä opit kaiken siitä mitä konfiguraatiolla on tarjottavana. Varmista, että lukea nämä tiedot erittäin innokas silmä. Jos sinulla on ongelmia, lähetä sähköpostia tukeen. Maksullisilla käyttäjillä on oikeus tiimimme ilmaiseen konfigurointipalveluun.
+::: warning
+Asiakkaaseen ei pidä luottaa, EI KOSKAAN. Älä luota merkkijonosalaukseemme ohjelmistosi ainoana suojana. Oletusarvoisesti sinun pitäisi olettaa, että käänteismuokkaajat pääsevät käsiksi näihin riittävän ajan ja kärsivällisyyden avulla.
+:::
 
-## Konfiguraation peruste
 
-Perusteena kokoonpano perustuu [lightbend konfiguroi](https://github.com/lightbend/config). Tämä tarkoittaa oletuksena, tuemme kolmea seuraavaa muotoa: Java Properties, JSON, ja HOCON.
+## Konfiguroi
 
-Periaatteessa me **erittäin suositeltavaa käyttää HOCON**, koska se on yksinkertaisempi, tyylikkäämpi ja kaiken kaikkiaan helppokäyttöisempi. Katso oheinen oletuskonfiguraatio:
-
-```javascript
-exempt: []
-
-libs: []
-
-stringEncryption {
-  type: STANDARD
-  enabled: true
-  exempt: []
-}
-
-numberEncryption {
-  enabled: true
-  exempt: []
+```js
+stringAnnotationEncryption {
+    enabled: true
+    exempt: []
 }
 
 intAnnotationEncryption {
-  enabled: true
-  exempt: []
-}
-
-stringAnnotationEncryption {
-  enabled: true
-  exempt: []
-}
-
-exceptionReturn {
-  enabled: true
-  exempt: []
-}
-
-flowCondition {
-  enabled: true
-  exempt: []
-}
-
-flowException {
-  enabled: true
-  strength: AGGRESSIVE
-  exempt: []
-}
-
-flowRange {
-  enabled: true
-  exempt: []
-}
-
-flowFactoryMaker {
-  enabled: true
-  exempt: []
-}
-
-flowSwitch {
-  enabled: true
-  exempt: []
-}
-
-outliner {
-  enabled: true
-  exempt: []
-}
-
-ahegao {
-  enabled: true
-  exempt: []
-}
-
-native: {
-  enabled: false
-  exempt: []
-}
-
-driver: {
-  enabled: false
-}
-
-reference {
-  enabled: false
-}
-
-fileCrasher: {
-  enabled: false
-}
-
-classRenamer {
-  enabled: false
-  type: CUSTOM
-  prefix: "skido/"
-  chars: [
-    "K"
-    "oO",
-    "o0"
-  ]
-  depth: 3
-}
-
-methodRenamer {
-  enabled: false
-  type: CUSTOM
-  chars: [
-    "K"
-    "oO",
-    "o0"
-  ]
-  depth: 3
-}
-
-fieldRenamer {
-  enabled: false
-  type: ALPHABETICAL
+    enabled: true
+    exempt: []
 }
 ```
 
-## Poikkeukset
+## Esimerkkejä
 
-Vapautusten käyttö on samanlaista kuin vanhassa järjestelmässä. Lisätietoja vapautuksista, siirry osoitteeseen [sivu](../exclusion.md)
+### Unohtunut
 
-::: warning 
-Java parses merkkijono puhdistaa taaksepäin kauttaviivaa. Tämä tarkoittaa, että sinun PITÄÄ kaksinkertaistaa kaikki taaksepäin menevät vinoviivat.
-:::
-
-### Luokan poissulkeminen
-
-Koska lähtökohtana sulkea tietyn luokan, sinun on käytettävä luokan regex poikkeus:
-```js
-class{^my\/class}
-```
-
-Jotta tämä sopii asetuksiin, sinun on välitettävä se merkkijonona.
-
-
-```js
-exempt: [
-    "class{^my\\/class}"
-]
-```
-
-### Menetelmän pois jättäminen
-
-Koska lähtökohtana sulkea tietty menetelmä, sinun on käytettävä luokan menetelmä poikkeus:
-```js
-method{^myMethod}
-```
-
-Jotta tämä sopii asetuksiin, sinun on välitettävä se merkkijonona.
-
-```js
-exempt: [
-    "method{^myMethod}"
-]
-```
-
-### Tietyn java-luokan menetelmän sulkeminen ulkopuolelle
-
-Aivan kuten olemme aiemmin oppineet sulkemaan pois menetelmän ja luokan meidän on tehtävä seuraavat:
-```js
-class{^my\/class}
-method{^myMethod}
-```
-
-Nyt sulkea pois menetelmä, joka on tietyssä luokassa, kaikki tämä on tehtävä on se, että kaksi on ketjutetaan yhteen riviin, sellaisenaan:
-
-```js
-class{^my\/class} method{^myMethod}
-```
-
-Näin ollen config, se olisi seuraava:
-
-```js
-exempt: [
-    "class{^my\/class} method{^myMethod}"
-]
-```
-
-## Kirjastot
-
-Kirjastot ovat tärkeä osa luokkapolun laskemista ja parhaan mahdollisen suojan varmistamista ohjelmistollesi. Tässä tapauksessa sinun on annettava kelvollinen Java-polun argumentti merkkijonona
-
-Tässä alla on täytäntöönpanokoodi:
 ```java
-public File[] getLibs() {
-    return this.getStringList("libraries", Collections.emptyList())
-                .stream()
-                .map(File::new)
-                .distinct()
-                .toArray(File[]::new);
+@SecretAnnotation(secret = "Supersalaisuus", secret2 = 1337)
+public class Fancy {
+    public String getSecret() {
+        return this.getClass().getAnnotation(SecretAnnotation.class).secret();
+    }
+
+    public int getSecre2t() {
+        return this.getClass().getAnnotation(SecretAnnotation.class).secret2();
+    }
 }
 ```
 
-Tässä alla on esimerkki kelvollisista java-poluista:
-```
-C:\test.jar
-test.jar
-./test.jar
-/Home/test.jar
-```
+### Suojattu
 
-Asetusehdoissa ne olisivat edustettuina seuraavasti:
+```java @SecretAnnotation(secret = "oifjaioejaifjea9è!efèaefFEf==", secret2 = 0x9FE7FE7F) public class Fancy { public String getSecret() { /* [...] */ return this.aofheoafo(this.getClass().getAnnotation(SecretAnnotation.class).secret(), n ^ 0x997AF8F); }
 
-```js
-libraries [
-    "C:\\test.jar",
-    "test.jar",
-    "./test.jar",
-    "/Home/test.jar"
-]
-```
-
-## Ajuri
-
-Kuljettaja on karkaisu osa Skidfuscator. Tämä ominaisuus on varattu Premiumille. Yksinkertaista on, että tuote luo jokaista ajoa varten automaattisesti ainutlaatuisen järjestelmäajurin sovelluksesi suojaamiseksi. Ajuri tukee seuraavia:
-
-| Käyttöjärjestelmä | Tuetut Arkkitehtuurit |
-| ----------------- | --------------------- |
-| Ikkunat           | x64_86                |
-| MacOS             | x64_86, AARCH64 (ARM) |
-| Linux             | x64_86 (AMD64)        |
-
-To disable this feature (:warning: this significantly decreases obfuscation strength), you must toggle the boolean:
-
-```js
-driver: false
-```
-
-
-## Transformers
-
-You can individually enable/disable each transformer.
-
-
-#### String Encryption
-
-The string encryption transformer transforms every string into a specific method call, with the purpose of hiding it in runtime. This can be practical for non-sensitive URLs, private keys, etc...
-
-::: warning
-You should not trust the client as a basis. Please do not rely on String encryption as the sole protection for your software. By default, you should assume that a talented enough reverse-engineer could gain access to these with enough time and patience.
-:::
-
-There are currently two modes for String encryption: `STANDARD` and `POLYMORPHIC`
-
-#### Number Encryption
-
-The number encryption transformer encrypts any integer-based numeral to be hidden. This is perfect for uglifying the code in general and making it more of a hardship for reverse-engineers to obtain a clean source code. This furthermore reinforces any boolean-based conditionals.
-
-
-#### 
+    public int getSecre2t() {
+        /* [...] */
+        return this.getClass().getAnnotation(SecretAnnotation.class).secret2() ^ n ^ 0x90AF9F7;
+    }
+    
+    /* [...] */
+}```
