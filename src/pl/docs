@@ -1,22 +1,20 @@
-## Szyfrowanie adnotacji
+## String Encryption
 
-Transformer szyfrowania adnotacji przekształca każdy string i liczbę zawartą w adnotacjach w określone wywołanie metody, w celu ukrycia go w czasie wykonywania. Może to być praktyczne w przypadku adresów URL, kluczy prywatnych itp.
+Transformer szyfrowania stringów przekształca każdy string w określone wywołanie metody, w celu ukrycia go w czasie wykonywania. Może to być praktyczne w przypadku adresów URL, kluczy prywatnych itp.
 
 ::: warning
-Nie powinieneś ufać jedynie temu. Proszę nie polegać na szyfrowaniu adnotacji jako na wyłącznej ochronie twojego oprogramowania . Domyślnie należy założyć, że wystarczająco utalentowany człowiek może uzyskać do nich dostęp przy wystarczająco dużej cierpliwości.
+Nie ufaj tylko temu. Proszę nie polegać na szyfrowaniu ciągu jako na wyłącznej ochronie twojego oprogramowania . Domyślnie należy założyć, że wystarczająco utalentowany człowiek może uzyskać do nich dostęp przy wystarczająco dużej cierpliwości.
 :::
 
 
 ## Konfiguracja
 
-```js
-stringAnnotationEncryption {
-    enabled: true
-    exempt: []
-}
+Obecnie dostępne są dwa tryby szyfrowania: `STANDARD` i `POLYMORPHIC`.
 
-intAnnotationEncryption {
+```js
+stringEncryption {
     enabled: true
+    type: POLYMORPHIC
     exempt: []
 }
 ```
@@ -26,26 +24,28 @@ intAnnotationEncryption {
 ### Brak zaciemnienia
 
 ```java
-@SecretAnnotation(secret = "Super secret", secret2 = 1337)
-public class Fancy {
-    public String getSecret() {
-        return this.getClass().getAnnotation(SecretAnnotation.class).secret();
-    }
-
-    public int getSecre2t() {
-        return this.getClass().getAnnotation(SecretAnnotation.class).secret2();
-    }
-}
+System.out.println("Hello world");
 ```
 
-### Zaciemniony kod
+### Standard
 
-```java @SecretAnnotation(secret = "oifjaioejaifjea9è!efèaefFEf==", secret2 = 0x9FE7FE7F) public class Fancy { public String getSecret() { /* [...] */ return this.aofheoafo(this.getClass().getAnnotation(SecretAnnotation.class).secret(), n ^ 0x997AF8F); }
+```java
+System.out.println(superDuperMethod("\u2be6\uabec\uebfe\uebfe\uabe0\uabf7\ue7f1", n ^ 0x9F878R));
+```
 
-    public int getSecre2t() {
-        /* [...] */
-        return this.getClass().getAnnotation(SecretAnnotation.class).secret2() ^ n ^ 0x90AF9F7;
-    }
-    
-    /* [...] */
-}```
+### Polymorphic
+```java
+StringBuilder string = new StringBuilder("\u2be6\uabec\uebfe\uebfe\uabe0\uabf7\ue7f1\uabe0\u6bfa\uebfe\uabee\uabf5");
+for (int a=0, b, c; a < string.length(); a++) {
+    b = string.charAt(a);
+    b = (((b & 0xffff) << 0x6) | (b >> 0xa)) & 0xffff;
+    c = ((b >> 0x0) ^ (b >> 0x7)) & ((1 << 0x4) - 1);
+    b ^= (c << 0x0) | (c << 0x7);
+    b ^= 0x600f ^ n;
+    b -= 0x2aa2 ^ n;
+    b += 0x25b0 ^ n;
+    b ^= 0x9852 ^ n;
+    string.setCharAt(a, (char) b);
+}
+System.out.println(string)
+```
