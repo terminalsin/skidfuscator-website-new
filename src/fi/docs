@@ -1,26 +1,19 @@
-## Väärennettyihin virheisiin Perustuva Suojaus
 
-Väärennettyihin virheisiin perustuva suojaus on hämärtymismuunnos, joka lisää Java-koodiisi lisäsuojauskerroksia, mikä vaikeuttaa kelvollisen Java-koodin tulostamista decompilereille. Se tekee tämän muuttamalla ohjaus virtausta ja ottamalla käyttöön poikkeus putoavat kuitenkin koodi tavalla, joka vaikeuttaa logiikkaa muuttamatta ohjelman toiminnallisuutta.
+## Flow Range
+Flow Exception Range Obfuscation ajoa käytetään kääntäjäoptimoinnissa lisäämään peittelyä ohjelman poikkeuskäsittelykoodiin.
 
-Korkealla tasolla muuntaja toimii seuraavalla tavalla:
-- Ensin muuntaja tutkii koodisi menetelmät ja ohittaa abstraktit menetelmät, init-menetelmät ja ne, joissa ei ole koodia yhteensopivuusongelmien välttämiseksi.
-- Sitten muuntaja sitten määrittää asianmukaisen obfuscation strategia (Heikko, Hyvä, tai Aggressiivinen) perustuu kokoonpano asetukset. Jokaisella strategialla on erilainen hämärtymisen taso ja se vaikuttaa siihen, kuinka usein siihen lisätään poikkeukseseen liittyvä koodi.
-- Kun se on tehty, dor jokainen lohko ohjausvirtauskaaviossa, muuntaja tarkistaa, pitäisikö se vapauttaa hämärtymisestä. Se ohittaa tyhjät lohkot, välityspalvelinlohkot ja poikkeusherkät lohkot. Jos lohko voidaan hämärtää, muuntaja päättää, sovelletaanko valittuun strategiaan perustuvaa hämärtymistä vai ei.
-- Sovellettaessa muuntaja tuottaa ainutlaatuisen siemenen ja käyttää hashing turvata läpinäkymätön ennustaa. Se sitten lisää valheellinen ehdollinen hypätä heittää lausunto, aiheuttaa virtaus pudota läpi.
-- Joissakin tapauksissa muuntaja voi lisätä ylimääräisen obfuskaation kerroksen lisäämällä toissijaisen ehdollisen hyppyilmoituksen sekä alku- että satunnaisia sijainteja lohkoon.
+Tämän tekniikan ideana on muuttaa ohjelman poikkeuskäsittelyrutiineja (kuten try-catch-lohkoja) siten, että ne sisältävät ylimääräisiä ohjausvirtaohjeita, jotka vaikeuttavat ohjelman loogisen virtauksen ymmärtämistä.
+
+Esimerkiksi yksinkertainen try-catch-lohko voidaan muuttaa monimutkaisemmaksi rakenteeksi, joka sisältää sisäkkäisiä try-catch-lohkoja tai ylimääräisiä haarautumisohjeita. Tämä voi vaikeuttaa ranskalaista ymmärtämään ohjelman poikkeuskäsittelykäyttäytymistä ja mahdollisesti paljastamaan haavoittuvuuksia, joita voitaisiin käyttää hyväksi.
+
+Tätä tekniikkaa käytetään usein yhdessä muiden hämärtymisen tekniikoiden kanssa, jotta voidaan tarjota ylimääräisiä suojakerroksia. On kuitenkin huomattava, että tarpeettoman monimutkaisuuden lisääminen poikkeustenkäsittelykoodiin voi myös vaikeuttaa ohjelman virheenkorjausta ja ylläpitoa, joten sitä tulisi käyttää kaikkialla.
 
 ## Konfiguroi
 
-Tälle muuntajalle on tarjolla kolme tilaa:
-- `WEAK`: Jos aiemmin on suoritettu, suorita satunnainen totuus, jos viimeinen ei ole suoritettu, suorita (75 %: n keskimääräinen lisäysaste)
-- `HYVÄ`: Aina suorita kerran (100% Luokitus)
-- `AGGRESSIIVINEN` Suoritetaan aina kahdesti (200 keskimääräinen lisäysprosentti)
-
 ```js
-flowException {
-    enabled: true
-    strength: AGGRESSIVE // Voi olla 'WEAK', 'GOOD' tai 'AGGRESSIVE'
-    exempt: []
+flowRange {
+     enabled: true
+     exempt: []
 }
 ```
 
@@ -28,33 +21,53 @@ flowException {
 
 #### Suojaamaton
 ```java
-public static void main(String[] args) {
-    int number = callNumber();
-    /*[...]*/
-}
-/*[...]*/
+final String uwu = "UwU";
+System.out.println(uwu);
 ```
 
 #### Suojattu
 ```java
-public static void main(String[] args) {
-    /*[...]*/
-    while (true) {
-        if (n ^ 0x8AF8EF8F == 0xA88FFA) {
-            break;
-        }
+final String uwu = "UwU";
 
-        n = n ^ 0x28847D;
-        int number = callNumber();
-
-        if (n ^ 0xAA9F8FFD == 0x989F7AF) {
-            break;
-        }
-
-        throw new IllegalStateException();
-    }
-
-    /*[...]*/
+while (true) {
+     label1: {
+          try {
+               if (this.a(0x92A8B44, n) >> 8 != 0x97F7F)
+                    throw new IllegalReflectiveException();
+               break label1;
+          } catch (IllegalReflectiveException ex) {
+               System.out.println(uwu);
+          }
+     }
 }
-/*[...]*/
+```
+
+#### IR Edustus
+```
+ Original flow:       Obfuscated Flow:
+
+ ┌─────────┐            ┌─────────┐
+ │ Block A │            │ Block A │
+ └────┬────┘            └────┬────┘
+      │                      │
+ ┌────▼────┐         ┌───────▼────────┐
+ │ Block B │         │ Random If Stmt │
+ └─────────┘         └───────┬────────┘
+                             │
+                   ┌─────┐◄──┴───►┌─────┐
+                   │ Yes │        │ No  │
+                   └─────┘        └──┬──┘
+                                     │
+                               ┌─────▼─────┐
+                               │ Exception │
+                               └───────────┘
+
+                      ┌─────────────┐
+                      │  Exception  │
+                      │   Catcher   │
+                      └──────┬──────┘
+                             │
+                        ┌────▼────┐
+                        │ Block B │
+                        └─────────┘
 ```
