@@ -1,51 +1,14 @@
-## String Şifrelemesi
+# Kütüphaneler
 
-String şifreleme dönüştürücüsü, tüm Stringleri gizlemek amacıyla spesifik bir metoda dönüştürür. Bu gizlenmesi gerekebilen URL'ler, özel anahtarlar gibi gibi şeyler için uygun olabilir.
+Ahhh hepimiz bunlardan nefret ediyoruz ama yazılımınızı bozmamak için bunları kullanmamız lazım. Yapılandırmanızı sadeleştirme gibi şeylere falan yarar. Umarız ki, Maven eklentisinde, bunlar otomatik olarak halledilecek. Ancak bu şu anlık sadece yapılacak listemizdeki bir şey.
 
-::: warning
-Kullanıcılara bu konuda çok güvenmemelisiniz. Lütfen String şifrelemesini yazılımınızın ana koruması gibi düşünmeyin ve ona her daim güvenmeyin. Varsayılan olarak, yeterince gelişmiş bir tersine mühendisin yeterli zaman ve sabırla bu bilgilere erişebileceğini düşünmelisiniz.
-:::
+Çok basit bir şekilde bağımlılık eklemek için:
+1. "libs" adındaki bir klasör oluştur
+2. Tüm bağımlılıklarını o klasöre koy
+3. Skidfuscator için kullandığın komuta "-li=\<klasörün yolu\>" ekle
 
-
-## Yapılandırma
-
-String şifrelemesi için şu an iki mod var: `STANDARD` ve `POLYMORPHIC`
-
-```js
-stringEncryption {
-    enabled: true
-    type: POLYMORPHIC
-    exempt: []
-}
+Örnek:
+```console
+java -jar obfuscator-1.0.0-SNAPSHOT.jar -li=libs -ex exception.txt FluffyClicker.jar
 ```
-
-## Örnekler
-
-### Gizlenmemiş Kod
-
-```java
-System.out.println("Hello world");
-```
-
-### Standard
-
-```java
-System.out.println(superDuperMethod("\u2be6\uabec\uebfe\uebfe\uabe0\uabf7\ue7f1", n ^ 0x9F878R));
-```
-
-### Polymorphic
-```java
-StringBuilder string = new StringBuilder("\u2be6\uabec\uebfe\uebfe\uabe0\uabf7\ue7f1\uabe0\u6bfa\uebfe\uabee\uabf5");
-for (int a=0, b, c; a < string.length(); a++) {
-    b = string.charAt(a);
-    b = (((b & 0xffff) << 0x6) | (b >> 0xa)) & 0xffff;
-    c = ((b >> 0x0) ^ (b >> 0x7)) & ((1 << 0x4) - 1);
-    b ^= (c << 0x0) | (c << 0x7);
-    b ^= 0x600f ^ n;
-    b -= 0x2aa2 ^ n;
-    b += 0x25b0 ^ n;
-    b ^= 0x9852 ^ n;
-    string.setCharAt(a, (char) b);
-}
-System.out.println(string)
-```
+![Image of example](https://i.imgur.com/AYxEoYp.png)
