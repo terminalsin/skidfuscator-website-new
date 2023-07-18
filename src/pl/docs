@@ -1,58 +1,6 @@
-## Number Encryption
+# Forge 1.8.8
 
-Transformer szyfrowania liczb szyfruje dowolne liczby, które mają zostać ukryte. Jest to idealne rozwiązanie i utrudnianie osobom dekompilującym uzyskanie czystego kodu źródłowego. Ponadto wzmacnia to wszelkie warunki oparte na wartościach logicznych.
+## Wprowadzanie
+Forge Minecraft 1.8.8, notorycznie używany do modów Skyblock, starszych modów i hack klientów, różni się w szczególności sposobem działania w połączeniu z innymi wersjami Forge. Most typically, you will need to set up a full environment to obtain the decompiled version of Minecraft to be able to obtain the dependency, one which is required to pass build status.
 
-Szyfrowanie liczb opiera się na zaciemnianiu przepływu GEN3 i może, w zdekompilowanych danych wyjściowych, wyglądać następująco
-
-Przyjmijmy następujący scenariusz:
-- $x$ to liczba, którą chcemy zaszyfrować
-- $n$ to "ziarno" bloku
-- $d$ jest zaszyfrowaną liczbą
-
-Zgodnie z prostą mechaniką xor: $x\oplus n\oplus n=x$
-
-Tak więc, z definicji, jeśli $n$ jest naszym seedem, w czasie wykonywania musimy obliczyć $d$ w taki sposób, że $d = x\oplus n$. Następnie musimy zmodyfikować instrukcję kodu bajtowego, np:
-
-```java
-int value = x;
-```
-
-staje się
-```java
-int value = d ^ n;
-```
-
-Gdzie $d$ jest wartością obliczoną z wyprzedzeniem w postaci stałej, a $n$ nieprzezroczystym predykatem. Np.
-```java
-int value = 5;
-```
-staje się
-```java
-int predicate = 0x100;
-int value = 105 ^ predicate;
-```
-
-## Konfiguracja
-
-Obecnie dostępny jest tylko jeden tryb szyfrowania liczb, `STANDARD`.
-
-```js
-numberEncryption {
-    enabled: true
-    exempt: []
-}
-```
-
-## Przykłady
-#### Brak zaciemnienia
-```java
-int var = 1000;
-System.out.println(var + 1 + 2 + 3);
-```
-
-#### Zaciemniony kod
-```java
-int var = 0xA0290233 ^ n;
-System.out.println(var + 0x92083838 ^ n + 0x92083839 ^ n + 0x92083840 ^ n);
-```
-
+## 
