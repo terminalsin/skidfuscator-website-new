@@ -1,14 +1,6 @@
-# Librerie
+# Forge 1.8.8
 
-Ahhh noi tutti odiamo 'em ma per non scoppiare il vostro software, dobbiamo fare uso di questi. Aiuta a semplificare le configurazioni e così via. Speriamo che nel plugin maven questi vengano gestiti automaticamente. Tuttavia è solo un'altra cosa nella nostra lista di todo per ora.
+## Introduzione
+Forgia Minecraft 1.8., notoriamente utilizzato per mod Skyblock, mod legacy e client hackerati, è specificamente diverso nel modo in cui funziona in combinazione con altre versioni di Forge. Più tipicamente, è necessario impostare un ambiente completo per ottenere la versione decompilata di Minecraft per essere in grado di ottenere la dipendenza, uno che è richiesto per superare lo stato di compilazione.
 
-Per aggiungere dipendenze, è abbastanza semplice:
-1. Crea una cartella chiamata "libs"
-2. Trascina tutte le tue dipendenze in detta cartella
-3. Aggiungi "-li=\<path to folder\>" alla tua esecuzione a riga di comando per skidfuscator
-
-Esempi:
-```console
-java -jar obfuscator-1.0.0-SNAPSHOT.jar -li=libs -ex exception.txt FluffyClicker.jar
-```
-![Immagine dell'esempio](https://i.imgur.com/AYxEoYp.png)
+## 
