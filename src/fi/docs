@@ -1,60 +1,60 @@
-## Flow Exception
+## Outliner
 
-Flow Exception on obfuscation transformaatio, joka lisää ylimääräisiä turvallisuuskerroksia Java-koodiisi, jotta se on vaikeampi decompilers tuottaa kelvollinen Java-koodi. Se tekee tämän muuttamalla ohjaus virtausta ja ottamalla käyttöön poikkeus putoavat kuitenkin koodi tavalla, joka vaikeuttaa logiikkaa muuttamatta ohjelman toiminnallisuutta.
+Outlining tarkoittaa prosessia, jossa koodia irrotetaan metodista ja sijoitetaan erilliseen, itsenäiseen metodiin. Tämä tehdään usein keinona parantaa koodin luettavuutta ja ylläpidettävyyttä, koska se voi helpottaa menetelmän toiminnan ymmärtämistä jakamalla se pienempiin, parempiin ja kohdistetumpiin koodin osiin.
 
-Korkealla tasolla muuntaja toimii seuraavalla tavalla:
-- Ensin muuntaja tutkii koodisi menetelmät ja ohittaa abstraktit menetelmät, init-menetelmät ja ne, joissa ei ole koodia yhteensopivuusongelmien välttämiseksi.
-- Sitten muuntaja sitten määrittää asianmukaisen obfuscation strategia (Heikko, Hyvä, tai Aggressiivinen) perustuu kokoonpano asetukset. Jokaisella strategialla on erilainen hämärtymisen taso ja se vaikuttaa siihen, kuinka usein siihen lisätään poikkeukseseen liittyvä koodi.
-- Kun se on tehty, dor jokainen lohko ohjausvirtauskaaviossa, muuntaja tarkistaa, pitäisikö se vapauttaa hämärtymisestä. Se ohittaa tyhjät lohkot, välityspalvelinlohkot ja poikkeusherkät lohkot. Jos lohko voidaan hämärtää, muuntaja päättää, sovelletaanko valittuun strategiaan perustuvaa hämärtymistä vai ei.
-- Sovellettaessa muuntaja tuottaa ainutlaatuisen siemenen ja käyttää hashing turvata läpinäkymätön ennustaa. Se sitten lisää valheellinen ehdollinen hypätä heittää lausunto, aiheuttaa virtaus pudota läpi.
-- Joissakin tapauksissa muuntaja voi lisätä ylimääräisen obfuskaation kerroksen lisäämällä toissijaisen ehdollisen hyppyilmoituksen sekä alku- että satunnaisia sijainteja lohkoon.
+Outlining voidaan käyttää myös eräänlaisena koodin hämärtämisen muotona, sillä se voi vaikeuttaa sitä, että joku, joka yrittää jäljittää tai ymmärtää koodia, näkee ohjelman yleisen virtauksen ja rakenteen. Jakamalla koodi pienemmiksi paloiksi ja erottamalla se eri menetelmiin, se voi olla paljon vaikeampi menettely, että joku ymmärtää suhteita virtaus eri osien välillä ja miten he sopivat yhteen suorittaa tietyn toiminnon.
+
+![Outlining graph explanation](https://i.imgur.com/2HMq0a4.png)
+
+Fantastinen asia siinä on: se ei Ole *Teknisesti* Käännettävä! Voidakseen palata alkuperäiseen tilaan hyvä ääriviivat hämärtyminen, suojan poisto *täytyy tehdä inlining*, joka on heuristinen ja *ei* takaa, että ulostulo on aina semanttisesti oikein alkuperäisellä lähdekoodilla. Lisäksi tämä necessites deobfuscator mangle kanssa muuttujat ja muut eri muotoja herkkä bytecode manipulointi joka kaikki voi johtaa runko ja laskenta poikkeuksia.
+
+Kaiken kaikkiaan obfuscation hahmottaminen on melko siisti :)
+
+::: Varoitus
+Ulompi muuntaja on vielä hyvin varhain kehitykseen. Koska Java todentaja toimii, kaikki skenaariot voidaan tarkastaa oikein, mikä voi aiheuttaa joitakin kokoamiseen liittyviä ongelmia. Ole hyvä ja käytä omalla vastuullasi, ja jos ilmenee ongelmia, ilmoita niistä.
+
+Huomautus itse: vihaan pinon kehyksiä
+:::
 
 ## Konfiguroi
 
-Tälle muuntajalle on tarjolla kolme tilaa:
-- `WEAK`: Jos aiemmin on suoritettu, suorita satunnainen totuus, jos viimeinen ei ole suoritettu, suorita (75 %: n keskimääräinen lisäysaste)
-- `HYVÄ`: Aina suorita kerran (100% Luokitus)
-- `AGGRESSIIVINEN` Suoritetaan aina kahdesti (200 keskimääräinen lisäysprosentti)
-
 ```js
-flowException {
-    enabled: true
-    strength: AGGRESSIVE // Voi olla 'WEAK', 'GOOD' tai 'AGGRESSIVE'
-    exempt: []
+outliner {
+     enabled: true
+     exempt: []
 }
 ```
 
 ## Esimerkkejä
 
 #### Suojaamaton
+
 ```java
 public static void main(String[] args) {
     int number = callNumber();
     /*[...]*/
 }
-/*[...]*/
+
+static int callNumber() {
+    return 1;
+}
 ```
 
 #### Suojattu
 ```java
 public static void main(String[] args) {
-    /*[...]*/
-    while (true) {
-        if (n ^ 0x8AF8EF8F == 0xA88FFA) {
-            break;
-        }
-
-        n = n ^ 0x28847D;
-        int number = callNumber();
-
-        if (n ^ 0xAA9F8FFD == 0x989F7AF) {
-            break;
-        }
-
-        throw new IllegalStateException();
-    }
-
+    step1_AF8FZE8EF7Z89F();
     /*[...]*/
 }
-/*[...]*/
+
+static void step1_AF8FZE8EF7Z89F() {
+    int number = callNumber();
+}
+
+
+static int callNumber() {
+    return 1;
+}
 ```
+
+
