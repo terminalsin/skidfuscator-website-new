@@ -1,58 +1,15 @@
-## Numeroiden Salaus
+# Hei muukalainen
 
-Numeron salausmuuntaja salaa minkä tahansa piilotettavan kokonaislukupohjaisen numeron. Tämä sopii täydellisesti kauhistuttamiseen koodia yleensä ja mikä tekee käänteissuunnittelijoille enemmän vaikeuksia saada puhdasta lähdekoodia. Tämä vahvistaa lisäksi kaikkia boolean-pohjaisia konditionaaleja.
+Tervetuloa skidfuscator-java-obfuscator wikiin!
 
-Numeroiden salaus perustuu GEN3-virtaussuojaukseen ja voi puretussa lähdössä näyttää seuraavasti
+Luulitko, että meillä ei ollut paljon puhuttavaa aiemmin, vai mitä? Nyt meillä on kaikki herkut, ha.
 
-Oletetaan seuraava skenaario:
-- $x$ on numero, jonka haluat salata
-- $n$ on lohkon "siemen"
-- $d$ on salattu numero
-
-Yksinkertaisten xor mekaniikan mukaan: $x\oplus n\oplus n=x$
-
-Määritelmän mukaan, jos $n$ on siemen, meidän on suorituksen aikana laskettava $d$ siten, että $d = x\oplus n$. Sitten meidän on muutettava tavukoodiohjetta, kuten:
-
-```java
-int value = x;
-```
-
-tulee
-```java
-int value = d ^ n;
-```
-
-Jossa $d$ on arvo, joka on laskettu etukäteen vakion muodossa, ja $n$ läpinäkymätön predikaatti. Esimerkki:
-```java
-int value = 5;
-```
-tulee
-```java
-int predicate = 0x100;
-int value = 105 ^ predicate;
-```
-
-## Konfiguroi
-
-Tällä hetkellä numeron salauksessa on vain yksi tila, `STANDARD` (normaali)
-
-```js
-numberEncryption {
-    enabled: true
-    exempt: []
-}
-```
-
-## Esimerkkejä
-#### Suojaamaton
-```java
-int var = 1000;
-System.out.println(var + 1 + 2 + 3);
-```
-
-#### Suojattu
-```java
-int var = 0xA0290233 ^ n;
-System.out.println(var + 0x92083838 ^ n + 0x92083839 ^ n + 0x92083840 ^ n);
-```
-
+# Sisällysluettelo
+1. [Asennus](/docs/installation.html)
+2. [Aloittaminen](/docs/gettingstarted.html)
+3. [Poissulkemiset](/docs/exclusion.html)
+4. [Kirjastot](/docs/libraries.html)
+5. [Tietoja Meistä](/docs/about.html)
+6. [Johdanto Java-suojeluun](/docs/javaobf.html)
+7. [Ongelmien raportointi](/docs/bugreporting.html)
+8. [Muuntajat](/docs/transformers.html)
