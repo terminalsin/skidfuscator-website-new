@@ -1,6 +1,51 @@
-# Forge 1.8.8
+## Annotációk Titkosítása
 
-## Bevezetés
-A Skyblock modok, örökölt modok és hackelt kliensek számára közismerten használt Forge Minecraft 1.8.8, kifejezetten másképp működik, mint a Forge más verziói. A legjellemzőbb, hogy a Minecraft dekompilált verziójának megszerzéséhez egy teljes környezetet kell beállítanod, hogy megkaphasd a függőséget, amely a build státusz átadásához szükséges.
+Az annotáció titkosításra alkalamas átalakító átalakít minden string- és integer értéket, melyek az annotáció tartalmaz. Ezeket egy adott metódussá alakítja, azzal a céllal hogy futtatási időben rejtve maradjanak. This can be practical for non-sensitive URLs, private keys, etc...
 
-## 
+::: figyelem
+Alapvetően ne bízz meg a klienben. Ne támaszkodj a String titkosításra, mint egyetlen védelemre a szoftveredhez. Feltételezd, hogy egy eléggé képzett egyén, elegendő idő és türelem függvényében, visszafejtheti és hozzáférhet ezekhez az információkhoz.
+:::
+
+
+## Konfiguráció
+
+```js
+stringAnnotationEncryption {
+    enabled: true
+    exempt: []
+}
+
+intAnnotationEncryption {
+    enabled: true
+    exempt: []
+}
+```
+
+## Példák
+
+### Nem Titkosított
+
+```java
+@SecretAnnotation(secret = "Super secret", secret2 = 1337)
+public class Fancy {
+    public String getSecret() {
+        return this.getClass().getAnnotation(SecretAnnotation.class).secret();
+    }
+
+    public int getSecre2t() {
+        return this.getClass().getAnnotation(SecretAnnotation.class).secret2();
+    }
+}
+```
+
+### Titkosított
+
+```java @SecretAnnotation(secret = "oifjaioejaifjea9è!efèaefFEf==", secret2 = 0x9FE7FE7F) public class Fancy { public String getSecret() { /* [...] */ return this.aofheoafo(this.getClass().getAnnotation(SecretAnnotation.class).secret(), n ^ 0x997AF8F); }
+
+    public int getSecre2t() {
+        /* [...] */
+        return this.getClass().getAnnotation(SecretAnnotation.class).secret2() ^ n ^ 0x90AF9F7;
+    }
+    
+    /* [...] */
+}```
