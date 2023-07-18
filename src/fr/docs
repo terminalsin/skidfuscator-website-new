@@ -1,25 +1,6 @@
-# Installation
+# Forge 1.8.8
 
-Skidfuscator est distribué via notre site Web, GitHub, ou notre salon d'annonces Discord.
+## Introduction
+Forge Minecraft 1.8.8, utilisé de manière notoire pour les mods Skyblock, les anciens mods et les clients hackés, fonctionne spécifiquement différemment en conjonction avec d'autres versions de Forge. Le plus typiquement, vous devrez configurer un environnement complet pour obtenir la version décompilée de Minecraft pour pouvoir obtenir la dépendance, qui est requise pour passer le statut de construction.
 
-## Nos plateformes
-- [Site Web](https://skidfuscator.dev)
-- [Discord](https://discord.gg/7pVgsRweeh)
-- [GitHub](https://github.com/terminalsin/skidfuscator-java-obfuscator)
-
-Veuillez noter que le GitHub est uniquement pour notre version gratuite de Skidfuscator en édition communautaire.
-
-## Édition Communautaire (Community Edition)
-
-Vous pouvez trouver le lien de téléchargement pour l'édition communautaire [ici](https://github.com/skidfuscatordev/skidfuscator-java-obfuscator/releases/), pour l'édition premium, veuillez visiter notre site Web ou rejoindre notre Discord.
-
-Notez que Skidfuscator nécessite Java 8 (c.-à-d. JDK 1.8 ou mieux) pour fonctionner correctement.
-
-La façon la plus propre d'exécuter Skidfuscator est d'utiliser le paramètre `-jar` dans votre outil d'interface en ligne de commande, vous aurez accès à diverses options sur la façon de commencer l'obfuscation de votre fichier.
-
-## Allouer plus de mémoire
-Il est important de noter que vous devriez généralement donner à la JVM plus que la quantité de mémoire par défaut avec laquelle fonctionner. Si vous utilisez le paramètre -Xmx512m, vous donnerez à la JVM une quantité maximale de 512 Mo de mémoire qui devrait être adaptée à la plupart des usages. Cependant, vous devriez être sûr de ne pas donner à la JVM plus de mémoire que ce qui est physiquement disponible. Dans le cas contraire, les performances se détérioreront de manière dramatique lorsque la JVM commencera à utiliser de la mémoire virtuelle.
-
-Voir ci-dessous comment ajouter plus de mémoire à Skidfuscator :
-
-`java -Xmx4g -jar skidfuscator.jar` dans votre outil d'interface en ligne de commande.
+## 
