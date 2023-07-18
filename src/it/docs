@@ -1,20 +1,257 @@
-# Segnalazione Bug
 
-Se ti senti di aver incontrato un problema o di aver scoperto un bug con Skidfuscator, incoraggiamo i nostri utenti a segnalare il problema al nostro team per assicurarti di avere un'esperienza fluida.
+# Configurazione
 
-**Si prega di segnalare eventuali problemi / bug sul nostro Github che possono essere trovati cliccando [qui](https://github.com/skidfuscatordev/skidfuscator-java-obfuscator).**
+Qui trovate ciò che la configurazione può fare. Assicuratevi di leggerlo attentamente. In caso di problemi, assicuratevi di contattare l'assistenza. Se siete un utente a pagamento, avete diritto a una configurazione gratuita che verrà impostata dal nostro team.
 
-Puoi segnalare il bug entrando nel nostro server Discord e aprendo un ticket.
+## Base della configurazione
 
-Assicurati di formattare la segnalazione di bug nel modo seguente:
-1. Il bug che stai incontrando.
-2. Schermata del messaggio di stacktrace completo.
-3. Il jar originale che stai cercando di offuscate.
-4. Il jar offuscato (se del caso)
-5. Qualsiasi file di configurazione che stai utilizzando.
+La configurazione è costruita a partire da [lightbend configurazione](https://github.com/lightbend/config). Questo significa per impostazione predefinita, supportiamo i tre seguenti formati: Java Properties, JSON e HOCON.
 
-In alternativa, se ti senti come se avessi bisogno di ulteriore assistenza, unisciti al nostro Discord e apri un biglietto.
+Per principio, noi **consigliamo vivamente di utilizzare HOCON** in quanto è più semplice, elegante e a tutto tondo facile da usare. Vedere allegata la configurazione predefinita:
 
-<iframe src="https://discord.com/widget?id=904888546609987674&theme=dark" width="350" height="500" allowtransparency="true" frameborder="0" sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"></iframe>
+```javascript
+exempt: []
 
-Il nostro team tornerà a te e faremo del nostro meglio per risolvere il tuo problema!
+libs: []
+
+stringEncryption {
+  type: STANDARD
+  enabled: true
+  exempt: []
+}
+
+numberEncryption {
+  enabled: true
+  exempt: []
+}
+
+intAnnotationEncryption {
+  enabled: true
+  exempt: []
+}
+
+stringAnnotationEncryption {
+  enabled: true
+  exempt: []
+}
+
+exceptionReturn {
+  enabled: true
+  exempt: []
+}
+
+flowCondition {
+  enabled: true
+  exempt: []
+}
+
+flowException {
+  enabled: true
+  strength: AGGRESSIVE
+  exempt: []
+}
+
+flowRange {
+  enabled: true
+  exempt: []
+}
+
+flowFactoryMaker {
+  enabled: true
+  exempt: []
+}
+
+flowSwitch {
+  enabled: true
+  exempt: []
+}
+
+outliner {
+  enabled: true
+  exempt: []
+}
+
+ahegao {
+  enabled: true
+  exempt: []
+}
+
+native: {
+  enabled: false
+  exempt: []
+}
+
+driver: {
+  enabled: false
+}
+
+reference {
+  enabled: false
+}
+
+fileCrasher: {
+  enabled: false
+}
+
+classRenamer {
+  enabled: false
+  type: CUSTOM
+  prefix: "skido/"
+  chars: [
+    "K"
+    "oO",
+    "o0"
+  ]
+  depth: 3
+}
+
+methodRenamer {
+  enabled: false
+  type: CUSTOM
+  chars: [
+    "K"
+    "oO",
+    "o0"
+  ]
+  depth: 3
+}
+
+fieldRenamer {
+  enabled: false
+  type: ALPHABETICAL
+}
+```
+
+## Esenzioni
+
+L'uso di esenzioni è identico a come sono state fatte in precedenza nel vecchio sistema. Per saperne di più sulle esenzioni, vai su [la pagina](../exclusion.md)
+
+::: warning 
+Java analizza la stringa sanificando la barra all'indietro. Questo significa che DEVI raddoppiare tutte le barre all'indietro
+:::
+
+### Esclusa una classe
+
+Come base di partenza, per escludere una classe specifica, è necessario utilizzare l'esenzione di classe regex:
+```js
+class{^my\/class}
+```
+
+Per adattarsi a questo nella configurazione, è necessario passarlo come una stringa.
+
+
+```js
+exempt: [
+    "class{^my\\/class}"
+]
+```
+
+### Escluso un metodo
+
+Come base di partenza, per escludere un metodo specifico, è necessario utilizzare l'esenzione del metodo di classe:
+```js
+method{^myMethod}
+```
+
+Per adattarsi a questo nella configurazione, è necessario passarlo come una stringa.
+
+```js
+exempt: [
+    "method{^myMethod}"
+]
+```
+
+### Escluso un metodo in una classe specifica
+
+Proprio come abbiamo imparato in precedenza, per escludere un metodo e una classe dobbiamo fare quanto segue:
+```js
+class{^my\/class}
+method{^myMethod}
+```
+
+Ora, per escludere un metodo IN quella classe specifica, tutto ciò che occorre fare è che i due siano incatenati in un'unica riga, in quanto tali:
+
+```js
+class{^my\/class} method{^myMethod}
+```
+
+Quindi nella configurazione, sarebbe come segue:
+
+```js
+exempt: [
+    "class{^my\/class} method{^myMethod}"
+]
+```
+
+## Librerie
+
+Le librerie sono un aspetto importante del calcolo del classpath e della massima protezione per il vostro software. In questa istanza, è necessario fornire un argomento di percorso Java valido come una stringa
+
+Qui di seguito è riportato il codice di implementazione:
+```java
+public File[] getLibs() {
+    return this.getStringList("libraries", Collections.emptyList())
+                .stream()
+                .map(File::new)
+                .distinct()
+                .toArray(File[]::new);
+}
+```
+
+Ecco un esempio di percorsi java validi:
+```
+C:\test.jar
+test.jar
+./test.jar
+/Home/test.jar
+```
+
+Nella configurazione, questi sarebbero rappresentati come segue:
+
+```js
+libraries [
+    "C:\\test.jar",
+    "test.jar",
+    "./test.jar",
+    "/Home/test.jar"
+]
+```
+
+## Driver
+
+Il driver è la parte di indurimento di Skidfuscator. Questa funzione è riservata a Premium. In poche parole, per offuscamento, viene generato e compilato un nuovo driver per le seguenti architetture:
+
+| Sistema Operativo | Architetture Supportate |
+| ----------------- | ----------------------- |
+| Windows           | x64_86                  |
+| MacOS             | x64_86, AARCH64 (ARM)   |
+| Linux             | x64_86 (AMD64)          |
+
+Per disabilitare questa funzione (:warning: questo riduce significativamente la forza di offuscamente), devi attivare o disattivare il booleano:
+
+```js
+driver: false
+```
+
+
+## Trasformatori
+
+È possibile abilitare/disabilitare singolarmente ogni trasformatore.
+
+
+#### Cifratura Stringa
+
+Il trasformatore di crittografia stringa trasforma ogni stringa in una chiamata di metodo specifica, con lo scopo di nascondere in runtime. Questo può essere pratico per URL non sensibili, chiavi private, ecc...
+
+::: warning
+Non dovresti fidarti del cliente come base. Non fare affidamento sulla crittografia delle stringhe come unica protezione per il vostro software. Per impostazione predefinita, dovresti presumere che un ingegnere inverso abbastanza talentuoso possa avere accesso a questi con abbastanza tempo e pazienza.
+:::
+
+Attualmente ci sono due modalità per la cifratura String: `STANDARD` e `POLYMORPHIC`
+
+#### Cifratura Numero
+
+Il trasformatore di crittografia numerica crittografa qualsiasi numerale basato su interi da nascondere. Questo è perfetto per brutto il codice in generale e renderlo più difficile per gli ingegneri invertiti per ottenere un codice sorgente pulito. Questo rafforza inoltre qualsiasi condizionale booleano.
+
+
+#### 
