@@ -1,55 +1,58 @@
-## Flow Switch
+## Number Encryption
 
-Tämä erityinen muuntaja kohdistuu yksinomaan switch-lausekkeisiisi peittääkseen kaikki muuttujat, piilottaen tehokkaasti enumit, vakiot ja merkkijonokohteet. Tämä tehdään käyttämällä läpinäkymätöntä predikaattia ja erityistä hashing-mekanismia, jolla estetään kaikki ilmeiset käänteiskehitystekniikat.
+Numeron salausmuuntaja salaa minkä tahansa piilotettavan kokonaislukupohjaisen numeron. Tämä sopii täydellisesti kauhistuttamiseen koodia yleensä ja mikä tekee käänteissuunnittelijoille enemmän vaikeuksia saada puhdasta lähdekoodia. Tämä vahvistaa lisäksi kaikkia yksinkertaisesti boolean-pohjaisia virtausehtoja.
+
+Numeroiden salaus perustuu GEN3-virtaussuojaukseen ja voi puretussa lähdössä näyttää seuraavasti
+
+Oletetaan seuraava skenaario:
+- $x$ on numero, jonka haluat salata
+- $n$ on lohkon "siemen"
+- $d$ on salattu numero
+
+Yksinkertaisten xor mekaniikan mukaan: $x\oplus n\oplus n=x$
+
+Määritelmän mukaan, jos $n$ on siemen, meidän on suorituksen aikana laskettava $d$ siten, että $d = x\oplus n$. Sitten meidän on muutettava tavukoodiohjetta, kuten:
+
+```java
+int value = x;
+```
+
+tulee
+```java
+int value = d ^ n;
+```
+
+Jossa $d$ on arvo, joka on laskettu etukäteen vakion muodossa, ja $n$ läpinäkymätön predikaatti. Esimerkki:
+```java
+int value = 5;
+```
+tulee
+```java
+int predicate = 0x100;
+int value = 105 ^ predicate;
+```
 
 ## Konfiguroi
 
+Tällä hetkellä numeron salauksessa on vain yksi tila, `STANDARD` (normaali)
+
 ```js
-flowSwitch {
+numberEncryption {
     enabled: true
     exempt: []
 }
 ```
 
 ## Esimerkkejä
-
 #### Suojaamaton
 ```java
-public static void main(String[] args) {
-    int number = callNumber();
-
-    switch (number) {
-        case 1: 
-            System.out.println("Oh no!");
-            break;
-        case 2: 
-            System.out.println("Hello world!");
-            break
-        default: 
-            throw new IllegalStateException("Something went wrong!");
-    }
-    /*[...]*/
-}
-/*[...]*/
+int var = 1000;
+System.out.println(var + 1 + 2 + 3);
 ```
 
 #### Suojattu
 ```java
-public static void main(String[] args) {
-    /*[...]*/
-    int number = callNumber();
-
-    switch (number ^ hash(n ^ 0x9932783)) {
-        case 0x928EF8C: 
-            System.out.println("Hello world!");
-            break
-        case 0x9873783: 
-            System.out.println("Oh no!");
-            break;
-        default: 
-            throw new IllegalStateException("Something went wrong!");
-    }
-    /*[...]*/
-}
-/*[...]*/
+int var = 0xA0290233 ^ n;
+System.out.println(var + 0x92083838 ^ n + 0x92083839 ^ n + 0x92083840 ^ n);
 ```
+
