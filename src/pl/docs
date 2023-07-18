@@ -1,142 +1,37 @@
-# Pisanie wykluczeń (Skidfuscator >= 2.0.0)
+# Wprowadzenie do obfuskacji w Java
 
-Wyrażenie regularne (regex) to rodzaj wzorca wyszukiwania używanego do identyfikowania stringów. Jest on zwykle używany do wyszukiwania, zastępowania i sprawdzania poprawności tekstu. Regeksy są napisane w języku formalnym i są używane w programowaniu, nauce o danych i innych aplikacjach.
+Dla tych, którzy są nowicjuszami w obfuskacji java, aby uzyskać podstawowy wgląd w to, jak może działać obfuskacja java, zalecamy przeczytanie poniższego prostego przewodnika. Bardziej skomplikowane dyskusje można znaleźć na naszym blogu tutaj https://blog.skidfuscator.dev.
 
-Skidfuscator wykorzystuje wyrażenia regularne do obsługi aspektu włączania i wykluczania swojej konfiguracji.
+## Czym jest zaciemnianie Java?
+Zaciemnienie jest procesem utrudniającym zrozumienie czegoś. Jest on często wykorzystywany do ochrony przed nieuprawnionym dostępem i użyciem; Zaciemnianie może być wykorzystywane do ukrywania poufnych informacji, takich jak hasła, przed łatwym pozyskaniem przez hakerów lub inne złośliwe podmioty. Służy również do ochrony oprogramowania przed inżynierią wsteczną, która może być wykorzystywana do odkrywania sposobu działania zastrzeżonego oprogramowania i tworzenia konkurencyjnych produktów.
 
-Zrozumienie wykluczeń może być początkowo trudne, ale uwierz mi, jest to dość łatwe, gdy już się to zrozumie.
+### Ostrożność
+W kontekście zaciemniania Java, zaciemnianie służy do ochrony bazy kodu aplikacji Java przed ujawnieniem, skopiowaniem lub modyfikacją. Jest on używany w celu utrudnienia hakerom zrozumienia kodu, co pomaga chronić kod źródłowy przed kradzieżą. Zaciemnianie odbywa się poprzez zmianę nazw klas, zmiennych i metod, a także poprzez usuwanie niepotrzebnego lub niechcianego kodu i różnych innych technik exploitów, aby utrudnić uzyskanie oryginalnego kodu Java. Sprawia to, że kod jest trudniejszy do zrozumienia, co utrudnia hakerom identyfikację luk w zabezpieczeniach lub zrozumienie sposobu działania kodu.
 
-Przede wszystkim ważne jest, aby zrozumieć podstawowe wyrażenia regularne.
+### Nadmiarowość
+Zaciemnianie Java może być również wykorzystane do zmniejszenia rozmiaru aplikacji. Usuwając niepotrzebny kod i zmieniając nazwy klas, metod i zmiennych, można znacznie zmniejszyć rozmiar aplikacji. Może to być korzystne dla aplikacji, które muszą być dystrybuowane w sieci, ponieważ może skrócić czas pobierania i poprawić wydajność aplikacji.
 
-## Podstawy Regex (wyrażeń regularnych)
+## Rodzaje znanych technik zaciemniania
 
-- Oto podstawowy ciąg do wykrywania wszystkiego:
-```java
-(.*?)
-```
+### Control flow obfuscation
+Zaciemnianie przepływu sterowania w Javie to technika wykorzystywana do ukrywania struktury kodu programu i utrudniania jego zrozumienia. It works by altering the program's control flow, or the order in which instructions are executed. This is done by rearranging the instructions, adding redundant instructions, and introducing additional levels of control flow. For example, a loop may be replaced with a branch instruction that jumps to a different part of the code, or a function may be replaced with a nested set of functions that all have to be executed in order. Furthermore, control flow obfuscation can make it difficult to understand how the code works, and can also make it harder to reverse engineer. It also helps protect against code tampering, as it makes it harder to inject malicious code into the program.
 
-Stałoby się więc, co następuje:
-```java
-abozeofez // Wykryto!
-zeigzoegze // Wykryto!
-```
+### String and number encryption
+Number and string encryption is a type of obfuscation used in Java programming. Number encryption refers to the process of encoding numbers so that they can not be seen in plain text. This is done by transforming the numbers into a different form, such as binary or hexadecimal, or by using a key to encrypt the numbers. This makes it difficult for someone to decrypt the numbers and gain access to the code. String encryption is similar to number encryption, but it is used to protect strings of text. This is done by transforming the characters in the string into a different form, such as a base64 encoding, or by using a key to encrypt the string. This makes it difficult for someone to decrypt the string and understand its contents.
 
-***
+## Evaluating Quality
 
-- Aby dopasować dowolny ciąg, który zawiera "ryk", musiałbyś mieć
-```java
-ryk
+Making sure that an obfuscator produces a high quality output after applying obfuscation transformers is essential. At Skidfuscator, we assess various factors into what can affect the quality of obfuscated java code.
 
-````
+### Code size and complexity
+The size and complexity of the obfuscated code are essential factors to consider when evaluating the quality of obfuscated Java code. Obfuscation should not significantly increase the size of the code, as this can lead to performance issues and potential bugs. At Skidfuscator, we aim to make your code as obscure as possible without significantly enlarging it whilst maintaining maximum security.
 
+### Security
+Security is a critical factor in evaluating the quality of obfuscated Java code. The obfuscation technique in question should be effective in protecting the code from reverse engineering attempts. This can be evaluated by analyzing the code's resistance to reverse engineering tools, such as decompilers and disassemblers.
 
+### Performance
+The obfuscated code's performance is another crucial factor in evaluating its quality. Obfuscation should not significantly impact the code's execution time or memory usage. It is also important to note that the obfuscated code should not introduce any new bugs or errors that could affect the code's overall performance. Any performance issues introduced by the obfuscation technique should be identified and addressed.
 
+### Summary
 
-
-Stałoby się więc, co następuje:
-
-``java
-
-ryk // Pasuje!
-asdafryk // Mecze!
-grrr // Nie pasuje!
-```
-
-***
-
-Aby dopasować dowolny ciąg rozpoczynający się _z_ "uwu", musiałbyś:
-```java
-^uwu
-```
-
-Stałoby się więc tak:
-```java
-kitty-uwu // Brak dopasowania!
-uwu-kitty // Dopasowano!
-```
-
-- `kitty-uwu` nie będzie pasować, ponieważ uwu jest przyrostkiem, a zatem nie zaczyna się od słowa `uwu`.
-- `uwu-kitty` *będzie pasować*, ponieważ określony prawidłowy prefiks jest obecny.
-
-***
-
-Jeśli chcesz dowiedzieć się więcej o Regex, zajrzyj tutaj: [Regex tutorial](https://medium.com/factory-mind/regex-tutorial-a-simple-cheatsheet-by-examples-649dc1c3f285).
-
-## Pisanie Wykluczeń
-Jest to bardzo proste i łatwe do wykonania.
-
-- Utwórz plik, w którym zapiszesz swoje wykluczenia, zalecamy użycie pliku txt.
-
-Skidfuscator odczytuje wtrącenia i wykluczenia w ten sam sposób: jeśli pasuje do wzorca Regex, __**nie zostanie odczytane ani zaciemnione****.
-
-### Wykluczenia
-Używając dopasowania Regex do przodu, jak pokazano poniżej, można dopasować dowolny typ klasy. Pamiętaj, aby uciec od dowolnego "/" za pomocą "\\", aby zapobiec uszkodzeniu Regex i spędzeniu godzin na zastanawianiu się, co jest nie tak.
-
-Poniżej znajdują się różne przykłady pasujących klas i metod wykluczeń:
-
-```java
-// Spowoduje to dopasowanie dowolnej metody o nazwie "main"
-method{main} 
-// To dopasuje każdą metodę, która zaczyna się od "com.apache" 
-// (dowolna nazwa klasy zastępuje "." znakiem "/")
-class{^com\/apache} 
-// Spowoduje to dopasowanie dowolnej metody zaczynającej się od "com.google" 
-// (dowolna nazwa klasy zastępuje "." znakiem "/")
-class{^com\/google} 
-// Spowoduje to dopasowanie dowolnej metody w klasie "Controller"
-class{Controller$} 
-// Spowoduje to dopasowanie dowolnej metody w klasie "com.example.MyClass"
-class{^com\/example\/MyClass$}
-```
-
-#### Wiele wykluczeń
-
-Aby móc wykluczyć na przykład kilka metod lub pakietów, jest to naprawdę proste! Wystarczy utworzyć nową linię i dodać nowe wykluczenie :)
-
-```java
-class{^com\/apache} // Matches apache
-class{^com\/google} // Matches google
-```
-
-
-### Włączenia
-W przeciwieństwie do wykluczeń, możesz chcieć **zawierać tylko określony zestaw klas lub pakiet** w swoim zaciemnionym słoiku. Bez obaw, jest to możliwe, choć nieco bardziej skomplikowane.
-
-```java
-// Spowoduje to dopasowanie wszystkich klas pakietu "com.example"
-class{^(?!(com\/example)).*$} 
-
-// Spowoduje to dopasowanie wszystkich klas pakietu "com.example" i 
-// wszystkie klasy pakietu "com.eclipse". 
-// Możesz dodać dowolną liczbę pakietów za pomocą argumentu "|".
-class{^(?!(com\/example)|(com\/eclipse)).*$} 
-```
-
-## Debugowanie Wykluczeń
-
-Zdecydowanie zalecam użycie debuggera Regex, takiego jak [Regex101](https://regex101.com/), aby móc dowiedzieć się, co pasuje, a co nie.
-
-Wszystkie nazwy klas są domyślnie zgodne z formatem "pakiet1/pakiet2/klasa1". Chociaż w JVM można zobaczyć, że jest on sformatowany inaczej, w przypadku Skidfuscatora powyższy format został uznany za najbardziej efektywny i odzwierciedlający hierarchię plików Jar/Zip.
-
-## Przykładowy plik Wykluczeń
-
-Wielu naszych klientów opracowuje modyfikacje lub wtyczki do gry Minecraft, zobacz poniżej szablon / przykładowy plik konfiguracyjny z najczęściej wymaganymi wykluczeniami:
-
-```java
-// Wykluczenia pakietów poniżej
-class{^net\/minecraftforge} // Pasuje do Minecraft Forge
-class{^net\/minecraft\/client} // Pasuje do klienta Minecraft
-class{^net\/minecraft\/server} // Pasuje do serwera Minecraft
-class{^org\/bukkit} // Pasuje do Bukkit
-class{^com\/mojang} // Pasuje do Mojang
-class{^me\/johnymuffin} // Pasuje do JohnyMuffin
-class{^com\/sk89q} // Dopasowania Sk89q
-class{^org\/spigotmc} // Pasuje do SpigotMC
-class{^org\/apache\/commons} // Pasuje do Apache Commons
-class{^org\/jline} // Pasuje do JLine
-
-// Wykluczenia metod poniżej 
-method{^net\.minecraft\.client} // Wyklucza wszystkie metody z pakietu net.minecraft.client 
-method{^net\.minecraft\.util} // Wyklucza wszystkie metody z pakietu net.minecraft.util 
-method{^net\.minecraft\.client\.Minecraft} // Wyklucza wszystkie metody z klasy Minecraft
-```
+Overall, the quality of obfuscated Java code can be evaluated based on several factors, including code size and complexity, security, maintainability, and performance. Obfuscation should not significantly impact any of these factors, and any issues introduced by the obfuscation technique should be identified and addressed promptly.
