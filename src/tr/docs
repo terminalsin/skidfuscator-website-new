@@ -1,15 +1,51 @@
-# Selam Yabancı
+## String Şifrelemesi
 
-skidfuscator-java-obfuscator wikisine hoş geldin!
+String şifreleme dönüştürücüsü, tüm Stringleri gizlemek amacıyla spesifik bir metoda dönüştürür. Bu gizlenmesi gerekebilen URL'ler, özel anahtarlar gibi gibi şeyler için uygun olabilir.
 
-Önceden konuşacağımız pek bir şey olmadığını sanmıştın, değil mi? Şimdi tüm maller bizde, ha.
+::: warning
+Kullanıcılara bu konuda çok güvenmemelisiniz. Lütfen String şifrelemesini yazılımınızın ana koruması gibi düşünmeyin ve ona her daim güvenmeyin. Varsayılan olarak, yeterince gelişmiş bir tersine mühendisin yeterli zaman ve sabırla bu bilgilere erişebileceğini düşünmelisiniz.
+:::
 
-# İçindekiler
-1. [İndirme](/docs/installation.html)
-2. [Başlangıç](/docs/gettingstarted.html)
-3. [Ayrıştırmalar](/docs/exclusion.html)
-4. [Kütüphaneler](/docs/libraries.html)
-5. [Hakkında](/docs/about.html)
-6. [Java Kod Gizlemesine Giriş](/docs/javaobf.html)
-7. [Hata Bildirme](/docs/bugreporting.html)
-8. [Dönüştürücüler](/docs/transformers.html)
+
+## Yapılandırma
+
+String şifrelemesi için şu an iki mod var: `STANDARD` ve `POLYMORPHIC`
+
+```js
+stringEncryption {
+    enabled: true
+    type: POLYMORPHIC
+    exempt: []
+}
+```
+
+## Örnekler
+
+### Gizlenmemiş Kod
+
+```java
+System.out.println("Hello world");
+```
+
+### Standard
+
+```java
+System.out.println(superDuperMethod("\u2be6\uabec\uebfe\uebfe\uabe0\uabf7\ue7f1", n ^ 0x9F878R));
+```
+
+### Polymorphic
+```java
+StringBuilder string = new StringBuilder("\u2be6\uabec\uebfe\uebfe\uabe0\uabf7\ue7f1\uabe0\u6bfa\uebfe\uabee\uabf5");
+for (int a=0, b, c; a < string.length(); a++) {
+    b = string.charAt(a);
+    b = (((b & 0xffff) << 0x6) | (b >> 0xa)) & 0xffff;
+    c = ((b >> 0x0) ^ (b >> 0x7)) & ((1 << 0x4) - 1);
+    b ^= (c << 0x0) | (c << 0x7);
+    b ^= 0x600f ^ n;
+    b -= 0x2aa2 ^ n;
+    b += 0x25b0 ^ n;
+    b ^= 0x9852 ^ n;
+    string.setCharAt(a, (char) b);
+}
+System.out.println(string)
+```
