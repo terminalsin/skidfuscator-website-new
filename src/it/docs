@@ -1,135 +1,60 @@
-# Esclusioni Scritte (Skidfuscator >= 2.0.0)
+# Per Iniziare
 
-Un regex (espressione regolare) è un tipo di modello di ricerca utilizzato per identificare le stringhe di caratteri. È tipicamente usato per cercare, sostituire e convalidare il testo. Le regex sono scritte in un linguaggio formale e sono utilizzati nella programmazione, nella scienza dei dati e in altre applicazioni.
+Così, ora hai scaricato con successo Skidfuscator sul tuo computer e ti stai chiedendo come eseguirlo?
 
-Skidfuscator utilizza regex per gestire l'aspetto di inclusione ed esclusione della sua configurazione.
+Skidfuscator viene eseguito attraverso la riga di comando, usando la CLI di Java. Vi consigliamo vivamente di familiarizzare con questo al fine di godere di un'esperienza senza soluzione di continuità Skidfuscator.
 
-Capire le esclusioni potrebbe essere difficile in un primo momento, ma fidatevi di me, è abbastanza facile una volta che si ottiene il blocco di esso.
+## Opzioni CLI per Skidfuscator
 
-Innanzitutto, è importante capire il regex di base.
+Semplicemente esegui `java -jar <yourSkidfuscatorFile.jar>` e ti verranno presentate varie opzioni:
 
-## Fondamenti del Regex (Espressioni regolari)
+![Opzioni di Skidfuscator](https://i.imgur.com/Yu70Pcq.png)
 
-- Ecco una stringa di base da abbinare a tutto:
-```java
-(.*?)
+
+#### Il tuo jar di input
+Il jar di input che vuoi offuscare con Skidfuscator.
+```cli
+<input>
 ```
 
-Così accadrebbe quanto segue:
-```java
-abozeofez // Corrisponde!
-zeigzoegze // Corrisponde!
+#### Le tue esclusioni
+Il percorso del file che contiene le tue esclusioni.
+```cli
+--exempt=<exempt>
 ```
 
-***
-
-- Per abbinare qualsiasi stringa che contiene "roar", avresti
-```java
-roar
-````
-
-Così accadrebbe quanto segue:
-``java
-roar // Matches!
-asdafroar // Corrisponde!
-grrr // Nessuna corrispondenza!
+#### Salta calcolo
+**USARE QUESTO AL TUO RISCHIO PROPRIO** Salta completamente le forme critiche di calcolo come le librerie. Il supporto può essere limitato se si sceglie di utilizzare questa opzione.
+```cli
+`--fuckit
 ```
 
-***
-
-Per abbinare qualsiasi stringa che inizia _con_ "uwu", avresti avuto:
-```java
-^uwu
+#### Le tue librerie
+Il percorso alla cartella che contiene librerie / dipendenze richieste per offuscare il file jar.
+```cli
+--libs=<libs>
 ```
 
-Così accadrebbe quanto segue:
-```java
-kitty-uwu // Nessuna corrispondenza!
-uwu-kitty // Corrispondenza!
+#### Opt out di analisi
+Questa opzione non ci fornirà alcuna analisi come errori che si possono riscontrare, o statistiche di utilizzo obfuscator.
+```cli
+--notrack
 ```
 
-- `kitty-uwu` non corrisponderebbe perché uwu è un suffisso in questo scenario, e quindi non inizia con il requisito `uwu`.
-- `uwu-kitty` *sarebbe* corrispondente in questo scenario perché il prefisso corretto specificato è presente.
-
-***
-
-Se vuoi saperne di più su Regex, scopri qui: Tutorial [Regex](https://medium.com/factory-mind/regex-tutorial-a-simple-cheatsheet-by-examples-649dc1c3f285)
-
-## Esclusioni di scrittura
-Questo è molto semplice e facile da fare.
-
-- Crea un file in cui scrivere le tue esclusioni, ti consigliamo di usare un file txt.
-
-Skidfuscator legge le inclusioni e le esclusioni allo stesso modo: se corrisponde a un modello regex, __**non sarà letto o offuscato****.
-
-### Esclusioni
-Utilizzando la corrispondenza in avanti regex come visto sotto, si è in grado di abbinare qualsiasi tipo di classe. Ricordati di sfuggire a qualsiasi "/" con un "\\" per impedire a Regex di comitare seppuku e di passare ore a capire cosa c'è di sbagliato.
-
-Vedi sotto vari esempi di metodi di esclusione delle classi & corrispondenti:
-
-```java
-// Questo corrisponderà a qualsiasi metodo con il metodo "main"
-{main} 
-// Questo corrisponderà a qualsiasi metodo che inizia con "com pache" 
-// (ogni nome di classe sostituisce il ". con classe "/"
-{^com\/apache} 
-// Questo corrisponderà a qualsiasi metodo che inizia con "com oogle" 
-// (ogni nome di classe sostituisce il ". con classe "/"
-{^com\/google} 
-// Questo corrisponderà a qualsiasi metodo nella classe "Controller"
-classe{Controller$} 
-// Questo corrisponderà a qualsiasi metodo nella classe "com. xample.MyClass"
-class{^com\/esempio\/MyClass$}
+#### Il tuo output
+Il percorso in cui si desidera che il vostro barattolo offuscato sia output, se questa opzione è lasciata vuota, verrà output nella directory in cui Skidfuscator è stato eseguito.
+```cli
+--output=<output>
 ```
 
-#### Esclusioni multiple
-
-Per essere in grado di escludere per esempio diversi metodi, o pacchetti, è davvero abbastanza semplice! Tutto quello che devi fare è creare una nuova linea e aggiungere la nuova esenzione :)
-
-```java
-class{^com\/apache} // Corrisponde apache
-class{^com\/google} // Corrisponde google
+#### Calcolo fantasma
+Consente di abilitare il calcolo fantasma per le classi, ancora una volta, se questa opzione è utilizzata, il supporto può essere limitato. Ti consigliamo vivamente di fornire le librerie necessarie necessarie e offuscare il tuo file di barattolo.
+```cli
+--phantom
 ```
 
-
-### Inclusioni
-Al contrario delle esclusioni, potresti voler includere **solo un particolare set di classi o un pacchetto** nel tuo barattolo offuscato. Non è possibile, anche se un po' più complicato.
-
-```java
-// Questo corrisponde a tutte le classi del pacchetto "com.example" Classe
-{^(?!(com\/example)). $} 
-
-// Questo corrisponde a tutte le classi del pacchetto "com.example" e 
-// tutte le classi del pacchetto "com.eclipse". 
-// È possibile aggiungere quanti pacchetti si desidera con l'argomento "|".
-class{^(?!(com\/example)|(com\/eclipse)).*$} 
-```
-
-## Esclusioni Di Debug
-
-Raccomando vivamente di usare un debugger regex, come ad esempio [Regex101](https://regex101.com/), per poter capire cosa corrisponde e cosa no.
-
-Tutti i nomi delle classi, per impostazione predefinita, seguono il formato "package1/package2/class1". Mentre si può vedere nella JVM è formattato in modo diverso, nel caso di Skidfuscator, il formato di cui sopra è stato deciso di essere il più efficace e riflettente della gerarchia di file Jar/Zip.
-
-## File Esclusioni Esemplari
-
-Molti dei nostri clienti sviluppano modifiche o plugin di Minecraft, vedi sotto un template / file di configurazione esemplare con le esclusioni più comunemente richieste:
-
-```java
-// Esclusioni del pacchetto di seguito
-class{^net\/minecraftforge} // Corrisponde a Minecraft Forge
-class{^net\/minecraft\/client} // Corrisponde al client Minecraft
-class{^net\/minecraft\/server} // Corrisponde al server Minecraft
-class{^org\/bukkit} // Corrisponde a Bukkit
-class{^com\/mojang} // Corrisponde a Mojang
-class{^me\/johnymuffin} // Corrisponde a JohnyMuffin
-class{^com\/sk89q} // Corrisponde a Sk89q
-class{^org\/spigotmc} // Corrisponde a SpigotMC
-class{^org\/apache\/commons} // Corrisponde ad Apache Commons
-class{^org\/jline} // Corrisponde a JLine
-
-// Esclusioni di metodi di seguito
-method{^net\.minecraft\.client} // Esclude tutti i metodi dal pacchetto net.minecraft.client
-method{^net\.minecraft\.util} // Esclude tutti i metodi dal pacchetto net.minecraft.util
-method{^net\.minecraft\.client\.Minecraft} // Esclude tutti i metodi dalla classe Minecraft
+#### Specificare il runtime
+Il percorso della tua pista di java.
+```cli
+--runtime=<runtime>
 ```
