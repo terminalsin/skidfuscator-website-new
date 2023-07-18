@@ -1,14 +1,25 @@
-## Ohjausvirran kulkuväylän tila
+## Flow Exception
 
-Tämä transfomer toimii ensimmäisenä kilvenä vaikeaselkoisen ennustaa analyysi. Voit estää staattisen analyysin havaitsemisesta mikä kokonaisluku on läpinäkymätön ennuste, käytämme tätä erityistä kokonaislukua lisätä ylimääräisiä ehtoja jo olemassa jos lausekkeet. Tämä ei ainoastaan lisää ohjelmiston turvallisuutta, vaan myös vaikeuttaa monien työkalujen deobfuskurointi ja dekompilointiprosessia.
+Flow Exception on obfuscation transformaatio, joka lisää ylimääräisiä turvallisuuskerroksia Java-koodiisi, jotta se on vaikeampi decompilers tuottaa kelvollinen Java-koodi. Se tekee tämän muuttamalla ohjaus virtausta ja ottamalla käyttöön poikkeus putoavat kuitenkin koodi tavalla, joka vaikeuttaa logiikkaa muuttamatta ohjelman toiminnallisuutta.
 
-Flow Exception -muuntimeen verrattuna tämä on paljon yksinkertaisempi versio, joka käsittelee vain yhtä ääritapausta.
+Korkealla tasolla muuntaja toimii seuraavalla tavalla:
+- Ensin muuntaja tutkii koodisi menetelmät ja ohittaa abstraktit menetelmät, init-menetelmät ja ne, joissa ei ole koodia yhteensopivuusongelmien välttämiseksi.
+- Sitten muuntaja sitten määrittää asianmukaisen obfuscation strategia (Heikko, Hyvä, tai Aggressiivinen) perustuu kokoonpano asetukset. Jokaisella strategialla on erilainen hämärtymisen taso ja se vaikuttaa siihen, kuinka usein siihen lisätään poikkeukseseen liittyvä koodi.
+- Kun se on tehty, dor jokainen lohko ohjausvirtauskaaviossa, muuntaja tarkistaa, pitäisikö se vapauttaa hämärtymisestä. Se ohittaa tyhjät lohkot, välityspalvelinlohkot ja poikkeusherkät lohkot. Jos lohko voidaan hämärtää, muuntaja päättää, sovelletaanko valittuun strategiaan perustuvaa hämärtymistä vai ei.
+- Sovellettaessa muuntaja tuottaa ainutlaatuisen siemenen ja käyttää hashing turvata läpinäkymätön ennustaa. Se sitten lisää valheellinen ehdollinen hypätä heittää lausunto, aiheuttaa virtaus pudota läpi.
+- Joissakin tapauksissa muuntaja voi lisätä ylimääräisen obfuskaation kerroksen lisäämällä toissijaisen ehdollisen hyppyilmoituksen sekä alku- että satunnaisia sijainteja lohkoon.
 
 ## Konfiguroi
 
+Tälle muuntajalle on tarjolla kolme tilaa:
+- `WEAK`: Jos aiemmin on suoritettu, suorita satunnainen totuus, jos viimeinen ei ole suoritettu, suorita (75 %: n keskimääräinen lisäysaste)
+- `HYVÄ`: Aina suorita kerran (100% Luokitus)
+- `AGGRESSIIVINEN` Suoritetaan aina kahdesti (200 keskimääräinen lisäysprosentti)
+
 ```js
-flowCondition {
+flowException {
     enabled: true
+    strength: AGGRESSIVE // Voi olla 'WEAK', 'GOOD' tai 'AGGRESSIVE'
     exempt: []
 }
 ```
@@ -19,10 +30,6 @@ flowCondition {
 ```java
 public static void main(String[] args) {
     int number = callNumber();
-
-    if (number == 1) {
-        System.out.println("Hello world");
-    }
     /*[...]*/
 }
 /*[...]*/
@@ -32,29 +39,21 @@ public static void main(String[] args) {
 ```java
 public static void main(String[] args) {
     /*[...]*/
-    label1: {
-        while (true) {
-            if (n ^ 0x8AF8EF8F == 0xA88FFA) {
-                break;
-            }
-
-            n = n ^ 0x28847D;
-            int number = callNumber();
-
-            label2: {
-                if (number != 1)
-                    break label1;
-
-                if (n ^ 0xAA9F8FFD != 0x989F7AF)
-                    break label2;
-
-                System.out.println("Hei maailma");
-                break label1;
-            }
-
-            throw new IllegalStateException();
+    while (true) {
+        if (n ^ 0x8AF8EF8F == 0xA88FFA) {
+            break;
         }
+
+        n = n ^ 0x28847D;
+        int number = callNumber();
+
+        if (n ^ 0xAA9F8FFD == 0x989F7AF) {
+            break;
+        }
+
+        throw new IllegalStateException();
     }
+
     /*[...]*/
 }
 /*[...]*/
