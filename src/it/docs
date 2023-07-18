@@ -1,53 +1,51 @@
-## Renamer Metodo
+## Cifratura Stringa
 
-Il rinominatore del metodo cerca di rinominare con precisione un intero metodo per impedire la conservazione dei nomi del metodo. Per ottenere questo, Skidfuscator crea "gruppi di metodo" per preservare efficacemente il metodo hierachy. Ad esempio, se la `classe B` estende la `classe A` e la `classe A` implementa il `metodoA()`, tutte le chiamate a `metodoA()` sia per la `classe A` che per la `classe B` dovrà essere rinominato.
-
-## Configurazione
-Il rinominatore del metodo attualmente supporta un dizionario, `ALPHABETICAL`, accanto al dizionario personalizzato tradizionale, `CUSTOM`, basato su input. In questo scenario, sono disponibili le seguenti opzioni:
-- Profondità: quanti letterali saranno usati per impostazione predefinita (es.: 3 profondità porterà a o0o0o0 per il primo elemento, o 1 profondità porterà a o0 per il primo elemento)
-- Caratteri: Caratteri che devono essere utilizzati dal trasformatore.
+Il trasformatore di crittografia stringa trasforma ogni stringa in una chiamata di metodo specifica, con lo scopo di nascondere in runtime. Questo può essere pratico per URL non sensibili, chiavi private, ecc...
 
 ::: warning
-Al momento, il trasformatore non gestisce caratteri duplicati e creerà in modo improprio nomi di metodo identici. Ad esempio, non usare "o", "0" e "o0" in quanto quest'ultimo è una combinazione dei due caratteri precedenti.
+Non dovresti fidarti del cliente come base. Non fare affidamento sulla crittografia delle stringhe come unica protezione per il vostro software. Per impostazione predefinita, dovresti presumere che un ingegnere inverso abbastanza talentuoso possa avere accesso a questi con abbastanza tempo e pazienza.
 :::
 
+
+## Configurazione
+
+Attualmente ci sono due modalità per la cifratura String: `STANDARD` e `POLYMORPHIC`
+
 ```js
-methodRenamer {
-    enabled: false
-    type: CUSTOM // or 'ALPHABETICAL'
-    chars: [
-        "K"
-        "oO",
-        "o0"
-    ]
-    depth: 3
+stringEncryption {
+    enabled: true
+    type: POLYMORPHIC
+    exempt: []
 }
 ```
 
 ## Esempi
 
-#### Unofuscato
+### Unofuscato
 
 ```java
-public static void main(String[] args) {
-    int number = callNumber();
-    /*[...]*/
-}
-
-static int callNumber() {
-    return 1;
-}
+System.out.println("Ciao mondo");
 ```
 
-#### Offuscato
+### Standard
+
 ```java
-public static void main(String[] args) {
-    int number = o0k0k0Kk();
-    /*[...]*/
-}
+System.out.println(superDuperMethod("\u2be6\uabec\uebfe\uebfe\uabe0\uabf7\ue7f1", n ^ 0x9F878R));
+```
 
-
-static int o0k0k0Kk() {
-    return 1;
+### Polimorfico
+```java
+StringBuilder string = new StringBuilder("\u2be6\uabec\uebfe\uebfe\uabe0\uabf7\ue7f1\uabe0\u6bfa\uebfe\uabee\uabf5");
+for (int a=0, b, c; a < string.length(); a++) {
+    b = string.charAt(a);
+    b = (((b & 0xffff) << 0x6) | (b >> 0xa)) & 0xffff;
+    c = ((b >> 0x0) ^ (b >> 0x7)) & ((1 << 0x4) - 1);
+    b ^= (c << 0x0) | (c << 0x7);
+    b ^= 0x600f ^ n;
+    b -= 0x2aa2 ^ n;
+    b += 0x25b0 ^ n;
+    b ^= 0x9852 ^ n;
+    string.setCharAt(a, (char) b);
 }
+System.out.println(string)
 ```
