@@ -1,60 +1,60 @@
-## Eccezioni Di Flusso
+## Contorno
 
-Flow Exception è una trasformazione di offuscamento che aggiunge ulteriori livelli di sicurezza al tuo codice Java per rendere più difficile per i decompilatori l'output di codice Java valido. Lo fa alterando il flusso di controllo e introducendo il codice di caduta di eccezione in un modo che complica la logica senza modificare la funzionalità del programma.
+La delimitazione si riferisce al processo di estrazione del codice da un metodo e di collocarlo in un metodo separato e autonomo. Questo viene spesso fatto come un modo per migliorare la leggibilità e la mantenibilità del codice, in quanto può rendere più facile capire che cosa un metodo sta facendo suddividendolo in più piccoli pezzi di codice più mirati.
 
-Ad alto livello, il trasformatore lavora nel modo seguente:
-- In primo luogo, il trasformatore esamina i metodi nel codice e salta i metodi astratti, i metodi di init e quelli senza codice per evitare problemi di compatibilità.
-- Poi, il trasformatore determina quindi la strategia di offuscamento appropriata (debole, buono o aggressivo) in base alle impostazioni di configurazione. Ogni strategia offre un diverso livello di offuscamento e impatti quanto spesso viene inserito un codice correlato alle eccezioni.
-- Una volta che tale è fatto, dor ogni blocco nel grafico del flusso di controllo, il trasformatore verifica se dovrebbe essere esente da offuscata. Salta blocchi vuoti, blocchi proxy e blocchi sensibili alle eccezioni. Se un blocco è ammissibile all'offuscamento, il trasformatore decide se applicare l'offuscamento sulla base della strategia prescelta.
-- Quando applicato, il trasformatore genera un seme unico e utilizza l'hashing per fissare il predicato opaco. Poi inserisce un falso salto condizionale a una dichiarazione di lancio, causando il flusso di caduta.
-- In alcuni casi, il trasformatore può aggiungere un ulteriore strato di offuscamento inserendo una dichiarazione secondaria di salto condizionale sia all'inizio che a caso nel blocco.
+Il disegno può anche essere usato come una forma di offuscamento del codice, in quanto può rendere più difficile per qualcuno che cerca di invertire l'ingegnere o capire il codice per vedere il flusso complessivo e la struttura del programma. Spezzando il codice in pezzi più piccoli e separandolo in diversi metodi, può essere una procedura molto più dura per qualcuno per capire le relazioni tra le diverse parti del flusso e come si adattano insieme per svolgere una particolare funzione.
+
+![Illustrazione del grafico](https://i.imgur.com/2HMq0a4.png)
+
+La cosa fantastica di delineare è: non è *tecnicamente* reversibile! Per essere in grado di tornare a uno stato originale di una buona offuscazione contorno, un deobfuscatore *deve fare inlining*, che è euristico e *non* garantisce che l'output sia sempre semanticamente corretto con il codice sorgente originale. Inoltre, questo richiede al deobfuscator di manomettere con variabili e altre varie forme di manipolazione sensibile bytecode che tutti possono portare a frame ed eccezioni di calcolo.
+
+Nel complesso, delineare offuscamento è abbastanza ordinato :)
+
+::: warning
+Il trasformatore del contorno è ancora molto presto in sviluppo. A causa di come funziona il verificatore Java, non tutti gli scenari possono essere verificati correttamente, il che può portare ad alcuni problemi di compilazione. Si prega di utilizzare a proprio rischio e, se vi sono problemi, si prega di segnalarle.
+
+Nota per sé: Odio i fotogrammi dello stack
+:::
 
 ## Configurazione
 
-Ci sono tre modalità disponibili per questo trasformatore specifico:
-- `WEAK`: Se è stato eseguito in precedenza, eseguire un booleano casuale, se l'ultima non è stata, eseguire (75% tasso medio di inserimento)
-- `GOOD`: Esegui sempre una volta (100% tasso medio di inserimento)
-- `AGGRESSIVE`: Eseguire sempre due volte (tasso di inserimento medio del 200%)
-
 ```js
-flowException {
-    enabled: true
-    strength: AGGRESSIVE // Può essere 'WEAK', 'GOOD' or 'AGGRESSIVE'
-    exempt: []
+outliner {
+     enabled: true
+     exempt: []
 }
 ```
 
 ## Esempi
 
 #### Unofuscato
+
 ```java
 public static void main(String[] args) {
     int number = callNumber();
     /*[...]*/
 }
-/*[...]*/
+
+static int callNumber() {
+    return 1;
+}
 ```
 
 #### Offuscato
 ```java
 public static void main(String[] args) {
-    /*[...]*/
-    while (true) {
-        if (n ^ 0x8AF8EF8F == 0xA88FFA) {
-            break;
-        }
-
-        n = n ^ 0x28847D;
-        int number = callNumber();
-
-        if (n ^ 0xAA9F8FFD == 0x989F7AF) {
-            break;
-        }
-
-        throw new IllegalStateException();
-    }
-
+    step1_AF8FZE8EF7Z89F();
     /*[...]*/
 }
-/*[...]*/
+
+static void step1_AF8FZE8EF7Z89F() {
+    int number = callNumber();
+}
+
+
+static int callNumber() {
+    return 1;
+}
 ```
+
+
