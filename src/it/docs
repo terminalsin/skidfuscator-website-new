@@ -1,60 +1,25 @@
-# Per Iniziare
+# Installazione
 
-Così, ora hai scaricato con successo Skidfuscator sul tuo computer e ti stai chiedendo come eseguirlo?
+Skidfuscator è distribuito tramite il nostro sito web, GitHub, o il nostro canale di annunci del server Discord.
 
-Skidfuscator viene eseguito attraverso la riga di comando, usando la CLI di Java. Vi consigliamo vivamente di familiarizzare con questo al fine di godere di un'esperienza senza soluzione di continuità Skidfuscator.
+## Le nostre piattaforme
+- [Sito](https://skidfuscator.dev)
+- [Discord](https://discord.gg/7pVgsRweeh)
+- [GitHub](https://github.com/terminalsin/skidfuscator-java-obfuscator)
 
-## Opzioni CLI per Skidfuscator
+Si prega di notare che il GitHub è solo per la nostra versione gratuita, community edition di Skidfuscator.
 
-Semplicemente esegui `java -jar <yourSkidfuscatorFile.jar>` e ti verranno presentate varie opzioni:
+## Community Edition
 
-![Opzioni di Skidfuscator](https://i.imgur.com/Yu70Pcq.png)
+Puoi trovare il link per il download della community edition [qui](https://github.com/skidfuscatordev/skidfuscator-java-obfuscator/releases/), per l'edizione premium per favore visita il nostro sito web o unisciti al nostro Discord.
 
+Si noti che Skidfuscator richiede Java 8 (es. JDK 1.8 o migliore) per funzionare correttamente.
 
-#### Il tuo jar di input
-Il jar di input che vuoi offuscare con Skidfuscator.
-```cli
-<input>
-```
+Il modo più pulito per eseguire Skidfuscator è utilizzare il parametro `-jar` nel vostro strumento di interfaccia a riga di comando, ti saranno presentate varie opzioni su come iniziare con l'offuscamento del tuo file.
 
-#### Le tue esclusioni
-Il percorso del file che contiene le tue esclusioni.
-```cli
---exempt=<exempt>
-```
+## Allocazione di più memoria
+È importante notare che in genere si dovrebbe dare alla JVM più della quantità predefinita di memoria con cui lavorare. Se si utilizza il parametro -Xmx512m, si darà alla JVM una quantità massima di 512MB di memoria che dovrebbe essere adatto per la maggior parte degli scopi. Tuttavia, si dovrebbe essere sicuri di non dare la JVM più memoria di quanto è fisicamente disponibile. Altrimenti le prestazioni peggioreranno drasticamente man mano che la JVM inizia ad usare la memoria virtuale.
 
-#### Salta calcolo
-**USARE QUESTO AL TUO RISCHIO PROPRIO** Salta completamente le forme critiche di calcolo come le librerie. Il supporto può essere limitato se si sceglie di utilizzare questa opzione.
-```cli
-`--fuckit
-```
+Vedi qui sotto su come aggiungere più memoria a Skidfuscator:
 
-#### Le tue librerie
-Il percorso alla cartella che contiene librerie / dipendenze richieste per offuscare il file jar.
-```cli
---libs=<libs>
-```
-
-#### Opt out di analisi
-Questa opzione non ci fornirà alcuna analisi come errori che si possono riscontrare, o statistiche di utilizzo obfuscator.
-```cli
---notrack
-```
-
-#### Il tuo output
-Il percorso in cui si desidera che il vostro barattolo offuscato sia output, se questa opzione è lasciata vuota, verrà output nella directory in cui Skidfuscator è stato eseguito.
-```cli
---output=<output>
-```
-
-#### Calcolo fantasma
-Consente di abilitare il calcolo fantasma per le classi, ancora una volta, se questa opzione è utilizzata, il supporto può essere limitato. Ti consigliamo vivamente di fornire le librerie necessarie necessarie e offuscare il tuo file di barattolo.
-```cli
---phantom
-```
-
-#### Specificare il runtime
-Il percorso della tua pista di java.
-```cli
---runtime=<runtime>
-```
+`java -Xmx4g -jar skidfuscator.jar` nel tuo strumento di interfaccia a riga di comando.
