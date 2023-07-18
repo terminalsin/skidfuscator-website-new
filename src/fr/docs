@@ -1,135 +1,37 @@
-# Écriture des exclusions (Skidfuscator ≥ 2.0.0)
+# Introduction à l'obfuscation Java
 
-Une expression régulière (regex) est un type de motif de recherche utilisé pour identifier des chaînes de caractères. Elle est généralement utilisée pour rechercher, remplacer et valider du texte. Les expressions régulières sont écrites dans un langage formel et sont utilisées en programmation, en science des données et dans d'autres applications.
+Pour ceux qui découvrent l'obfuscation Java, nous vous recommandons de lire ce guide simple ci-dessous pour avoir une idée de base de son fonctionnement. Pour des discussions plus complexes, nous vous recommandons de consulter notre blog à l'adresse https://blog.skidfuscator.dev
 
-Skidfuscator utilise des expressions régulières pour gérer l'aspect d'inclusion et d'exclusion de sa configuration.
+## Qu'est-ce que l'obfuscation Java ?
+L'obfuscation est le processus qui rend quelque chose difficile à comprendre. Elle est souvent utilisée pour protéger la propriété intellectuelle contre tout accès et utilisation non autorisés. L'obfuscation peut être utilisée pour cacher des informations sensibles, telles que des mots de passe, afin d'empêcher leur obtention facile par des pirates informatiques ou d'autres acteurs malveillants. Elle est également utilisée pour protéger les logiciels contre l'ingénierie inverse, qui permet de découvrir le fonctionnement des logiciels propriétaires et de créer des produits concurrents.
 
-Comprendre les exclusions peut sembler délicat au début, mais croyez-moi, c'est assez facile une fois que vous aurez compris comment ça fonctionne.
+### Obscurité
+Dans le contexte de l'obfuscation Java, l'obfuscation est utilisée pour protéger le code source d'une application Java contre l'exposition, la copie ou la modification. Elle est utilisée pour rendre plus difficile la compréhension du code par les pirates, ce qui aide à protéger le code source contre le vol ou l'ingénierie inverse. L'obfuscation consiste à changer les noms des classes, des variables et des méthodes, ainsi qu'à supprimer le code inutile ou indésirable et diverses autres techniques d'exploitation pour rendre plus difficile l'obtention du code Java original. Cela rend le code plus difficile à comprendre, ce qui complique la tâche des pirates pour identifier les vulnérabilités ou comprendre le fonctionnement du code.
 
-Avant tout, il est important de comprendre les bases des expressions régulières (regex).
+### Redondance
+L'obfuscation Java peut également être utilisée pour réduire la taille de l'application. En supprimant le code inutile et en renommant les classes, les méthodes et les variables, la taille de l'application peut être considérablement réduite. Cela peut être bénéfique pour les applications qui doivent être distribuées via des réseaux, car cela réduit le temps de téléchargement et améliore les performances de l'application.
 
-## Bases du Regex (Expressions régulières)
+## Types de techniques d'obfuscation connues
 
-- Voici un exemple pour correspondre à tout :
-```java
-(.*?)
-```
+### Obfuscation du flux de contrôle
+L'obfuscation du flux de contrôle en Java est une technique utilisée pour masquer la structure du code d'un programme et la rendre difficile à comprendre ou à inverser. Elle fonctionne en modifiant le flux de contrôle du programme, c'est-à-dire l'ordre dans lequel les instructions sont exécutées. Cela se fait en réarrangeant les instructions, en ajoutant des instructions redondantes et en introduisant des niveaux supplémentaires de flux de contrôle. Par exemple, une boucle peut être remplacée par une instruction de branchement qui saute vers une autre partie du code, ou une fonction peut être remplacée par un ensemble imbriqué de fonctions qui doivent toutes être exécutées dans l'ordre. De plus, l'obfuscation du flux de contrôle peut rendre difficile la compréhension du fonctionnement du code et rendre également plus difficile l'ingénierie inverse. Elle aide également à se protéger contre la falsification du code, car elle rend plus difficile l'injection de code malveillant dans le programme.
 
-Ainsi, ce qui suit se produirait :
-```java
-abozeofez // Correspond !
-zeigzoegze // Correspond !
-```
+### Chiffrement des chaînes de caractères et des nombres
+Le chiffrement des nombres et des chaînes de caractères est un type d'obfuscation utilisé en programmation Java. Le chiffrement des nombres consiste à encoder les nombres de manière à ce qu'ils ne puissent pas être vus en texte clair. Cela se fait en transformant les nombres en une forme différente, telle qu'en binaire ou hexadécimale, ou en utilisant une clé pour chiffrer les nombres. Cela rend difficile pour quelqu'un de déchiffrer les nombres et d'accéder au code. Le chiffrement des chaînes est similaire au chiffrement des nombres, mais il est utilisé pour protéger les chaînes de texte. Cela se fait en transformant les caractères de la chaîne en une forme différente, telle qu'un encodage en base64, ou en utilisant une clé pour chiffrer la chaîne. Cela rend difficile pour quelqu'un de déchiffrer la chaîne et de comprendre son contenu.
 
-***
+## Évaluation de la qualité
 
-- To match any string which contains "roar", you'd have
-```java
-roar
-````
+Il est essentiel de s'assurer qu'un obfuscateur produit une sortie de haute qualité après l'application des transformations d'obfuscation. Chez Skidfuscator, nous évaluons divers facteurs pouvant affecter la qualité du code Java obfusqué.
 
-So the following would happen:
-```java
-roar // Matches!
-asdafroar // Matches!
-grrr // No match!
-```
+### Taille et complexité du code
+La taille et la complexité du code obfusqué sont des facteurs essentiels à prendre en compte lors de l'évaluation de la qualité du code Java obfusqué. L'obfuscation ne doit pas augmenter de manière significative la taille du code, car cela peut entraîner des problèmes de performance et des bugs potentiels. Chez Skidfuscator, nous visons à rendre votre code aussi obscur que possible sans l'agrandir de manière significative, tout en assurant une sécurité maximale.
 
-***
+### Sécurité
+La sécurité est un facteur critique dans l'évaluation de la qualité du code Java obfusqué. La technique d'obfuscation en question doit être efficace pour protéger le code contre les tentatives d'ingénierie inverse. Cela peut être évalué en analysant la résistance du code aux outils d'ingénierie inverse, tels que les décompilateurs et les désassembleurs.
 
-To match any string which begins _with_ "uwu", you'd have:
-```java
-^uwu
-```
+### Performances
+Les performances du code obfusqué sont un autre facteur crucial dans l'évaluation de sa qualité. L'obfuscation ne doit pas avoir d'impact significatif sur le temps d'exécution ou l'utilisation de la mémoire du code. Il est également important de noter que le code obfusqué ne doit pas introduire de nouveaux bugs ou erreurs qui pourraient affecter les performances globales du code. Tout problème de performance introduit par la technique d'obfuscation doit être identifié et résolu.
 
-So the following would happen:
-```java
-kitty-uwu // No match!
-uwu-kitty // Match!
-```
+### Résumé
 
-- `kitty-uwu` would not match because uwu is a suffix in this scenario, and therefore doesn't begin with the requirement `uwu`.
-- `uwu-kitty` *would* match in this scenario because the correct prefix specified is present.
-
-***
-
-If you'd like to read more about Regex, find out here: [Regex tutorial](https://medium.com/factory-mind/regex-tutorial-a-simple-cheatsheet-by-examples-649dc1c3f285)
-
-## Écrire des exclusions
-This is very simple and easy to do.
-
-- Create a file to write your exclusions in, we recommend using a txt file.
-
-Skidfuscator reads inclusions and exclusions the same way: if it matches a regex pattern, __**it will not be read or obfuscated****.
-
-### Exclusions
-By using regex forward matching as seen below, you are able to match any type of class. Remember to escape any "/" with a "\\" to prevent Regex from comitting seppuku and you spending hours figuring out what's wrong.
-
-See below various examples of matching classes & methods for exclusions:
-
-```java
-// This will match any method with the name "main"
-method{main} 
-// This will match any method which starts with "com.apache" 
-// (any class name replaces the "." with "/"
-class{^com\/apache} 
-// This will match any method which starts with "com.google" 
-// (any class name replaces the "." with "/"
-class{^com\/google} 
-// This will match any method in the class "Controller"
-class{Controller$} 
-// This will match any method in the class "com.example.MyClass"
-class{^com\/example\/MyClass$}
-```
-
-#### Multiple exclusions
-
-To be able to exclude for example several methods, or packages, it's quite simple really! All you have to do is create a new line and add the new exemption :)
-
-```java
-class{^com\/apache} // Correspond à apache
-class{^com\/google} // Correspond à google
-```
-
-
-### Inclusions
-As opposed to exclusions, you may want to **only include a particular set of classes or a package** in your obfuscated jar. Fret not, this is possible, albeit a little more complicated.
-
-```java
-// This will match all classes of the package "com.example"
-class{^(?!(com\/example)).*$} 
-
-// This will match all classes of the package "com.example" and 
-// all of the classes of the package "com.eclipse". 
-// You may add as many packages as you wish with the "|" argument.
-class{^(?!(com\/example)|(com\/eclipse)).*$} 
-```
-
-## Debugging Exclusions
-
-I strongly recommend using a regex debugger, such as [Regex101](https://regex101.com/), to be able to figure out what matches and what does not.
-
-All class names, by default, follow the format "package1/package2/class1". Whilst you may see in the JVM it is formatted differently, in the case of Skidfuscator, the above format was decided to be the most effective and reflective of Jar/Zip file hierarchy.
-
-## Exemple de fichier d'exclusion
-
-Un grand nombre de nos clients développent des modifications ou des plugins Minecraft, voir ci-dessous un modèle / un fichier de configuration exemplaire avec les exclusions les plus couramment requises :
-
-```java
-// Package exclusions below
-class{^net\/minecraftforge} // Matches Minecraft Forge
-class{^net\/minecraft\/client} // Matches Minecraft Client
-class{^net\/minecraft\/server} // Matches Minecraft Server
-class{^org\/bukkit} // Matches Bukkit
-class{^com\/mojang} // Matches Mojang
-class{^me\/johnymuffin} // Matches JohnyMuffin
-class{^com\/sk89q} // Matches Sk89q
-class{^org\/spigotmc} // Matches SpigotMC
-class{^org\/apache\/commons} // Matches Apache Commons
-class{^org\/jline} // Matches JLine
-
-// Method exclusions below 
-method{^net\.minecraft\.client} // Excludes all methods from net.minecraft.client package 
-method{^net\.minecraft\.util} // Excludes all methods from net.minecraft.util package 
-method{^net\.minecraft\.client\.Minecraft} // Excludes all methods from the Minecraft class
-```
+Dans l'ensemble, la qualité du code Java obfusqué peut être évaluée en fonction de plusieurs facteurs, tels que la taille et la complexité du code, la sécurité, la maintenabilité et les performances. L'obfuscation ne doit pas avoir un impact significatif sur ces facteurs, et tout problème introduit par la technique d'obfuscation doit être identifié et résolu rapidement.
