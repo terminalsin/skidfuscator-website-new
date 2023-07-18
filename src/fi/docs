@@ -1,19 +1,13 @@
+## Kytkinten Suojaus
 
-## Flow Range
-Flow Exception Range Obfuscation ajoa käytetään kääntäjäoptimoinnissa lisäämään peittelyä ohjelman poikkeuskäsittelykoodiin.
-
-Tämän tekniikan ideana on muuttaa ohjelman poikkeuskäsittelyrutiineja (kuten try-catch-lohkoja) siten, että ne sisältävät ylimääräisiä ohjausvirtaohjeita, jotka vaikeuttavat ohjelman loogisen virtauksen ymmärtämistä.
-
-Esimerkiksi yksinkertainen try-catch-lohko voidaan muuttaa monimutkaisemmaksi rakenteeksi, joka sisältää sisäkkäisiä try-catch-lohkoja tai ylimääräisiä haarautumisohjeita. Tämä voi vaikeuttaa ranskalaista ymmärtämään ohjelman poikkeuskäsittelykäyttäytymistä ja mahdollisesti paljastamaan haavoittuvuuksia, joita voitaisiin käyttää hyväksi.
-
-Tätä tekniikkaa käytetään usein yhdessä muiden hämärtymisen tekniikoiden kanssa, jotta voidaan tarjota ylimääräisiä suojakerroksia. On kuitenkin huomattava, että tarpeettoman monimutkaisuuden lisääminen poikkeustenkäsittelykoodiin voi myös vaikeuttaa ohjelman virheenkorjausta ja ylläpitoa, joten sitä tulisi käyttää kaikkialla.
+Tämä erityinen muuntaja kohdistuu yksinomaan switch-lausekkeisiisi peittääkseen kaikki muuttujat, piilottaen tehokkaasti enumit, vakiot ja merkkijonokohteet. Tämä tehdään käyttämällä läpinäkymätöntä predikaattia ja erityistä hashing-mekanismia, jolla estetään kaikki ilmeiset käänteiskehitystekniikat.
 
 ## Konfiguroi
 
 ```js
-flowRange {
-     enabled: true
-     exempt: []
+flowSwitch {
+    enabled: true
+    exempt: []
 }
 ```
 
@@ -21,53 +15,41 @@ flowRange {
 
 #### Suojaamaton
 ```java
-final String uwu = "UwU";
-System.out.println(uwu);
+public static void main(String[] args) {
+    int number = callNumber();
+
+    switch (number) {
+        case 1: 
+            System.out.println("Oh no!");
+            break;
+        case 2: 
+            System.out.println("Hello world!");
+            break
+        default: 
+            throw new IllegalStateException("Something went wrong!");
+    }
+    /*[...]*/
+}
+/*[...]*/
 ```
 
 #### Suojattu
 ```java
-final String uwu = "UwU";
+public static void main(String[] args) {
+    /*[...]*/
+    int number = callNumber();
 
-while (true) {
-     label1: {
-          try {
-               if (this.a(0x92A8B44, n) >> 8 != 0x97F7F)
-                    throw new IllegalReflectiveException();
-               break label1;
-          } catch (IllegalReflectiveException ex) {
-               System.out.println(uwu);
-          }
-     }
+    switch (number ^ hash(n ^ 0x9932783)) {
+        case 0x928EF8C: 
+            System.out.println("Hello world!");
+            break
+        case 0x9873783: 
+            System.out.println("Oh no!");
+            break;
+        default: 
+            throw new IllegalStateException("Something went wrong!");
+    }
+    /*[...]*/
 }
-```
-
-#### IR Edustus
-```
- Original flow:       Obfuscated Flow:
-
- ┌─────────┐            ┌─────────┐
- │ Block A │            │ Block A │
- └────┬────┘            └────┬────┘
-      │                      │
- ┌────▼────┐         ┌───────▼────────┐
- │ Block B │         │ Random If Stmt │
- └─────────┘         └───────┬────────┘
-                             │
-                   ┌─────┐◄──┴───►┌─────┐
-                   │ Yes │        │ No  │
-                   └─────┘        └──┬──┘
-                                     │
-                               ┌─────▼─────┐
-                               │ Exception │
-                               └───────────┘
-
-                      ┌─────────────┐
-                      │  Exception  │
-                      │   Catcher   │
-                      └──────┬──────┘
-                             │
-                        ┌────▼────┐
-                        │ Block B │
-                        └─────────┘
+/*[...]*/
 ```
