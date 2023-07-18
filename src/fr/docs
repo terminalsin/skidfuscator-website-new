@@ -1,15 +1,19 @@
-# Hello Stranger
+## Renforcement par pilote
 
-Bienvenue sur le wiki de skidfuscator-java-obfuscator !
+Le pilote (driver) est la partie de renforcement (hardening) de Skidfuscator. Cette fonctionnalité est réservée aux membres Premium. En résumé, pour chaque obfuscation, un nouveau pilote est généré et compilé pour les architectures suivantes :
 
-Vous pensiez que nous n'avions pas grand-chose à dire, n'est-ce pas ? Maintenant, nous avons tous les bons sujets, ahah.
+| Système d'exploitation | Architectures supportées |
+| ---------------------- | ------------------------ |
+| Windows                | x64_86                   |
+| MacOS                  | x64_86, AARCH64 (ARM)    |
+| Linux                  | x64_86 (AMD64)           |
 
-# Table des matières
-1. [Installation](/docs/installation.html)
-2. [Mise en route](/docs/gettingstarted.html)
-3. [Exclusions](/docs/exclusion.html)
-4. [Bibliothèques](/docs/libraries.html)
-5. [À propos de nous](/docs/about.html)
-6. [Introduction à l'obfuscation Java](/docs/javaobf.html)
-7. [Signalement de bugs](/docs/bugreporting.html)
-8. [Transformateurs](/docs/transformers.html)
+
+## Configuration
+Pour activer cette fonctionnalité (:warning: cela augmente considérablement la puissance de l'obfuscation), vous devez modifier la valeur booléenne suivante :
+
+```js
+driver: {
+    enabled: false // Désactivé par défaut
+}
+```
