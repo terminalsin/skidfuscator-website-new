@@ -1,58 +1,53 @@
-## Cifratura Numero
+## Renamer Metodo
 
-Il trasformatore di crittografia numerica crittografa qualsiasi numerale basato su interi da nascondere. Questo è perfetto per brutto il codice in generale e renderlo più difficile per gli ingegneri invertiti per ottenere un codice sorgente pulito. Questo rafforza inoltre qualsiasi condizionale booleano.
-
-La crittografia numerica si basa sull'offuscamento del flusso GEN3 e può, in uscita decompilata, mostrare come segue
-
-Assume il seguente scenario:
-- $x$ è il numero che vogliamo crittografare
-- $n$ è il "seed" del blocco
-- $d$ è il numero crittografato
-
-Secondo la semplice meccanica xor: $x\oplus n\oplus n=x$
-
-Quindi, per definizione, se $n$ è il nostro seme, al runtime dobbiamo calcolare $d$ come $d = x\oplus n$. Poi, dobbiamo modificare le istruzioni di bytecode come:
-
-```java
-int value = x;
-```
-
-diventa
-```java
-int value = x;
-```
-
-Dove $d$ è il valore calcolato prima del tempo sotto forma di costante e $n$ il predicato opaco. Esempio:
-```java
-int valore = 5;
-```
-diventa
-```java
-int predicate = 0x100;
-int value = 105 ^ predicate;
-```
+Il rinominatore del metodo cerca di rinominare con precisione un intero metodo per impedire la conservazione dei nomi del metodo. Per ottenere questo, Skidfuscator crea "gruppi di metodo" per preservare efficacemente il metodo hierachy. Ad esempio, se la `classe B` estende la `classe A` e la `classe A` implementa il `metodoA()`, tutte le chiamate a `metodoA()` sia per la `classe A` che per la `classe B` dovrà essere rinominato.
 
 ## Configurazione
+Il rinominatore del metodo attualmente supporta un dizionario, `ALPHABETICAL`, accanto al dizionario personalizzato tradizionale, `CUSTOM`, basato su input. In questo scenario, sono disponibili le seguenti opzioni:
+- Profondità: quanti letterali saranno usati per impostazione predefinita (es.: 3 profondità porterà a o0o0o0 per il primo elemento, o 1 profondità porterà a o0 per il primo elemento)
+- Caratteri: Caratteri che devono essere utilizzati dal trasformatore.
 
-Attualmente, c'è solo una modalità di cifratura numerica, `STANDARD`
+::: warning
+Al momento, il trasformatore non gestisce caratteri duplicati e creerà in modo improprio nomi di metodo identici. Ad esempio, non usare "o", "0" e "o0" in quanto quest'ultimo è una combinazione dei due caratteri precedenti.
+:::
 
 ```js
-numberEncryption {
-    enabled: true
-    exempt: []
+methodRenamer {
+    enabled: false
+    type: CUSTOM // or 'ALPHABETICAL'
+    chars: [
+        "K"
+        "oO",
+        "o0"
+    ]
+    depth: 3
 }
 ```
 
 ## Esempi
+
 #### Unofuscato
+
 ```java
-int var = 1000;
-System.out.println(var + 1 + 2 + 3);
+public static void main(String[] args) {
+    int number = callNumber();
+    /*[...]*/
+}
+
+static int callNumber() {
+    return 1;
+}
 ```
 
 #### Offuscato
 ```java
-int var = 0xA0290233 ^ n;
-System.out.println(var + 0x92083838 ^ n + 0x92083839 ^ n + 0x92083840 ^ n);
-```
+public static void main(String[] args) {
+    int number = o0k0k0Kk();
+    /*[...]*/
+}
 
+
+static int o0k0k0Kk() {
+    return 1;
+}
+```
