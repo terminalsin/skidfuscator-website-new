@@ -1,6 +1,58 @@
-# Forge 1.8.8
+## Sayı Şifrelemesi
 
-## Giriş
-Forge Minecraft 1.8.8, notoriously used for Skyblock mods, legacy mods and hacked clients, is specifically different in how it operates in conjunction to other versions of Forge. Most typically, you will need to set up a full environment to obtain the decompiled version of Minecraft to be able to obtain the dependency, one which is required to pass build status.
+Sayı şifreleme dönüştürücüsü integer tabanlı sayıları gizli olmaları için şifreler. Bu kodunuzu genel olarak okunamaz yapmak ve tersine mühendislerin temiz bir kaynak kodu elde etmesini zorlaştırmak için mükemmeldir. Bu ayrıca boolean tabanlı koşulluları da güçlendirir.
 
-## 
+Bu sayı şifrelemesi GEN3 flow kod gizleyicisine dayanır ve decompile edilmiş sonuç aşağıdaki gibidir
+
+Aşağıdaki senaryoyu varsayalım:
+- $x$ bizim şifrelemek istediğimiz sayı
+- $n$ bloğun tohumu
+- $d$ şifrelenmiş sayı
+
+Basit xor mekaniklerine göre: $x\oplus n\oplus n=x$
+
+Yani, tanım olarak, eğer $n$ bizim tohumumuz ise, çalışma zamanında $d$ sayısını $d = x\oplus n$ olarak hesaplamalıyız. Daha sonra, bytecode talimatlarını şu şekilde düzenlemeliyiz:
+
+```java
+int deger = x;
+```
+
+şuna dönüşür:
+```java
+int deger = d ^ n;
+```
+
+Bu durumda $d$ daha önceden hesaplanmış sabit değerdir ve $n$ de opak yüklemdir (opaque predicate). Örnek:
+```java
+int deger = 5;
+```
+şuna dönüşür:
+```java
+int tahmin = 0x100;
+int deger = 105 ^ tahmin;
+```
+
+## Yapılandırma
+
+Şu anda, Sayı Şifrelemesinin sadece bir modu var, `STANDARD`
+
+```js
+numberEncryption {
+    enabled: true
+    exempt: []
+}
+```
+
+## Örnekler
+#### Gizlenmemiş Kod
+```java
+int dgr = 1000;
+System.out.println(dgr + 1 + 2 + 3);
+```
+
+#### Gizlenmiş Kod
+```java
+int dgr = 0xA0290233 ^ n;
+System.out.println(dgr + 0x92083838 ^ n + 0x92083839 ^ n + 0x92083840 ^ n);
+```
+
