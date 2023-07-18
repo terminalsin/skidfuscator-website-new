@@ -1,19 +1,49 @@
-## Driver Indurimento
+## Eccezione Ritorno
 
-Il driver è la parte di indurimento di Skidfuscator. Questa funzione è riservata a Premium. In poche parole, per offuscamento, viene generato e compilato un nuovo driver per le seguenti architetture:
+Eccezione ritorno offuscazione è una tecnica di programmazione utilizzata per rendere il flusso di controllo di un programma più difficile da capire e analizzare offuscando risultati di ritorno e standardizzando ogni metodo per avere un valore di ritorno vuoto.
 
-| Sistema Operativo | Architetture Supportate |
-| ----------------- | ----------------------- |
-| Windows           | x64_86                  |
-| MacOS             | x64_86, AARCH64 (ARM)   |
-| Linux             | x64_86 (AMD64)          |
+In poche parole, questa tecnica sostituisce le normali dichiarazioni di ritorno con blocchi di gestione ad eccezione che rendono il flusso di controllo del programma meno prevedibile. Quando viene sollevata un'eccezione, il programma salta a un gestore di eccezione designato, che restituisce il valore desiderato o esegue l'azione prevista. Questo rende il codice più difficile da leggere, analizzare e reverse engineer, fornendo così un livello di protezione contro la manomissione o la pirateria.
 
+'''avviso Questa tecnica di offuscamento è ancora sperimentale e potrebbe non essere compilata con successo su programmi più grandi. Proprio per questo motivo, è disabilitato per impostazione predefinita. '''
 
 ## Configurazione
-Per abilitare questa funzione (:warning: questo aumenta significativamente la forza di offuscamente), devi attivare o disattivare il booleano:
 
 ```js
-driver: {
-    enabled: false // Disattivato di default
+exceptionReturn {
+    enabled: false
+    exempt: []
 }
 ```
+
+## Esempi
+
+### Unofuscato
+
+```java
+int number = callNumber();
+ [...]
+}
+
+int callNumber() {
+    return 1;
+}
+```
+
+### Offuscato
+```java
+try {
+    callNumber();
+} catch (IntNumberException ex) {
+    int number = ex.getValue();
+}
+
+[...]
+
+void callNumber() {
+    throw new IntNumberException(1);
+}
+```
+
+
+
+
