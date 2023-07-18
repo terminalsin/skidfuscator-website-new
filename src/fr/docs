@@ -1,51 +1,58 @@
-## Chiffrement des annotations (Annotation Encryption)
+## Chiffrement des nombres (Number Encryption)
 
-Le transformateur de chiffrement d'annotation transforme chaque chaîne de caractères et entier contenu dans les annotations en un appel de méthode spécifique, dans le but de le masquer à l'exécution. Cela peut être pratique pour les URL non sensibles, les clés privées, etc...
+Le transformateur de chiffrement des nombres chiffre tout chiffre basé sur des entiers pour le masquer. Ceci est parfait pour rendre le code illisible en général et rendre plus difficile pour les rétro-ingénieurs d'obtenir un code source clair. Cela renforce en outre toutes les conditions basées sur des booléens.
 
-::: warning
-Vous ne devriez pas faire confiance au client. Ne comptez pas sur le cryptage de chaînes de caractères comme seule protection pour votre logiciel . En règle générale, vous devriez supposer qu'un rétro-ingénieur suffisamment talentueux pourrait y accéder avec suffisamment de temps et de patience.
-:::
+Le chiffrement des nombres repose sur l'obfuscation de flux GEN3 et peut, dans la sortie décompilée, apparaître comme suit :
 
+Supposons le scénario suivant :
+- $x$ est le nombre que nous voulons chiffrer
+- $n$ est la « graine » (seed) du bloc
+- $d$ est le numéro chiffré
+
+Selon la mécanique xor simple : $x\oplus n\oplus n=x$
+
+Donc, par définition, si $n$ est notre graine, on doit calculer $d$ comme $d = x\oplus n$. Ensuite, nous devons modifier les instructions de bytecode telles que :
+
+```java
+int value = x;
+```
+
+devient
+```java
+int value = d ^ n;
+```
+
+Là où $d$ est la valeur calculée à l'avance sous la forme d'une constante et $n$ le prédicat opaque. Exemple :
+```java
+int value = 5;
+```
+devient
+```java
+int predicate = 0x100;
+int value = 105 ^ predicate;
+```
 
 ## Configuration
 
-```js
-stringAnnotationEncryption {
-    enabled: true
-    exempt: []
-}
+Actuellement, il n'y a qu'un seul mode de chiffrement des chiffres, `STANDARD`
 
-intAnnotationEncryption {
+```js
+numberEncryption {
     enabled: true
     exempt: []
 }
 ```
 
 ## Examples
-
-### Non obfusqué
-
+#### Non obfusqué
 ```java
-@SecretAnnotation(secret = "Super secret", secret2 = 1337)
-public class Fancy {
-    public String getSecret() {
-        return this.getClass().getAnnotation(SecretAnnotation.class).secret();
-    }
-
-    public int getSecre2t() {
-        return this.getClass().getAnnotation(SecretAnnotation.class).secret2();
-    }
-}
+int var = 1000;
+System.out.println(var + 1 + 2 + 3);
 ```
 
-### Obfusqué
+#### Obfusqué
+```java
+int var = 0xA0290233 ^ n;
+System.out.println(var + 0x92083838 ^ n + 0x92083839 ^ n + 0x92083840 ^ n);
+```
 
-```java @SecretAnnotation(secret = "oifjaioejaifjea9è!efèaefFEf==", secret2 = 0x9FE7FE7F) public class Fancy { public String getSecret() { /* [...] */ return this.aofheoafo(this.getClass().getAnnotation(SecretAnnotation.class).secret(), n ^ 0x997AF8F); }
-
-    public int getSecre2t() {
-        /* [...] */
-        return this.getClass().getAnnotation(SecretAnnotation.class).secret2() ^ n ^ 0x90AF9F7;
-    }
-    
-    /* [...] */
-}```
