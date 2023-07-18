@@ -1,19 +1,13 @@
+## Flow Switch
 
-## Flow Range
-Technika stosowana w optymalizacji kompilatora w celu dodania zaciemnienia do kodu obsługi wyjątków programu.
-
-Ideą tej techniki jest zmodyfikowanie procedur obsługi wyjątków programu (takich jak bloki try-catch) w celu włączenia dodatkowych instrukcji przepływu sterowania, które utrudniają zrozumienie logicznego flow programu.
-
-For example, a simple try-catch block might be transformed into a more complex structure that includes nested try-catch blocks or additional branching instructions. Może to utrudnić osobie, która czyta dekompiluj ekod zrozumienie zachowania obsługi wyjątków programu i potencjalnie odkryć luki, które można wykorzystać.
-
-Technika ta jest często stosowana w połączeniu z innymi technikami zaciemniania, aby zapewnić dodatkowe warstwy ochrony. Należy jednak zauważyć, że dodawanie niepotrzebnej złożoności do kodu obsługi wyjątków może również utrudnić debugowanie i utrzymanie programu, dlatego należy go używać z rozwagą.
+Ten konkretny transformer celuje wyłącznie w instrukcje switch, aby zaciemnić wszelkie zmienne, skutecznie ukrywając wyliczenia i stringi. Jest to osiągane poprzez użycie nieprzejrzystego predykatu oraz specjalnego mechanizmu haszowania, który ma na celu zapobieganie oczywistym technikom deobfuskacji.
 
 ## Konfiguracja
 
 ```js
-flowRange {
-     enabled: true
-     exempt: []
+flowSwitch {
+    enabled: true
+    exempt: []
 }
 ```
 
@@ -21,53 +15,41 @@ flowRange {
 
 #### Brak zaciemnienia
 ```java
-final String uwu = "UwU";
-System.out.println(uwu);
+public static void main(String[] args) {
+    int number = callNumber();
+
+    switch (number) {
+        case 1: 
+            System.out.println("Oh no!");
+            break;
+        case 2: 
+            System.out.println("Hello world!");
+            break
+        default: 
+            throw new IllegalStateException("Something went wrong!");
+    }
+    /*[...]*/
+}
+/*[...]*/
 ```
 
 #### Zaciemniony kod
 ```java
-final String uwu = "UwU";
+public static void main(String[] args) {
+    /*[...]*/
+    int number = callNumber();
 
-while (true) {
-     label1: {
-          try {
-               if (this.a(0x92A8B44, n) >> 8 != 0x97F7F)
-                    throw new IllegalReflectiveException();
-               break label1;
-          } catch (IllegalReflectiveException ex) {
-               System.out.println(uwu);
-          }
-     }
+    switch (number ^ hash(n ^ 0x9932783)) {
+        case 0x928EF8C: 
+            System.out.println("Hello world!");
+            break
+        case 0x9873783: 
+            System.out.println("Oh no!");
+            break;
+        default: 
+            throw new IllegalStateException("Something went wrong!");
+    }
+    /*[...]*/
 }
-```
-
-#### IR Representation
-```
- Original flow:       Obfuscated Flow:
-
- ┌─────────┐            ┌─────────┐
- │ Block A │            │ Block A │
- └────┬────┘            └────┬────┘
-      │                      │
- ┌────▼────┐         ┌───────▼────────┐
- │ Block B │         │ Random If Stmt │
- └─────────┘         └───────┬────────┘
-                             │
-                   ┌─────┐◄──┴───►┌─────┐
-                   │ Yes │        │ No  │
-                   └─────┘        └──┬──┘
-                                     │
-                               ┌─────▼─────┐
-                               │ Exception │
-                               └───────────┘
-
-                      ┌─────────────┐
-                      │  Exception  │
-                      │   Catcher   │
-                      └──────┬──────┘
-                             │
-                        ┌────▼────┐
-                        │ Block B │
-                        └─────────┘
+/*[...]*/
 ```
