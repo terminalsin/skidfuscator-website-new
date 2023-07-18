@@ -1,49 +1,61 @@
-## Poikkeuksen Palautus
+## Ohjausvirran kulkuväylän tila
 
-Edistyksellinen poikkeuspalautussuojamme on tehokas ohjelmointitekniikka, jota käytetään tekemään ohjelman ohjausvirrasta huomattavasti vaikeammin ymmärrettävää ja analysoitavaa häivyttämällä palautustulokset ja standardoimalla jokaisen metodin palautusarvo tyhjäksi.
+Tämä transfomer toimii ensimmäisenä kilvenä vaikeaselkoisen ennustaa analyysi. Voit estää staattisen analyysin havaitsemisesta mikä kokonaisluku on läpinäkymätön ennuste, käytämme tätä erityistä kokonaislukua lisätä ylimääräisiä ehtoja jo olemassa jos lausekkeet. Tämä ei ainoastaan lisää ohjelmiston turvallisuutta, vaan myös vaikeuttaa monien työkalujen deobfuskurointi ja dekompilointiprosessia.
 
-Pähkinänkuoressa, tämä tekniikka korvaa normaalin palautuksen lausunnot lukuun ottamatta käsittelylohkoja, jotka tekevät ohjelman ohjaus virtaus vähemmän ennustettavissa. Kun poikkeus herää, ohjelma hyppää nimetylle poikkeuskäsittelijälle, joka palauttaa halutun arvon tai suorittaa halutun toiminnon. Tämä tekee koodista vaikean lukea, analysoida ja takaisinmallintaa, mikä tarjoaa suojan peukalointia tai piratismia vastaan.
-
-'''warning Tämä häivytystekniikka on vakaa ja onnistuu aina kääntämään suurempia ohjelmia. Juuri tästä syystä se on oletusarvoisesti pois päältä. '''
+Flow Exception -muuntimeen verrattuna tämä on paljon yksinkertaisempi versio, joka käsittelee vain yhtä ääritapausta.
 
 ## Konfiguroi
 
 ```js
-exceptionReturn {
-    enabled: false
+flowCondition {
+    enabled: true
     exempt: []
 }
 ```
 
 ## Esimerkkejä
 
-### Suojaamaton
-
+#### Suojaamaton
 ```java
-int number = callNumber();
- [...]
-}
+public static void main(String[] args) {
+    int number = callNumber();
 
-int callNumber() {
-    return 1;
+    if (number == 1) {
+        System.out.println("Hello world");
+    }
+    /*[...]*/
 }
+/*[...]*/
 ```
 
-### Suojattu
+#### Suojattu
 ```java
-try {
-    callNumber();
-} catch (IntNumberException ex) {
-    int number = ex.getValue();
-}
+public static void main(String[] args) {
+    /*[...]*/
+    label1: {
+        while (true) {
+            if (n ^ 0x8AF8EF8F == 0xA88FFA) {
+                break;
+            }
 
-[...]
+            n = n ^ 0x28847D;
+            int number = callNumber();
 
-void callNumber() {
-    throw new IntNumberException(1);
+            label2: {
+                if (number != 1)
+                    break label1;
+
+                if (n ^ 0xAA9F8FFD != 0x989F7AF)
+                    break label2;
+
+                System.out.println("Hei maailma");
+                break label1;
+            }
+
+            throw new IllegalStateException();
+        }
+    }
+    /*[...]*/
 }
+/*[...]*/
 ```
-
-
-
-
