@@ -1,55 +1,135 @@
-## Commutation de flux
+# Écriture des exclusions (Skidfuscator ≥ 2.0.0)
 
-Ce transformateur spécifique cible exclusivement vos instructions "switch" pour obfusquer les variables, masquant ainsi les énumérations, les constantes et les cibles de chaînes de caractères. Cela est réalisé grâce à l'utilisation du prédicat opaque et d'un mécanisme de hachage spécial pour empêcher toute technique d'ingénierie inverse évidente.
+Une expression régulière (regex) est un type de motif de recherche utilisé pour identifier des chaînes de caractères. Elle est généralement utilisée pour rechercher, remplacer et valider du texte. Les expressions régulières sont écrites dans un langage formel et sont utilisées en programmation, en science des données et dans d'autres applications.
 
-## Configuration
+Skidfuscator utilise des expressions régulières pour gérer l'aspect d'inclusion et d'exclusion de sa configuration.
 
-```js
-flowSwitch {
-    enabled: true
-    exempt: []
-}
+Comprendre les exclusions peut sembler délicat au début, mais croyez-moi, c'est assez facile une fois que vous aurez compris comment ça fonctionne.
+
+Avant tout, il est important de comprendre les bases des expressions régulières (regex).
+
+## Bases du Regex (Expressions régulières)
+
+- Voici un exemple pour correspondre à tout :
+```java
+(.*?)
 ```
 
-## Examples
-
-#### Non obfusqué
+Ainsi, ce qui suit se produirait :
 ```java
-public static void main(String[] args) {
-    int number = callNumber();
-
-    switch (number) {
-        case 1: 
-            System.out.println("Oh no!");
-            break;
-        case 2: 
-            System.out.println("Hello world!");
-            break
-        default: 
-            throw new IllegalStateException("Something went wrong!");
-    }
-    /*[...]*/
-}
-/*[...]*/
+abozeofez // Correspond !
+zeigzoegze // Correspond !
 ```
 
-#### Obfusqué
-```java
-public static void main(String[] args) {
-    /*[...]*/
-    int number = callNumber();
+***
 
-    switch (number ^ hash(n ^ 0x9932783)) {
-        case 0x928EF8C: 
-            System.out.println("Hello world!");
-            break
-        case 0x9873783: 
-            System.out.println("Oh no!");
-            break;
-        default: 
-            throw new IllegalStateException("Something went wrong!");
-    }
-    /*[...]*/
-}
-/*[...]*/
+- Pour correspondre à n'importe quelle chaîne contenant "roar", vous auriez :
+```java
+roar
+````
+
+Donc, les situations suivantes se produiraient :
+```java
+roar // Correspond !
+asdafroar // Correspond !
+grrr // Ne correspond pas !
+```
+
+***
+
+Pour correspondre à toute chaîne commençant _par_ "uwu", vous auriez :
+```java
+^uwu
+```
+
+Donc, les situations suivantes se produiraient :
+```java
+kitty-uwu // Ne correspond pas !
+uwu-kitty // Correspond !
+```
+
+- `kitty-uwu` ne correspondrait pas car uwu est un suffixe dans ce scénario et ne commence donc pas par l'exigence `uwu`.
+- `uwu-kitty` *correspondrait * dans ce scénario car le préfixe spécifié est présent.
+
+***
+
+Si vous souhaitez en savoir plus sur les expressions régulières, consultez ici : [Tutoriel sur les expressions régulières](https://medium.com/factory-mind/regex-tutorial-a-simple-cheatsheet-by-examples-649dc1c3f285)
+
+## Écrire des exclusions
+C'est très simple et facile à faire.
+
+- Créez un fichier pour écrire vos exclusions, nous vous recommandons d'utiliser un fichier texte (.txt).
+
+Skidfuscator lit les inclusions et les exclusions de la même manière : si cela correspond à un modèle regex, __**il ne sera pas lu ni obfusqué****.
+
+### Exclusions
+En utilisant la correspondance avancée des expressions régulières comme indiqué ci-dessous, vous pouvez correspondre à n'importe quel type de classe. N'oubliez pas d'échapper tout "/" avec "\\" pour éviter que les expressions régulières ne se terminent prématurément et pour vous éviter de passer des heures à comprendre ce qui ne va pas.
+
+Voici quelques exemples de correspondance de classes et de méthodes pour les exclusions :
+
+```java
+// Cela correspondra à n'importe quelle méthode avec le nom "main"
+method{main} 
+// Cela correspondra à n'importe quelle méthode qui commence par "com.apache" 
+// (tout nom de classe remplace le "." par "/")
+class{^com\/apache} 
+// Cela correspondra à n'importe quelle méthode qui commence par "com.google" 
+// (tout nom de classe remplace le "." par "/")
+class{^com\/google} 
+// Cela correspondra à n'importe quelle méthode dans la classe "Controller"
+class{Controller$} 
+// Cela correspondra à n'importe quelle méthode dans la classe "com.example.MyClass"
+class{^com\/example\/MyClass$}
+```
+
+#### Exclusions multiples
+
+Pour pouvoir exclure par exemple plusieurs méthodes ou packages, c'est assez simple ! Il vous suffit de créer une nouvelle ligne et d'ajouter la nouvelle exemption :)
+
+```java
+class{^com\/apache} // Correspond à apache
+class{^com\/google} // Correspond à google
+```
+
+
+### Inclusions
+Contrairement aux exclusions, vous pouvez vouloir inclure **uniquement un ensemble particulier de classes ou un package** dans votre fichier jar obfusqué. Ne vous inquiétez pas, c'est possible, mais un peu plus compliqué.
+
+```java
+// Cela correspondra à toutes les classes du package "com.example"
+class{^(?!(com\/example)).*$} 
+
+// Cela correspondra à toutes les classes du package "com.example" et 
+// à toutes les classes du package "com.eclipse". 
+// Vous pouvez ajouter autant de packages que vous le souhaitez avec l'argument "|".
+class{^(?!(com\/example)|(com\/eclipse)).*$} 
+```
+
+## Débogage des exclusions
+
+Je recommande vivement d'utiliser un débogueur d'expressions régulières, tel que [Regex101](https://regex101.com/), pour comprendre ce qui correspond et ce qui ne correspond pas.
+
+Par défaut, tous les noms de classes suivent le format "package1/package2/classe1". Bien que vous puissiez voir qu'ils sont formatés différemment dans la JVM, dans le cas de Skidfuscator, le format ci-dessus a été jugé le plus efficace et reflète au mieux la hiérarchie des fichiers Jar/Zip.
+
+## Exemple de fichier d'exclusion
+
+Un grand nombre de nos clients développent des modifications ou des plugins Minecraft, voir ci-dessous un modèle / un fichier de configuration exemplaire avec les exclusions les plus couramment requises :
+
+```java
+// Exclusions de packages ci-dessous
+class{^net\/minecraftforge} // Correspond à Minecraft Forge
+class{^net\/minecraft\/client} // Correspond à Minecraft Client
+class{^net\/minecraft\/server} // Correspond à Minecraft Server
+class{^org\/bukkit} // Correspond à Bukkit
+class{^com\/mojang} // Correspond à Mojang
+class{^me\/johnymuffin} // Correspond à JohnyMuffin
+class{^com\/sk89q} // Correspond à Sk89q
+class{^org\/spigotmc} // Correspond à SpigotMC
+class{^org\/apache/commons} // Correspond à Apache Commons
+class{^org\/jline} // Correspond à JLine
+
+// Exclusions de méthodes ci-dessous
+method{^net\.minecraft\.client} // Exclut toutes les méthodes du package net.minecraft.client
+method{^net\.minecraft\.util} // Exclut toutes les méthodes du package net.minecraft.util
+method{^net\.minecraft\.client\.Minecraft} // Exclut toutes les méthodes de la classe Minecraft
 ```
