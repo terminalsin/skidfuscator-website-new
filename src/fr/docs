@@ -1,58 +1,53 @@
-## Chiffrement des nombres (Number Encryption)
+## Renommage de méthode (Method Renamer)
 
-Le transformateur de chiffrement des nombres chiffre tout chiffre basé sur des entiers pour le masquer. Ceci est parfait pour rendre le code illisible en général et rendre plus difficile pour les rétro-ingénieurs d'obtenir un code source clair. Cela renforce en outre toutes les conditions basées sur des booléens.
-
-Le chiffrement des nombres repose sur l'obfuscation de flux GEN3 et peut, dans la sortie décompilée, apparaître comme suit :
-
-Supposons le scénario suivant :
-- $x$ est le nombre que nous voulons chiffrer
-- $n$ est la « graine » (seed) du bloc
-- $d$ est le numéro chiffré
-
-Selon la mécanique xor simple : $x\oplus n\oplus n=x$
-
-Donc, par définition, si $n$ est notre graine, on doit calculer $d$ comme $d = x\oplus n$. Ensuite, nous devons modifier les instructions de bytecode telles que :
-
-```java
-int value = x;
-```
-
-devient
-```java
-int value = d ^ n;
-```
-
-Là où $d$ est la valeur calculée à l'avance sous la forme d'une constante et $n$ le prédicat opaque. Exemple :
-```java
-int value = 5;
-```
-devient
-```java
-int predicate = 0x100;
-int value = 105 ^ predicate;
-```
+Le renommage de méthode cherche à renommer avec précision une méthode entière pour empêcher la conservation des noms des méthodes. Pour y parvenir, Skidfuscator crée des "groupes de méthodes" pour préserver efficacement la hiérarchie des méthodes. Par exemple, si `class B` hérite de `class A`, et `class A` implémente `methodA()`, tous les appels à `methodA()` pour les classes `class A` et `class B` devront être renommées.
 
 ## Configuration
+Le renommage de méthode supporte actuellement un dictionnaire, `ALPHABETICAL`, aux côtés du dictionnaire traditionnel personnalisé, `CUSTOM`, basé sur l'entrée utilisateur. Dans ce scénario, les options suivantes sont disponibles :
+- Profondeur (Depth) : Combien de littéraux seront utilisés par défaut (ex: 3 de profondeur mèneront à o0o0 pour le premier élément, ou 1 profondeur conduira à o0 pour le premier élément)
+- Caractères (Chars) : Caractères à utiliser par le transformateur.
 
-Actuellement, il n'y a qu'un seul mode de chiffrement des chiffres, `STANDARD`
+::: warning
+Actuellement, le transformateur ne gère pas les caractères dupliqués et ne crée pas de noms de méthodes identiques. Par exemple, n'utilisez pas "o", "0" et "o0" car ce dernier est une combinaison des deux caractères précédents.
+:::
 
 ```js
-numberEncryption {
-    enabled: true
-    exempt: []
+methodRenamer {
+    enabled: false
+    type: CUSTOM // or 'ALPHABETICAL'
+    chars: [
+        "K"
+        "oO",
+        "o0"
+    ]
+    depth: 3
 }
 ```
 
 ## Examples
+
 #### Non obfusqué
+
 ```java
-int var = 1000;
-System.out.println(var + 1 + 2 + 3);
+public static void main(String[] args) {
+    int number = callNumber();
+    /*[...]*/
+}
+
+static int callNumber() {
+    return 1;
+}
 ```
 
 #### Obfusqué
 ```java
-int var = 0xA0290233 ^ n;
-System.out.println(var + 0x92083838 ^ n + 0x92083839 ^ n + 0x92083840 ^ n);
-```
+public static void main(String[] args) {
+    int number = o0k0k0Kk();
+    /*[...]*/
+}
 
+
+static int o0k0k0Kk() {
+    return 1;
+}
+```
