@@ -1,60 +1,72 @@
-# Démarrage
+# Transformateurs
 
-Vous avez donc réussi à télécharger Skidfuscator sur votre ordinateur et vous vous demandez comment le faire fonctionner ?
+Voici l'index où je détaillerai chaque transformateur un par un. Cela devrait vous aider à comprendre un peu ce qui se passe en coulisses et comment ces transformations sont efficaces contre l'ingénierie inverse.
 
-Skidfuscator s'exécute en ligne de commande, en utilisant le CLI. Nous vous conseillons fortement de le connaître afin de profiter d'une expérience de Skidfuscator fluide.
+Nous passerons en revue l'index suivant :
+- Obfuscation des nombres
+- Chiffrement des chaînes de caractères
 
-## Options du CLI pour Skidfuscator
+## Obfuscation des nombres
 
-Lancez simplement `java -jar <yourSkidfuscatorFile.jar>` et vous obtiendrez diverses options :
+Prenons le scénario suivant :
+- $x$ est le nombre que nous souhaitons chiffrer
+- $n$ est la "graine" (seed) du bloc
+- $d$ est le nombre chiffré
 
-![Options Skidfuscator](https://i.imgur.com/Yu70Pcq.png)
+Selon les mécanismes simples de xor : $x\oplus n\oplus n=x$
 
+Donc, par définition, si $n$ est notre graine, lors de l'exécution, nous devons calculer $d$ tel que $d = x\oplus n$. Ensuite, nous devons modifier l'instruction bytecode de la manière suivante :
 
-#### Votre jar d'entrée
-Le jar d'entrée que vous voulez obfusquer avec Skidfuscator.
-```cli
-<input>
+```java
+int value = x;
 ```
 
-#### Vos exclusions
-Le chemin vers le fichier qui contient vos exclusions.
-```cli
---exempt=<exempt>
+devient
+```java
+int value = d ^ n;
 ```
 
-#### Ignorer le calcul
-**UTILISEZ CECI À VOTRE PROPRES RISQUES** Saute complètement les formes critiques de calcul telles que les bibliothèques. Le support peut être limité si vous choisissez d'utiliser cette option.
-```cli
-`--fuckit
+Où $d$ est la valeur calculée à l'avance sous la forme d'une constante et $n$ est le prédicat opaque. Exemple :
+```java
+int value = 5;
+```
+devient
+```java
+int predicate = 0x100;
+int value = 105 ^ predicate;
 ```
 
-#### Vos bibliothèques
-Le chemin vers le dossier qui contient les bibliothèques / dépendances nécessaires pour obfusquer votre fichier jar.
-```cli
---libs=<libs>
-```
+## Chiffrement des chaînes de caractères
 
-#### Désactiver les statistiques
-Cette option ne nous fournira aucune analyse telle que les erreurs que vous pourriez rencontrer, ou des statistiques d'utilisation.
-```cli
---notrack
-```
+Le chiffrement des chaînes repose sur trois conditions de base avant de pouvoir être traité :
+1. La constante de chaîne doit être disponible dans la piscine (pool) de constantes
+2. La constante de chaîne doit être formatée en UTF-8
+3. La chaîne ne doit pas être vide
 
-#### Votre sortie
-Le chemin vers lequel vous voulez que votre jar obfusqué soit généré, si cette option est laissée vide, il sera généré dans le répertoire dans lequel Skidfuscator a été exécuté.
-```cli
---output=<output>
-```
+Avec cela, nous sommes capables d'injecter un système de chiffrement symétrique dans le code pour pouvoir obscurcir la chaîne des décompileurs/désassembleurs classiques.
 
-#### Calcul fantôme
-Permet d'activer le calcul fantôme pour les classes, encore une fois, si cette option est utilisée, le support peut être limité. Nous vous conseillons fortement de fournir les bibliothèques nécessaires et d'obfusquer votre fichier jar.
-```cli
---phantom
-```
+### Algorithme de Xor
 
-#### Spécification de l'exécutable
-Le chemin vers votre executable java.
-```cli
---runtime=<runtime>
-```
+À l'heure actuelle, nous utilisons un simple algorithme de xor qui est assez résistant pour calculer notre chaîne chiffrée. Bien que cet algorithme soit mathématiquement de très faible qualité et pourrait probablement être cassé en temps polynomial, voire linéaire, notre objectif ici est de proposer une implémentation facile et de preuve de concept de la façon dont un prédicat opaque peut renforcer le chiffrement des chaînes. Dans les versions futures de Skidfuscator, nous utiliserons un moteur polymorphique.
+
+L'algorithme fonctionne actuellement de la manière suivante :
+
+Soit $f_y(x)=x\oplus y\oplus n$ qui représente la méthode de chiffrement et de déchiffrement pour un caractère dans une chaîne donnée $n$ et $m_{max}$ de 255
+
+$y=i\mod m$
+
+où $i$ représente l'index du caractère dans la chaîne, $m$ représente la taille du tableau d'entiers aléatoires avec des "clés" aléatoires, $n$ représente le prédicat opaque entier, $x$ le caractère à l'index $i$ de la chaîne.
+
+Par définition : \begin{align} f_y(f_y(x))&=x\oplus y\oplus n\oplus y\oplus n\\ &=x\oplus y\oplus y\oplus n\oplus n\\ f_y(f_y(x))&=x \end{align}
+
+Ainsi, nous obtenons un algorithme de chiffrement/déchiffrement utilisable qui est renforcé par un prédicat opaque et une suite de clés entières stockées localement. L'implémentation peut être consultée [ici](https://github.com/terminalsin/skidfuscator-java-obfuscator/blob/master/dev.skidfuscator.obfuscator/obfuscator/src/main/java/dev/skidfuscator/obfuscator/transform/impl/string/BasicEncryptionGenerator.java).
+
+Le détourage fait référence au processus d'extraction de code d'une méthode et de placement dans une méthode séparée et indépendante. Cela est souvent fait pour améliorer la lisibilité et la maintenabilité du code, car cela peut rendre plus facile de comprendre ce qu'une méthode fait en la divisant en parties plus petites et plus ciblées.
+
+Le détourage peut également être utilisé comme une forme d'obfuscation du code, car il peut rendre plus difficile pour quelqu'un qui tente de décompiler ou de comprendre le code de voir le flux global et la structure du programme. En divisant le code en morceaux plus petits et en le séparant dans différentes méthodes, il peut être beaucoup plus difficile pour quelqu'un de comprendre les relations entre différentes parties du flux et comment elles s'assemblent pour effectuer une fonction particulière.
+
+![Explication du graphe de détourage](https://i.imgur.com/2HMq0a4.png)
+
+La chose fantastique à propos du détourage, c'est que ce n'est pas *techniquement* réversible ! Pour pouvoir revenir à un état original d'une bonne obfuscation par détourage, un désobfuscateur *doit effectuer l'insertion de code (inlining)*, qui est une heuristique et *ne garantit pas* que la sortie soit toujours sémantiquement correcte par rapport au code source original. De plus, cela nécessite au désobfuscateur de manipuler les variables et autres formes de manipulation délicate du bytecode, ce qui peut entraîner des exceptions de cadre et de calcul.
+
+Dans l'ensemble, l'obfuscation par détourage est plutôt astucieuse :)
