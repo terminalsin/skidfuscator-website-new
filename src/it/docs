@@ -1,25 +1,37 @@
-# Installazione
+# Introduzione a Java Obfuscation
 
-Skidfuscator è distribuito tramite il nostro sito web, GitHub, o il nostro canale di annunci del server Discord.
+Per quelli nuovi a java offuscamento, per ottenere una visione di base su come java offuscazione potrebbe funzionare, si consiglia di leggere questa semplice guida qui sotto. Per discussioni più complicate, ti consigliamo di consultare il nostro blog su https://blog.skidfuscator.dev
 
-## Le nostre piattaforme
-- [Sito](https://skidfuscator.dev)
-- [Discord](https://discord.gg/7pVgsRweeh)
-- [GitHub](https://github.com/terminalsin/skidfuscator-java-obfuscator)
+## Che cos’è Java Obfuscation?
+L'offuscamento è il processo di rendere qualcosa di difficile da capire. Viene spesso utilizzato per proteggere la proprietà intellettuale da accessi e usi non autorizzati. L'offuscamento può essere usato per nascondere informazioni sensibili, come le password, da essere facilmente ottenuto da hacker o altri attori dannosi. Viene anche utilizzato per proteggere il software dal reverse engineering, che può essere utilizzato per scoprire come funziona il software proprietario e per creare prodotti concorrenti.
 
-Si prega di notare che il GitHub è solo per la nostra versione gratuita, community edition di Skidfuscator.
+### Obscurezza
+Nel contesto di Java offuscamento, offuscamento viene utilizzato per proteggere il codice di un'applicazione Java da essere esposta, copiata o modificata. Viene utilizzato per rendere più difficile per gli hacker capire il codice, che aiuta a proteggere il codice sorgente da essere rubato o reverse engineered. L'offuscamento è fatto cambiando i nomi di classi, variabili e metodi, così come rimuovendo codice inutile o indesiderato e varie altre tecniche di sfruttamento per aiutare ad ottenere codice java originale più difficile. Questo rende il codice più difficile da capire, il che rende più difficile per gli hacker identificare le vulnerabilità o capire come funziona il codice.
 
-## Community Edition
+### Ridondanza
+Java offuscation può anche essere usato per ridurre le dimensioni dell'applicazione. Rimuovendo codici inutili e rinominando classi, metodi e variabili, la dimensione dell'applicazione può essere significativamente ridotta. Ciò può essere vantaggioso per le applicazioni che devono essere distribuite attraverso le reti, in quanto può ridurre il tempo di download e migliorare le prestazioni dell'applicazione.
 
-Puoi trovare il link per il download della community edition [qui](https://github.com/skidfuscatordev/skidfuscator-java-obfuscator/releases/), per l'edizione premium per favore visita il nostro sito web o unisciti al nostro Discord.
+## Tipi di tecniche note di offuscamento
 
-Si noti che Skidfuscator richiede Java 8 (es. JDK 1.8 o migliore) per funzionare correttamente.
+### Controllo offuscamento del flusso
+L'offuscamento del flusso di controllo in Java è una tecnica utilizzata per nascondere la struttura del codice di un programma e rendere difficile la comprensione o il reverse engineer. Funziona alterando il flusso di controllo del programma, o l'ordine in cui le istruzioni vengono eseguite. Ciò avviene riorganizzando le istruzioni, aggiungendo istruzioni ridondanti e introducendo ulteriori livelli di flusso di controllo. Ad esempio, un ciclo può essere sostituito con un'istruzione di ramo che salta in una parte diversa del codice, o una funzione può essere sostituita da un insieme annidato di funzioni che tutte devono essere eseguite in ordine. Inoltre, l'offuscamento del flusso di controllo può rendere difficile capire come funziona il codice e può anche rendere più difficile il reverse engineer. Aiuta anche a proteggere contro la manomissione di codice, in quanto rende più difficile iniettare codice dannoso nel programma.
 
-Il modo più pulito per eseguire Skidfuscator è utilizzare il parametro `-jar` nel vostro strumento di interfaccia a riga di comando, ti saranno presentate varie opzioni su come iniziare con l'offuscamento del tuo file.
+### Stringa e cifratura numerica
+La cifratura di numeri e stringhe è un tipo di offuscamento utilizzato nella programmazione Java. La cifratura numerica si riferisce al processo di codifica dei numeri in modo che non possano essere visti in testo semplice. Questo è fatto trasformando i numeri in una forma diversa, come binario o esadecimale, o utilizzando una chiave per crittografare i numeri. Questo rende difficile per qualcuno decrittografare i numeri e ottenere l'accesso al codice. La cifratura della stringa è simile alla cifratura numerica, ma viene utilizzata per proteggere le stringhe di testo. Questo viene fatto trasformando i caratteri nella stringa in un modulo diverso, come una codifica base64, o utilizzando una chiave per crittografare la stringa. Questo rende difficile per qualcuno di decifrare la stringa e capire il suo contenuto.
 
-## Allocazione di più memoria
-È importante notare che in genere si dovrebbe dare alla JVM più della quantità predefinita di memoria con cui lavorare. Se si utilizza il parametro -Xmx512m, si darà alla JVM una quantità massima di 512MB di memoria che dovrebbe essere adatto per la maggior parte degli scopi. Tuttavia, si dovrebbe essere sicuri di non dare la JVM più memoria di quanto è fisicamente disponibile. Altrimenti le prestazioni peggioreranno drasticamente man mano che la JVM inizia ad usare la memoria virtuale.
+## Valutazione Della Qualità
 
-Vedi qui sotto su come aggiungere più memoria a Skidfuscator:
+Assicurarsi che un obfuscator produca un output di alta qualità dopo l'applicazione di trasformatori di offuscamento è essenziale. A Skidfuscator, valutiamo vari fattori in ciò che può influenzare la qualità del codice java offuscato.
 
-`java -Xmx4g -jar skidfuscator.jar` nel tuo strumento di interfaccia a riga di comando.
+### Dimensioni e complessità del codice
+Le dimensioni e la complessità del codice offuscato sono fattori essenziali da considerare quando si valuta la qualità del codice Java offuscato. L'offuscamento non dovrebbe aumentare significativamente la dimensione del codice, in quanto questo può portare a problemi di prestazioni e potenziali bug. In Skidfuscator, miriamo a rendere il vostro codice il più oscuro possibile senza ampliarlo in modo significativo mantenendo al contempo la massima sicurezza.
+
+### Sicurezza
+La sicurezza è un fattore critico nella valutazione della qualità del codice Java offuscato. La tecnica di offuscamento in questione dovrebbe essere efficace nel proteggere il codice da tentativi di reverse engineering. Questo può essere valutato analizzando la resistenza del codice agli strumenti di reverse engineering, come decompilatori e disassemblatori.
+
+### Prestazioni
+La prestazione del codice offuscato è un altro fattore cruciale nella valutazione della sua qualità. L'offuscamento non dovrebbe influire in modo significativo sul tempo di esecuzione del codice o sull'utilizzo della memoria. È anche importante notare che il codice offuscato non dovrebbe introdurre nuovi bug o errori che potrebbero influenzare le prestazioni complessive del codice. Eventuali problemi di prestazione introdotti dalla tecnica di offuscamento devono essere identificati e affrontati.
+
+### Summary
+
+Nel complesso, la qualità del codice Java offuscato può essere valutata sulla base di diversi fattori, tra cui dimensioni e complessità del codice, sicurezza, manutenzione e prestazioni. L'offuscamento non dovrebbe avere un impatto significativo su nessuno di questi fattori e qualsiasi questione introdotta dalla tecnica di offuscamento dovrebbe essere identificata e risolta tempestivamente.
