@@ -1,14 +1,6 @@
-# Kütüphaneler
+# Forge 1.8.8
 
-Ahhh hepimiz bunlardan nefret ediyoruz ama yazılımınızı bozmamak için bunları kullanmamız lazım. Yapılandırmanızı sadeleştirme gibi şeylere falan yarar. Umarız ki, Maven eklentisinde, bunlar otomatik olarak halledilecek. Ancak bu şu anlık sadece yapılacak listemizdeki bir şey.
+## Giriş
+Forge Minecraft 1.8.8, notoriously used for Skyblock mods, legacy mods and hacked clients, is specifically different in how it operates in conjunction to other versions of Forge. Most typically, you will need to set up a full environment to obtain the decompiled version of Minecraft to be able to obtain the dependency, one which is required to pass build status.
 
-Çok basit bir şekilde bağımlılık eklemek için:
-1. "libs" adındaki bir klasör oluştur
-2. Tüm bağımlılıklarını o klasöre koy
-3. Skidfuscator için kullandığın komuta "-li=\<klasörün yolu\>" ekle
-
-Örnek:
-```console
-java -jar obfuscator-1.0.0-SNAPSHOT.jar -li=libs -ex exception.txt FluffyClicker.jar
-```
-![Örnek resim](https://i.imgur.com/AYxEoYp.png)
+## 
