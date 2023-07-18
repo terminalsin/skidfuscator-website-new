@@ -1,14 +1,6 @@
-# Bibliotheken
+# Forge 1.8.8
 
-Ahhh wir hassen sie alle, aber um Software nicht zu vermasseln, müssen wir sie nutzen. Es vereinfacht die Konfiguration und so weiter. Hoffentlich das im Maven Plugin automatisiert. Aber bis jetzt ist das nur eine weitere Sache auf unserer Todo-Liste.
+## Einleitung
+Forge Minecraft 1.8., berüchtigt für Skyblock Mods, alte Mods und Hack Clients, unterscheidet sich von anderen Versionen von Forge. In der Regel müssen Sie eine vollständige Umgebung einrichten, um die dekompilierte Version von Minecraft zu und damit die Dependency zu erhalten, diese ist erforderlich, um Build Status zu erreichen.
 
-Bibliotheken hinzuzufügen ist ganz einfach:
-1. Erstelle einen Ordner mit dem Namen "libs"
-2. Ziehe alle deine Bibliotheken in diesen Ordner
-3. Füge "-li=\<Pdad zum Ordner\>" zu dem Startbefehl für Skidfuscator hinzu
-
-Beispiel:
-```console
-java -jar obfuscator-1.0.0-SNAPSHOT.jar -li=libs -ex exception.txt FluffyClicker.jar
-```
-![Bild für das Beispiel](https://i.imgur.com/AYxEoYp.png)
+## 
