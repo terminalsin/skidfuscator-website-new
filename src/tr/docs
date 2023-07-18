@@ -1,58 +1,60 @@
-## Sayı Şifrelemesi
+# Başlarken
 
-Sayı şifreleme dönüştürücüsü integer tabanlı sayıları gizli olmaları için şifreler. Bu kodunuzu genel olarak okunamaz yapmak ve tersine mühendislerin temiz bir kaynak kodu elde etmesini zorlaştırmak için mükemmeldir. Bu ayrıca boolean tabanlı koşulluları da güçlendirir.
+Demek Skidfuscator'ı bilgisayarına başarıyla indirdin ve nasıl çalıştıracağını merak ediyorsun?
 
-Bu sayı şifrelemesi GEN3 flow kod gizleyicisine dayanır ve decompile edilmiş sonuç aşağıdaki gibidir
+Skidfuscator Java CLI'sini kullanarak komut satırı ile çalışır. We strongly advise you are familiar with this in order to enjoy a seamless Skidfuscator experience.
 
-Aşağıdaki senaryoyu varsayalım:
-- $x$ bizim şifrelemek istediğimiz sayı
-- $n$ bloğun tohumu
-- $d$ şifrelenmiş sayı
+## CLI options for Skidfuscator
 
-Basit xor mekaniklerine göre: $x\oplus n\oplus n=x$
+Simply run `java -jar <yourSkidfuscatorFile.jar>` and you will be presented with various options:
 
-Yani, tanım olarak, eğer $n$ bizim tohumumuz ise, çalışma zamanında $d$ sayısını $d = x\oplus n$ olarak hesaplamalıyız. Daha sonra, bytecode talimatlarını şu şekilde düzenlemeliyiz:
+![Skidfuscator options](https://i.imgur.com/Yu70Pcq.png)
 
-```java
-int deger = x;
+
+#### Your input jar
+The input jar you want to obfuscate with Skidfuscator.
+```cli
+<input>
 ```
 
-şuna dönüşür:
-```java
-int deger = d ^ n;
+#### Your exclusions
+The path to the file which contains your exclusions.
+```cli
+--exempt=<exempt>
 ```
 
-Bu durumda $d$ daha önceden hesaplanmış sabit değerdir ve $n$ de opak yüklemdir (opaque predicate). Örnek:
-```java
-int deger = 5;
-```
-şuna dönüşür:
-```java
-int tahmin = 0x100;
-int deger = 105 ^ tahmin;
+#### Skip computation
+**USE THIS AT YOUR OWN RISK** Completely skips critical forms of computation such as libraries. Support may be limited if you choose to use this option.
+```cli
+`--fuckit
 ```
 
-## Yapılandırma
-
-Şu anda, Sayı Şifrelemesinin sadece bir modu var, `STANDARD`
-
-```js
-numberEncryption {
-    enabled: true
-    exempt: []
-}
+#### Your libraries
+The path to the folder which contains libraries / dependencies required to obfuscate your jar file.
+```cli
+--libs=<libs>
 ```
 
-## Örnekler
-#### Gizlenmemiş Kod
-```java
-int dgr = 1000;
-System.out.println(dgr + 1 + 2 + 3);
+#### Opt out of analytics
+This option will not provide us any analytics such as errors you may encounter, or obfuscator usage statistics.
+```cli
+--notrack
 ```
 
-#### Gizlenmiş Kod
-```java
-int dgr = 0xA0290233 ^ n;
-System.out.println(dgr + 0x92083838 ^ n + 0x92083839 ^ n + 0x92083840 ^ n);
+#### Your output
+The path to where you would like your obfuscated jar to be output, if this option is left empty it will be output in the directory that Skidfuscator was executed in.
+```cli
+--output=<output>
 ```
 
+#### Phantom computation
+Allows you to enable phantom computation for classes, again, if this option is used, supported may be limited. We strongly advise you provide the necessary libraries required and obfuscate your jar file.
+```cli
+--phantom
+```
+
+#### Specifying runtime
+The path to your java runtime.
+```cli
+--runtime=<runtime>
+```
