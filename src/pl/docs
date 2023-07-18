@@ -1,6 +1,15 @@
-# Forge 1.8.8
+# Witaj!
 
-## Wprowadzanie
-Forge Minecraft 1.8.8, notorycznie używany do modów Skyblock, starszych modów i hack klientów, różni się w szczególności sposobem działania w połączeniu z innymi wersjami Forge. Most typically, you will need to set up a full environment to obtain the decompiled version of Minecraft to be able to obtain the dependency, one which is required to pass build status.
+Witamy na wiki skidfuscatora!
 
-## 
+Myślałeś, że wcześniej nie mieliśmy o czym rozmawiać, prawda? Teraz mamy wszystko opisane.
+
+# Spis treści
+1. [Instalacja](/docs/installation.html)
+2. [Pierwsze kroki](/docs/gettingstarted.html)
+3. [Wykluczenia](/docs/exclusion.html)
+4. [Biblioteki](/docs/libraries.html)
+5. [O nas](/docs/about.html)
+6. [Wprowadzenie](/docs/javaobf.html)
+7. [Zgłaszanie błędów](/docs/bugreporting.html)
+8. [Transformers](/docs/transformers.html)
