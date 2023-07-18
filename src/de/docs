@@ -1,15 +1,51 @@
-# Hallo, unbekannter
+## Annotation Verschlüsselung
 
-Willkommen zu dem skidfuscator-java-obfuscator Wiki!
+Der "Annotation Encryption Transformer" wandelt jeden String und jeden Integer innerhalb von annotations zu einem spezifischen Methodenaufruf um, um diese zur Laufzeit zu verbergen. Dies kann für nicht sensible URLs, private keys usw. praktisch sein...
 
-Du dachtest vorher, wir hätten nicht viel zu besprechen, oder? Hier haben wir die ganzen Leckereien, ha.
+::: Warnung
+Man sollte niemals dem Client vertrauen. Bitte verlasse dich nicht auf die String Verschlüsselung als einzigen Schutz für die Software. Man sollte immer davon ausgehen, dass ein talentierter genuger Reverse Engineer mit genug Zeit und Geduld auf diese zugreifen kann.
+:::
 
-# Inhaltsverzeichnis
-1. [Installation](/docs/installation.html)
-2. [Einstieg](/docs/gettingstarted.html)
-3. [Ausnahmen](/docs/exclusion.html)
-4. [Bibliotheken](/docs/libraries.html)
-5. [Über uns](/docs/about.html)
-6. [Einführung in die Java Obfuscation](/docs/javaobf.html)
-7. [Fehler melden](/docs/bugreporting.html)
-8. [Transformatoren](/docs/transformers.html)
+
+## Konfiguration
+
+```js
+stringAnnotationEncryption {
+    enabled: true
+    exempt: []
+}
+
+intAnnotationEncryption {
+    enabled: true
+    exempt: []
+}
+```
+
+## Beispiele
+
+### Unobfuscated
+
+```java
+@SecretAnnotation(secret = "Super secret", secret2 = 1337)
+public class Fancy {
+    public String getSecret() {
+        return this.getClass().getAnnotation(SecretAnnotation.class).secret();
+    }
+
+    public int getSecre2t() {
+        return this.getClass().getAnnotation(SecretAnnotation.class).secret2();
+    }
+}
+```
+
+### Obfuscated
+
+```java @SecretAnnotation(secret = "oifjaioejaifjea9è!efèaefFEf==", secret2 = 0x9FE7FE7F) public class Fancy { public String getSecret() { /* [...] */ return this.aofheoafo(this.getClass().getAnnotation(SecretAnnotation.class).secret(), n ^ 0x997AF8F); }
+
+    public int getSecre2t() {
+        /* [...] */
+        return this.getClass().getAnnotation(SecretAnnotation.class).secret2() ^ n ^ 0x90AF9F7;
+    }
+    
+    /* [...] */
+}```
