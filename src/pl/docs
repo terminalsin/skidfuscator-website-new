@@ -1,15 +1,51 @@
-# Witaj!
+## Szyfrowanie adnotacji
 
-Witamy na wiki skidfuscatora!
+Transformer szyfrowania adnotacji przekształca każdy ciąg znaków i liczbę całkowitą zawartą w adnotacjach w określone wywołanie metody, w celu ukrycia go w czasie wykonywania. Może to być praktyczne w przypadku adresów URL, kluczy prywatnych itp.
 
-You thought we didn't have much to talk about previously did you? Now we have all the goodies, ha.
+::: warning
+Nie powinieneś ufać jedynie temu. Proszę nie polegać na szyfrowaniu ciągu jako na wyłącznej ochronie twojego oprogramowania . Domyślnie należy założyć, że wystarczająco utalentowany człowiek może uzyskać do nich dostęp przy wystarczająco dużej cierpliwości.
+:::
 
-# Spis treści
-1. [Instalacja](/docs/installation.html)
-2. [Pierwsze kroki](/docs/gettingstarted.html)
-3. [Wykluczenia](/docs/exclusion.html)
-4. [Biblioteki](/docs/libraries.html)
-5. [O nas](/docs/about.html)
-6. [Wprowadzenie](/docs/javaobf.html)
-7. [Zgłaszanie błędów](/docs/bugreporting.html)
-8. [Transformers](/docs/transformers.html)
+
+## Konfiguracja
+
+```js
+stringAnnotationEncryption {
+    enabled: true
+    exempt: []
+}
+
+intAnnotationEncryption {
+    enabled: true
+    exempt: []
+}
+```
+
+## Przykłady
+
+### Brak zaciemnienia
+
+```java
+@SecretAnnotation(secret = "Super secret", secret2 = 1337)
+public class Fancy {
+    public String getSecret() {
+        return this.getClass().getAnnotation(SecretAnnotation.class).secret();
+    }
+
+    public int getSecre2t() {
+        return this.getClass().getAnnotation(SecretAnnotation.class).secret2();
+    }
+}
+```
+
+### Zaciemniony kod
+
+```java @SecretAnnotation(secret = "oifjaioejaifjea9è!efèaefFEf==", secret2 = 0x9FE7FE7F) public class Fancy { public String getSecret() { /* [...] */ return this.aofheoafo(this.getClass().getAnnotation(SecretAnnotation.class).secret(), n ^ 0x997AF8F); }
+
+    public int getSecre2t() {
+        /* [...] */
+        return this.getClass().getAnnotation(SecretAnnotation.class).secret2() ^ n ^ 0x90AF9F7;
+    }
+    
+    /* [...] */
+}```
