@@ -1,6 +1,25 @@
-# Forge 1.8.8
+# Asennus
 
-## Johdanto
-Forge Minecraft 1.8.8, jota tunnetusti käytetään taivas lohko modit, perintö modit ja homo hakkeroitu asiakkaita, on erityisesti erilainen siinä, miten se toimii yhdessä muiden Forge-versioiden kanssa. Yleensä sinun on asetettava luoda täyden ympäristön Minecraftin puretun version hankkimiseksi, jotta voidaan hankkia riippuvuus, joka vaaditaan koontitilan läpäisemiseksi.
+Skidfuscatoria jaetaan verkkosivustomme, GitHubin tai Discord-palvelimemme omistajan suorien viestien kautta.
 
-## 
+## Meidän alustamme
+- [Verkkosivu](https://skidfuscator.dev)
+- [Discordi](https://discord.gg/7pVgsRweeh)
+- [GitHub](https://github.com/terminalsin/skidfuscator-java-obfuscator)
+
+Huomaa, että GitHub on vain meidän ilmaiseksi, yhteisön painos versio Skidfuscator.
+
+## Yhteisön Versio
+
+Löydät ladattavan linkin yhteisö painos [täällä](https://github.com/skidfuscatordev/skidfuscator-java-obfuscator/releases/), premium-painos käy sivuillamme tai liity meidän Discordiin.
+
+Huomaa, että Skidfuscator vaatii Java 8 (eli JDK 1.8 tai parempi) toimimaan oikein.
+
+Skidfuscatorin puhtain tapa on käyttää `-jar` -parametria komentorivin käyttöliittymätyökalussa, sinulle esitellään erilaisia vaihtoehtoja siitä, miten aloittaa hämärtymisen tiedoston.
+
+## Jaetaan enemmän muistia
+On tärkeää huomata, että tyypillisesti sinun pitäisi antaa JVM enemmän kuin oletuksena määrä muistia työskennellä. Jos käytät parametria "-Xmx512m", annat JVM: lle maksimissaan 512 Mt muistia, jonka pitäisi riittää useimpiin tarkoituksiin. Sinun pitäisi kuitenkin olla varma, ettet anna JVM: lle enemmän muistia kuin on fyysisesti saatavilla. Muuten suorituskyky heikkenee dramaattisesti, kun JVM alkaa käyttää virtuaalista muistia.
+
+Katso alla olevasta miten lisätä muistia Skidfuscatoriin:
+
+`java -Xmx4g -jar skidfuscator.jar` komentoriviliitäntätyökalussa.
