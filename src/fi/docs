@@ -1,25 +1,17 @@
-## Outliner
 
-Outlining tarkoittaa prosessia, jossa koodia irrotetaan metodista ja sijoitetaan erilliseen, itsenäiseen metodiin. Tämä tehdään usein keinona parantaa koodin luettavuutta ja ylläpidettävyyttä, koska se voi helpottaa menetelmän toiminnan ymmärtämistä jakamalla se pienempiin, parempiin ja kohdistetumpiin koodin osiin.
+## Flow Range
+Flow Exception Range Obfuscation ajoa käytetään kääntäjäoptimoinnissa lisäämään peittelyä ohjelman poikkeuskäsittelykoodiin.
 
-Outlining voidaan käyttää myös eräänlaisena koodin hämärtämisen muotona, sillä se voi vaikeuttaa sitä, että joku, joka yrittää jäljittää tai ymmärtää koodia, näkee ohjelman yleisen virtauksen ja rakenteen. Jakamalla koodi pienemmiksi paloiksi ja erottamalla se eri menetelmiin, se voi olla paljon vaikeampi menettely, että joku ymmärtää suhteita virtaus eri osien välillä ja miten he sopivat yhteen suorittaa tietyn toiminnon.
+Tämän tekniikan ideana on muuttaa ohjelman poikkeuskäsittelyrutiineja (kuten try-catch-lohkoja) siten, että ne sisältävät ylimääräisiä ohjausvirtaohjeita, jotka vaikeuttavat ohjelman loogisen virtauksen ymmärtämistä.
 
-![Outlining graph explanation](https://i.imgur.com/2HMq0a4.png)
+Esimerkiksi yksinkertainen try-catch-lohko voidaan muuttaa monimutkaisemmaksi rakenteeksi, joka sisältää sisäkkäisiä try-catch-lohkoja tai ylimääräisiä haarautumisohjeita. Tämä voi vaikeuttaa ranskalaista ymmärtämään ohjelman poikkeuskäsittelykäyttäytymistä ja mahdollisesti paljastamaan haavoittuvuuksia, joita voitaisiin käyttää hyväksi.
 
-Fantastinen asia siinä on: se ei Ole *Teknisesti* Käännettävä! Voidakseen palata alkuperäiseen tilaan hyvä ääriviivat hämärtyminen, suojan poisto *täytyy tehdä inlining*, joka on heuristinen ja *ei* takaa, että ulostulo on aina semanttisesti oikein alkuperäisellä lähdekoodilla. Lisäksi tämä necessites deobfuscator mangle kanssa muuttujat ja muut eri muotoja herkkä bytecode manipulointi joka kaikki voi johtaa runko ja laskenta poikkeuksia.
-
-Kaiken kaikkiaan obfuscation hahmottaminen on melko siisti :)
-
-::: Varoitus
-Ulompi muuntaja on vielä hyvin varhain kehitykseen. Koska Java todentaja toimii, kaikki skenaariot voidaan tarkastaa oikein, mikä voi aiheuttaa joitakin kokoamiseen liittyviä ongelmia. Ole hyvä ja käytä omalla vastuullasi, ja jos ilmenee ongelmia, ilmoita niistä.
-
-Huomautus itse: vihaan pinon kehyksiä
-:::
+Tätä tekniikkaa käytetään usein yhdessä muiden hämärtymisen tekniikoiden kanssa, jotta voidaan tarjota ylimääräisiä suojakerroksia. On kuitenkin huomattava, että tarpeettoman monimutkaisuuden lisääminen poikkeustenkäsittelykoodiin voi myös vaikeuttaa ohjelman virheenkorjausta ja ylläpitoa, joten sitä tulisi käyttää kaikkialla.
 
 ## Konfiguroi
 
 ```js
-outliner {
+flowRange {
      enabled: true
      exempt: []
 }
@@ -28,33 +20,54 @@ outliner {
 ## Esimerkkejä
 
 #### Suojaamaton
-
 ```java
-public static void main(String[] args) {
-    int number = callNumber();
-    /*[...]*/
-}
-
-static int callNumber() {
-    return 1;
-}
+final String uwu = "UwU";
+System.out.println(uwu);
 ```
 
 #### Suojattu
 ```java
-public static void main(String[] args) {
-    step1_AF8FZE8EF7Z89F();
-    /*[...]*/
-}
+final String uwu = "UwU";
 
-static void step1_AF8FZE8EF7Z89F() {
-    int number = callNumber();
-}
-
-
-static int callNumber() {
-    return 1;
+while (true) {
+     label1: {
+          try {
+               if (this.a(0x92A8B44, n) >> 8 != 0x97F7F)
+                    throw new IllegalReflectiveException();
+               break label1;
+          } catch (IllegalReflectiveException ex) {
+               System.out.println(uwu);
+          }
+     }
 }
 ```
 
+#### IR Edustus
+```
+ Original flow:       Obfuscated Flow:
 
+ ┌─────────┐            ┌─────────┐
+ │ Block A │            │ Block A │
+ └────┬────┘            └────┬────┘
+      │                      │
+ ┌────▼────┐         ┌───────▼────────┐
+ │ Block B │         │ Random If Stmt │
+ └─────────┘         └───────┬────────┘
+                             │
+                   ┌─────┐◄──┴───►┌─────┐
+                   │ Yes │        │ No  │
+                   └─────┘        └──┬──┘
+                                     │
+                               ┌─────▼─────┐
+                               │ Exception │
+                               └───────────┘
+
+                      ┌─────────────┐
+                      │  Exception  │
+                      │   Catcher   │
+                      └──────┬──────┘
+                             │
+                        ┌────▼────┐
+                        │ Block B │
+                        └─────────┘
+```
