@@ -1,25 +1,17 @@
-## Outliner
 
-Konturowanie odnosi się do procesu wyodrębniania kodu z metody i umieszczania go w oddzielnej, samodzielnej metodzie. Jest to często sposób na poprawę czytelności i łatwości konserwacji kodu, ponieważ może ułatwić zrozumienie, co robi metoda, dzieląc ją na mniejsze, bardziej skoncentrowane fragmenty kodu.
+## Flow Range
+Technika stosowana w optymalizacji kompilatora w celu dodania zaciemnienia do kodu obsługi wyjątków programu.
 
-Konturowanie może być również wykorzystywane jako forma zaciemniania kodu, ponieważ może utrudnić komuś, kto próbuje zrozumieć kod, zobaczenie ogólnej struktury programu. Rozbijając kod na mniejsze części i rozdzielając go na różne metody, ktoś może być znacznie trudniejszy do zrozumienia relacji między różnymi częściami przepływu i tego, jak pasują do siebie, aby wykonać określoną funkcję.
+Ideą tej techniki jest zmodyfikowanie procedur obsługi wyjątków programu (takich jak bloki try-catch) w celu włączenia dodatkowych instrukcji przepływu sterowania, które utrudniają zrozumienie logicznego flow programu.
 
-![Outlining graph explanation](https://i.imgur.com/2HMq0a4.png)
+For example, a simple try-catch block might be transformed into a more complex structure that includes nested try-catch blocks or additional branching instructions. Może to utrudnić osobie, która czyta dekompiluj ekod zrozumienie zachowania obsługi wyjątków programu i potencjalnie odkryć luki, które można wykorzystać.
 
-Fantastyczną rzeczą w outliningu jest to, że nie jest on *technicznie* odwracalny! Aby móc powrócić do pierwotnego stanu dobrego zaciemnienia kodu, deobfuscator *musi wykonać inlining*. Co więcej, wymaga to od deobfuscatora manipulowania zmiennymi i innymi wrażliwymi formami manipulacji kodem bajtowym, co może prowadzić do awarii.
-
-Ogólnie rzecz biorąc, outlining jest całkiem fajny :)
-
-::: warning
-Transformer jest wciąż na bardzo wczesnym etapie rozwoju. Ze względu na sposób działania weryfikatora Java, nie wszystkie scenariusze mogą zostać poprawnie zweryfikowane, co może prowadzić do pewnych problemów z kompilacją. Używaj na własne ryzyko, a jeśli pojawią się jakiekolwiek problemy, zgłoś je.
-
-Note to self: I hate stack frames
-:::
+Technika ta jest często stosowana w połączeniu z innymi technikami zaciemniania, aby zapewnić dodatkowe warstwy ochrony. Należy jednak zauważyć, że dodawanie niepotrzebnej złożoności do kodu obsługi wyjątków może również utrudnić debugowanie i utrzymanie programu, dlatego należy go używać z rozwagą.
 
 ## Konfiguracja
 
 ```js
-outliner {
+flowRange {
      enabled: true
      exempt: []
 }
@@ -28,33 +20,54 @@ outliner {
 ## Przykłady
 
 #### Brak zaciemnienia
-
 ```java
-public static void main(String[] args) {
-    int number = callNumber();
-    /*[...]*/
-}
-
-static int callNumber() {
-    return 1;
-}
+final String uwu = "UwU";
+System.out.println(uwu);
 ```
 
 #### Zaciemniony kod
 ```java
-public static void main(String[] args) {
-    step1_AF8FZE8EF7Z89F();
-    /*[...]*/
-}
+final String uwu = "UwU";
 
-static void step1_AF8FZE8EF7Z89F() {
-    int number = callNumber();
-}
-
-
-static int callNumber() {
-    return 1;
+while (true) {
+     label1: {
+          try {
+               if (this.a(0x92A8B44, n) >> 8 != 0x97F7F)
+                    throw new IllegalReflectiveException();
+               break label1;
+          } catch (IllegalReflectiveException ex) {
+               System.out.println(uwu);
+          }
+     }
 }
 ```
 
+#### IR Representation
+```
+ Original flow:       Obfuscated Flow:
 
+ ┌─────────┐            ┌─────────┐
+ │ Block A │            │ Block A │
+ └────┬────┘            └────┬────┘
+      │                      │
+ ┌────▼────┐         ┌───────▼────────┐
+ │ Block B │         │ Random If Stmt │
+ └─────────┘         └───────┬────────┘
+                             │
+                   ┌─────┐◄──┴───►┌─────┐
+                   │ Yes │        │ No  │
+                   └─────┘        └──┬──┘
+                                     │
+                               ┌─────▼─────┐
+                               │ Exception │
+                               └───────────┘
+
+                      ┌─────────────┐
+                      │  Exception  │
+                      │   Catcher   │
+                      └──────┬──────┘
+                             │
+                        ┌────▼────┐
+                        │ Block B │
+                        └─────────┘
+```
