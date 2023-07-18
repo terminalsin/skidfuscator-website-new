@@ -1,19 +1,49 @@
-## Renforcement par pilote
+## Retour d'exception
 
-Le pilote (driver) est la partie de renforcement (hardening) de Skidfuscator. Cette fonctionnalité est réservée aux membres Premium. En résumé, pour chaque obfuscation, un nouveau pilote est généré et compilé pour les architectures suivantes :
+L'obfuscation du retour d'exception est une technique de programmation utilisée pour rendre le flux de contrôle d'un programme plus difficile à comprendre et à analyser en obfusquant les résultats de retour et en normalisant chaque méthode pour qu'elle ait une valeur de retour vide (void).
 
-| Système d'exploitation | Architectures supportées |
-| ---------------------- | ------------------------ |
-| Windows                | x64_86                   |
-| MacOS                  | x64_86, AARCH64 (ARM)    |
-| Linux                  | x64_86 (AMD64)           |
+En résumé, cette technique remplace les instructions de retour normales par des blocs de gestion des exceptions qui rendent le flux de contrôle du programme moins prévisible.  Lorsqu'une exception est levée, le programme passe à un gestionnaire d'exception désigné, qui renvoie ensuite la valeur souhaitée ou effectue l'action prévue. Cela rend le code plus difficile à lire, analyser et inverser, offrant ainsi une certaine protection contre la falsification ou le piratage.
 
+'''warning Cette technique d'obfuscation est encore expérimentale et peut ne pas compiler avec succès sur des programmes plus importants. Pour cette raison même, elle est désactivée par défaut. '''
 
 ## Configuration
-Pour activer cette fonctionnalité (:warning: cela augmente considérablement la puissance de l'obfuscation), vous devez modifier la valeur booléenne suivante :
 
 ```js
-driver: {
-    enabled: false // Désactivé par défaut
+exceptionReturn {
+    enabled: false
+    exempt: []
 }
 ```
+
+## Examples
+
+### Non obfusqué
+
+```java
+int number = callNumber();
+ [...]
+}
+
+int callNumber() {
+    return 1;
+}
+```
+
+### Obfusqué
+```java
+try {
+    callNumber();
+} catch (IntNumberException ex) {
+    int number = ex.getValue();
+}
+
+[...]
+
+void callNumber() {
+    throw new IntNumberException(1);
+}
+```
+
+
+
+
