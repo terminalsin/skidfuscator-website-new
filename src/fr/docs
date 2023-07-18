@@ -1,14 +1,6 @@
-# Bibliothèques
+# Forge 1.8.8
 
-Ahhh, nous les détestons tous, mais pour ne pas compromettre votre logiciel, nous devons les utiliser. Cela simplifie vos configurations et ainsi de suite. Heureusement, dans le plugin Maven, cela sera géré automatiquement. Cependant, c'est juste une autre chose sur notre liste de tâches pour le moment.
+## Introduction
+Forge Minecraft 1.8.8, utilisé de manière notoire pour les mods Skyblock, les anciens mods et les clients hackés, fonctionne spécifiquement différemment en conjonction avec d'autres versions de Forge. Le plus souvent, vous devrez configurer un environnement complet pour obtenir la version décompilée de Minecraft afin de pouvoir obtenir la dépendance, qui est nécessaire pour passer l'état de construction (build status).
 
-Pour ajouter des dépendances, c'est assez simple :
-1. Créez un dossier appelé "libs"
-2. Faites glisser toutes vos dépendances dans ce dossier
-3. Ajoutez "-li=\<chemin vers le dossier\>" à votre commande d'exécution en ligne de commande pour Skidfuscator
-
-Exemple :
-```console
-java -jar obfuscator-1.0.0-SNAPSHOT.jar -li=libs -ex exception.txt FluffyClicker.jar
-```
-![Image d'exemple](https://i.imgur.com/AYxEoYp.png)
+## 
