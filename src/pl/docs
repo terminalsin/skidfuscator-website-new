@@ -1,49 +1,61 @@
-## Wyjątek zwrotu
+## Flow Condition
 
-Zaciemnianie zwracanych wartości wyjątków to technika programistyczna stosowana w celu utrudnienia zrozumienia i analizy przepływu sterowania w programie poprzez zaciemnianie zwracanych wyników i standaryzację każdej metody tak, aby miała pustą wartość zwracaną.
+Ten transfomer służy jako pierwsza tarcza do analizy pliku. Aby uniemożliwić analizie statycznej wykrycie, która liczba całkowita jest nieprzezroczystym predykatem, używamy tej konkretnej liczby całkowitej, aby dodać dodatkowe warunki do już istniejących instrukcji if. Nie tylko zwiększa to bezpieczeństwo oprogramowania, ale także utrudnia proces deobfuskacji i dekompilacji wielu narzędzi.
 
-W skrócie, technika ta zastępuje normalne instrukcje powrotu blokami obsługi wyjątków, które sprawiają, że przepływ sterowania programu jest mniej przewidywalny. Gdy zostanie zgłoszony wyjątek, program przeskakuje do wyznaczonego programu obsługi wyjątków, który następnie zwraca żądaną wartość lub wykonuje zamierzoną akcję. Sprawia to, że kod jest trudniejszy do odczytania ianalizy, zapewniając w ten sposób wysoki poziom ochrony przed manipulacją lub piractwem.
-
-'''warning Ta technika zaciemniania jest wciąż eksperymentalna i może nie kompilować się pomyślnie na większych programach. Z tego powodu jest ona domyślnie wyłączona. '''
+W porównaniu do transformatora Flow Exception, jest to znacznie bardziej uproszczona wersja.
 
 ## Konfiguracja
 
 ```js
-exceptionReturn {
-    enabled: false
+flowCondition {
+    enabled: true
     exempt: []
 }
 ```
 
 ## Przykłady
 
-### Brak obfuskacji
-
+#### Brak obfuskacji
 ```java
-int number = callNumber();
- [...]
-}
+public static void main(String[] args) {
+    int number = callNumber();
 
-int callNumber() {
-    return 1;
+    if (number == 1) {
+        System.out.println("Hello world");
+    }
+    /*[...]*/
 }
+/*[...]*/
 ```
 
-### Z obfuskacją
+#### Z obfuskacją
 ```java
-try {
-    callNumber();
-} catch (IntNumberException ex) {
-    int number = ex.getValue();
-}
+public static void main(String[] args) {
+    /*[...]*/
+    label1: {
+        while (true) {
+            if (n ^ 0x8AF8EF8F == 0xA88FFA) {
+                break;
+            }
 
-[...]
+            n = n ^ 0x28847D;
+            int number = callNumber();
 
-void callNumber() {
-    throw new IntNumberException(1);
+            label2: {
+                if (number != 1)
+                    break label1;
+
+                if (n ^ 0xAA9F8FFD != 0x989F7AF)
+                    break label2;
+
+                System.out.println("Hello world");
+                break label1;
+            }
+
+            throw new IllegalStateException();
+        }
+    }
+    /*[...]*/
 }
+/*[...]*/
 ```
-
-
-
-
