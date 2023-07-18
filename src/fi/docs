@@ -1,20 +1,257 @@
-# Vikailmoitus
 
-Jos sinusta tuntuu, että olet kohdannut ongelman tai huomannut ongelman Skidfuscatorin kanssa, kehotamme käyttäjiämme ilmoittamaan ongelmasta kehitystiimillemme varmistaaksemme, että kokemuksesi on sujuva.
+# Konfiguroi
 
-**Ole hyvä ja raportoi kaikki ongelmat / viat Githubissamme, jotka löytyvät klikkaamalla [täällä](https://github.com/skidfuscatordev/skidfuscator-java-obfuscator).**
+Täällä opit kaiken siitä mitä konfiguraatiolla on tarjottavana. Varmista, että lukea nämä tiedot erittäin innokas silmä. Jos sinulla on ongelmia, lähetä sähköpostia tukeen. Maksullisilla käyttäjillä on oikeus tiimimme ilmaiseen konfigurointipalveluun.
 
-Voit ilmoittaa bugista liittymällä Discord-palvelimeemme ja avaamalla suoran viestin.
+## Konfiguraation peruste
 
-Ole hyvä ja varmista että kirjoitat vikailmoituksesi seuraavalla tavalla:
-1. Kohtaamasi ongelma.
-2. Kuvakaappaus täydellisestä stacktrace-viestistä.
-3. Java-tiedosto, jota yrität suojata.
-4. Suojattu purkki, jos sinulla on sellainen
-5. Käyttämäsi konfigurointitiedostot.
+Perusteena kokoonpano perustuu [lightbend konfiguroi](https://github.com/lightbend/config). Tämä tarkoittaa oletuksena, tuemme kolmea seuraavaa muotoa: Java Properties, JSON, ja HOCON.
 
-Vaihtoehtoisesti, jos sinusta tuntuu, että tarvitset lisäapua, liity Discord-palvelimeemme ja avaa suora viesti.
+Periaatteessa me **erittäin suositeltavaa käyttää HOCON**, koska se on yksinkertaisempi, tyylikkäämpi ja kaiken kaikkiaan helppokäyttöisempi. Katso oheinen oletuskonfiguraatio:
 
-<iframe src="https://discord.com/widget?id=904888546609987674&theme=dark" width="350" height="500" allowtransparency="true" frameborder="0" sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"></iframe>
+```javascript
+exempt: []
 
-Kirjoitamme sinulle takaisin ja yritämme parhaamme korjata ongelmasi!
+libs: []
+
+stringEncryption {
+  type: STANDARD
+  enabled: true
+  exempt: []
+}
+
+numberEncryption {
+  enabled: true
+  exempt: []
+}
+
+intAnnotationEncryption {
+  enabled: true
+  exempt: []
+}
+
+stringAnnotationEncryption {
+  enabled: true
+  exempt: []
+}
+
+exceptionReturn {
+  enabled: true
+  exempt: []
+}
+
+flowCondition {
+  enabled: true
+  exempt: []
+}
+
+flowException {
+  enabled: true
+  strength: AGGRESSIVE
+  exempt: []
+}
+
+flowRange {
+  enabled: true
+  exempt: []
+}
+
+flowFactoryMaker {
+  enabled: true
+  exempt: []
+}
+
+flowSwitch {
+  enabled: true
+  exempt: []
+}
+
+outliner {
+  enabled: true
+  exempt: []
+}
+
+ahegao {
+  enabled: true
+  exempt: []
+}
+
+native: {
+  enabled: false
+  exempt: []
+}
+
+driver: {
+  enabled: false
+}
+
+reference {
+  enabled: false
+}
+
+fileCrasher: {
+  enabled: false
+}
+
+classRenamer {
+  enabled: false
+  type: CUSTOM
+  prefix: "skido/"
+  chars: [
+    "K"
+    "oO",
+    "o0"
+  ]
+  depth: 3
+}
+
+methodRenamer {
+  enabled: false
+  type: CUSTOM
+  chars: [
+    "K"
+    "oO",
+    "o0"
+  ]
+  depth: 3
+}
+
+fieldRenamer {
+  enabled: false
+  type: ALPHABETICAL
+}
+```
+
+## Poikkeukset
+
+Vapautusten käyttö on samanlaista kuin vanhassa järjestelmässä. Lisätietoja vapautuksista, siirry osoitteeseen [sivu](../exclusion.md)
+
+::: warning 
+Java parses merkkijono puhdistaa taaksepäin kauttaviivaa. Tämä tarkoittaa, että sinun PITÄÄ kaksinkertaistaa kaikki taaksepäin menevät vinoviivat.
+:::
+
+### Luokan poissulkeminen
+
+Koska lähtökohtana sulkea tietyn luokan, sinun on käytettävä luokan regex poikkeus:
+```js
+class{^my\/class}
+```
+
+Jotta tämä sopii asetuksiin, sinun on välitettävä se merkkijonona.
+
+
+```js
+exempt: [
+    "class{^my\\/class}"
+]
+```
+
+### Menetelmän pois jättäminen
+
+Koska lähtökohtana sulkea tietty menetelmä, sinun on käytettävä luokan menetelmä poikkeus:
+```js
+method{^myMethod}
+```
+
+Jotta tämä sopii asetuksiin, sinun on välitettävä se merkkijonona.
+
+```js
+exempt: [
+    "method{^myMethod}"
+]
+```
+
+### Tietyn java-luokan menetelmän sulkeminen ulkopuolelle
+
+Aivan kuten olemme aiemmin oppineet sulkemaan pois menetelmän ja luokan meidän on tehtävä seuraavat:
+```js
+class{^my\/class}
+method{^myMethod}
+```
+
+Nyt sulkea pois menetelmä, joka on tietyssä luokassa, kaikki tämä on tehtävä on se, että kaksi on ketjutetaan yhteen riviin, sellaisenaan:
+
+```js
+class{^my\/class} method{^myMethod}
+```
+
+Näin ollen config, se olisi seuraava:
+
+```js
+exempt: [
+    "class{^my\/class} method{^myMethod}"
+]
+```
+
+## Kirjastot
+
+Kirjastot ovat tärkeä osa luokkapolun laskemista ja parhaan mahdollisen suojan varmistamista ohjelmistollesi. Tässä tapauksessa sinun on annettava kelvollinen Java-polun argumentti merkkijonona
+
+Tässä alla on täytäntöönpanokoodi:
+```java
+public File[] getLibs() {
+    return this.getStringList("libraries", Collections.emptyList())
+                .stream()
+                .map(File::new)
+                .distinct()
+                .toArray(File[]::new);
+}
+```
+
+Tässä alla on esimerkki kelvollisista java-poluista:
+```
+C:\test.jar
+test.jar
+./test.jar
+/Home/test.jar
+```
+
+Asetusehdoissa ne olisivat edustettuina seuraavasti:
+
+```js
+libraries [
+    "C:\\test.jar",
+    "test.jar",
+    "./test.jar",
+    "/Home/test.jar"
+]
+```
+
+## Ajuri
+
+Kuljettaja on karkaisu osa Skidfuscator. Tämä ominaisuus on varattu Premiumille. Yksinkertaista on, että tuote luo jokaista ajoa varten automaattisesti ainutlaatuisen järjestelmäajurin sovelluksesi suojaamiseksi. Ajuri tukee seuraavia:
+
+| Käyttöjärjestelmä | Tuetut Arkkitehtuurit |
+| ----------------- | --------------------- |
+| Ikkunat           | x64_86                |
+| MacOS             | x64_86, AARCH64 (ARM) |
+| Linux             | x64_86 (AMD64)        |
+
+Poistaaksesi tämän ominaisuuden (:warning: tämä vähentää merkittävästi obfuscation vahvuutta), sinun on vaihdettava totuus:
+
+```js
+driver: false
+```
+
+
+## Muuntajat
+
+Voit yksilöllisesti ottaa käyttöön/poistaa käytöstä jokaisen muuntajan.
+
+
+#### Merkkijonon Salaus
+
+Merkkijonon salaus muuntaa jokaisen merkkijonon tietyksi kutsuksi, jonka tarkoituksena on piilottaa se ajallaan. Tämä voi olla käytännöllistä ei-arkaluonteisille verkko-osoitteille, yksityisille avaimille jne...
+
+::: warning
+Asiakkaaseen ei pidä luottaa, Ei Koskaan. Älä luota merkkijonosalaukseemme ohjelmistosi ainoana suojana. Oletusarvoisesti sinun pitäisi olettaa, että käänteismuokkaajat pääsevät käsiksi näihin riittävän ajan ja kärsivällisyyden avulla.
+:::
+
+Tällä hetkellä on kaksi tilaa Merkkijono salaus: `STANDARD` ja `POLYMORPHIC`
+
+#### Numeron Salaus
+
+Numeron salausmuuntaja salaa minkä tahansa piilotettavan kokonaislukupohjaisen numeron. Tämä sopii täydellisesti kauhistuttamiseen koodia yleensä ja mikä tekee käänteissuunnittelijoille enemmän vaikeuksia saada puhdasta lähdekoodia. Tämä vahvistaa lisäksi kaikkia yksinkertaisesti boolean-pohjaisia virtausehtoja.
+
+
+#### 
