@@ -1,257 +1,53 @@
+## Toiminto Metodin Uudelleennimeäjä
 
-# Konfiguroi
+Menetelmän uudelleennimeäjä pyrkii täsmällisesti nimeämään kokonaisuuden menetelmäksi, joka estää menetelmän nimien säilyttämisen. Tämän saavuttamiseksi Skidfuscator luo "metodiryhmiä" säilyttämään tehokkaasti menetelmähierarkian. For example, if `class B` extends `class A`, and `class A` implements `methodA()`, all calls to `methodA()` for both `class A` and `class B` will need to be renamed.
 
-Täällä opit kaiken siitä mitä konfiguraatiolla on tarjottavana. Varmista, että lukea nämä tiedot erittäin innokas silmä. Jos sinulla on ongelmia, lähetä sähköpostia tukeen. Maksullisilla käyttäjillä on oikeus tiimimme ilmaiseen konfigurointipalveluun.
-
-## Konfiguraation peruste
-
-Perusteena kokoonpano perustuu [lightbend konfiguroi](https://github.com/lightbend/config). Tämä tarkoittaa oletuksena, tuemme kolmea seuraavaa muotoa: Java Properties, JSON, ja HOCON.
-
-Periaatteessa me **erittäin suositeltavaa käyttää HOCON**, koska se on yksinkertaisempi, tyylikkäämpi ja kaiken kaikkiaan helppokäyttöisempi. Katso oheinen oletuskonfiguraatio:
-
-```javascript
-exempt: []
-
-libs: []
-
-stringEncryption {
-  type: STANDARD
-  enabled: true
-  exempt: []
-}
-
-numberEncryption {
-  enabled: true
-  exempt: []
-}
-
-intAnnotationEncryption {
-  enabled: true
-  exempt: []
-}
-
-stringAnnotationEncryption {
-  enabled: true
-  exempt: []
-}
-
-exceptionReturn {
-  enabled: true
-  exempt: []
-}
-
-flowCondition {
-  enabled: true
-  exempt: []
-}
-
-flowException {
-  enabled: true
-  strength: AGGRESSIVE
-  exempt: []
-}
-
-flowRange {
-  enabled: true
-  exempt: []
-}
-
-flowFactoryMaker {
-  enabled: true
-  exempt: []
-}
-
-flowSwitch {
-  enabled: true
-  exempt: []
-}
-
-outliner {
-  enabled: true
-  exempt: []
-}
-
-ahegao {
-  enabled: true
-  exempt: []
-}
-
-native: {
-  enabled: false
-  exempt: []
-}
-
-driver: {
-  enabled: false
-}
-
-reference {
-  enabled: false
-}
-
-fileCrasher: {
-  enabled: false
-}
-
-classRenamer {
-  enabled: false
-  type: CUSTOM
-  prefix: "skido/"
-  chars: [
-    "K"
-    "oO",
-    "o0"
-  ]
-  depth: 3
-}
-
-methodRenamer {
-  enabled: false
-  type: CUSTOM
-  chars: [
-    "K"
-    "oO",
-    "o0"
-  ]
-  depth: 3
-}
-
-fieldRenamer {
-  enabled: false
-  type: ALPHABETICAL
-}
-```
-
-## Poikkeukset
-
-Vapautusten käyttö on samanlaista kuin vanhassa järjestelmässä. Lisätietoja vapautuksista, siirry osoitteeseen [sivu](../exclusion.md)
-
-::: warning 
-Java parses merkkijono puhdistaa taaksepäin kauttaviivaa. Tämä tarkoittaa, että sinun PITÄÄ kaksinkertaistaa kaikki taaksepäin menevät vinoviivat.
-:::
-
-### Luokan poissulkeminen
-
-Koska lähtökohtana sulkea tietyn luokan, sinun on käytettävä luokan regex poikkeus:
-```js
-class{^my\/class}
-```
-
-Jotta tämä sopii asetuksiin, sinun on välitettävä se merkkijonona.
-
-
-```js
-exempt: [
-    "class{^my\\/class}"
-]
-```
-
-### Menetelmän pois jättäminen
-
-Koska lähtökohtana sulkea tietty menetelmä, sinun on käytettävä luokan menetelmä poikkeus:
-```js
-method{^myMethod}
-```
-
-Jotta tämä sopii asetuksiin, sinun on välitettävä se merkkijonona.
-
-```js
-exempt: [
-    "method{^myMethod}"
-]
-```
-
-### Tietyn java-luokan menetelmän sulkeminen ulkopuolelle
-
-Aivan kuten olemme aiemmin oppineet sulkemaan pois menetelmän ja luokan meidän on tehtävä seuraavat:
-```js
-class{^my\/class}
-method{^myMethod}
-```
-
-Nyt sulkea pois menetelmä, joka on tietyssä luokassa, kaikki tämä on tehtävä on se, että kaksi on ketjutetaan yhteen riviin, sellaisenaan:
-
-```js
-class{^my\/class} method{^myMethod}
-```
-
-Näin ollen config, se olisi seuraava:
-
-```js
-exempt: [
-    "class{^my\/class} method{^myMethod}"
-]
-```
-
-## Kirjastot
-
-Kirjastot ovat tärkeä osa luokkapolun laskemista ja parhaan mahdollisen suojan varmistamista ohjelmistollesi. Tässä tapauksessa sinun on annettava kelvollinen Java-polun argumentti merkkijonona
-
-Tässä alla on täytäntöönpanokoodi:
-```java
-public File[] getLibs() {
-    return this.getStringList("libraries", Collections.emptyList())
-                .stream()
-                .map(File::new)
-                .distinct()
-                .toArray(File[]::new);
-}
-```
-
-Tässä alla on esimerkki kelvollisista java-poluista:
-```
-C:\test.jar
-test.jar
-./test.jar
-/Home/test.jar
-```
-
-Asetusehdoissa ne olisivat edustettuina seuraavasti:
-
-```js
-libraries [
-    "C:\\test.jar",
-    "test.jar",
-    "./test.jar",
-    "/Home/test.jar"
-]
-```
-
-## Ajuri
-
-Kuljettaja on karkaisu osa Skidfuscator. Tämä ominaisuus on varattu Premiumille. Yksinkertaista on, että tuote luo jokaista ajoa varten automaattisesti ainutlaatuisen järjestelmäajurin sovelluksesi suojaamiseksi. Ajuri tukee seuraavia:
-
-| Käyttöjärjestelmä | Tuetut Arkkitehtuurit |
-| ----------------- | --------------------- |
-| Ikkunat           | x64_86                |
-| MacOS             | x64_86, AARCH64 (ARM) |
-| Linux             | x64_86 (AMD64)        |
-
-Poistaaksesi tämän ominaisuuden (:warning: tämä vähentää merkittävästi obfuscation vahvuutta), sinun on vaihdettava totuus:
-
-```js
-driver: false
-```
-
-
-## Muuntajat
-
-Voit yksilöllisesti ottaa käyttöön/poistaa käytöstä jokaisen muuntajan.
-
-
-#### Merkkijonon Salaus
-
-Merkkijonon salaus muuntaa jokaisen merkkijonon tietyksi kutsuksi, jonka tarkoituksena on piilottaa se ajallaan. Tämä voi olla käytännöllistä ei-arkaluonteisille verkko-osoitteille, yksityisille avaimille jne...
+## Konfiguroi
+Menetelmä uudelleennimeäjä tukee tällä hetkellä yksi sanakirja, `ALPHABETICAL`, rinnalla perinteisen mukautetun sanakirjan, `CUSTOM`, perustuu syötteeseen. Tässä skenaariossa on käytettävissä seuraavat vaihtoehdot:
+- Syvyys: Kuinka monta kirjainta käytetään oletusarvoisesti (esim: 3 syvyys johtaa o0o0o0 ensimmäiselle kohteelle, tai 1 syvyys johtaa o0 ensimmäisen kohteen)
+- Merkki: Muuntajan käyttämät merkit.
 
 ::: warning
-Asiakkaaseen ei pidä luottaa, Ei Koskaan. Älä luota merkkijonosalaukseemme ohjelmistosi ainoana suojana. Oletusarvoisesti sinun pitäisi olettaa, että käänteismuokkaajat pääsevät käsiksi näihin riittävän ajan ja kärsivällisyyden avulla.
+Tällä hetkellä muuntaja ei käsittele päällekkäisiä merkkejä ja luo virheellisesti identtisiä metodien nimiä. Älä esimerkiksi käytä "o", "0" ja "o0", sillä jälkimmäinen on kahden edellisen merkin yhdistelmä.
 :::
 
-Tällä hetkellä on kaksi tilaa Merkkijono salaus: `STANDARD` ja `POLYMORPHIC`
+```js
+methodRenamer {
+    enabled: false
+    type: CUSTOM // or 'ALPHABETICAL'
+    chars: [
+        "K"
+        "oO",
+        "o0"
+    ]
+    depth: 3
+}
+```
 
-#### Numeron Salaus
+## Esimerkkejä
 
-Numeron salausmuuntaja salaa minkä tahansa piilotettavan kokonaislukupohjaisen numeron. Tämä sopii täydellisesti kauhistuttamiseen koodia yleensä ja mikä tekee käänteissuunnittelijoille enemmän vaikeuksia saada puhdasta lähdekoodia. Tämä vahvistaa lisäksi kaikkia yksinkertaisesti boolean-pohjaisia virtausehtoja.
+#### Suojaamaton
+
+```java
+public static void main(String[] args) {
+    int number = callNumber();
+    /*[...]*/
+}
+
+static int callNumber() {
+    return 1;
+}
+```
+
+#### Suojattu
+```java
+public static void main(String[] args) {
+    int number = o0k0k0Kk();
+    /*[...]*/
+}
 
 
-#### 
+static int o0k0k0Kk() {
+    return 1;
+}
+```
