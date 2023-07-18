@@ -1,55 +1,58 @@
-## Interruttore Di Flusso
+## Cifratura Numero
 
-Questo trasformatore specifico si rivolge esclusivamente alle tue istruzioni di commutazione per offuscare eventuali variabili, nascondendo efficacemente enum, costanti e bersagli di stringa. Ciò avviene attraverso l'uso del predicato opaco e un meccanismo di hashing speciale per evitare qualsiasi evidente tecniche di reverse engineering.
+Il trasformatore di crittografia numerica crittografa qualsiasi numerale basato su interi da nascondere. Questo è perfetto per brutto il codice in generale e renderlo più difficile per gli ingegneri invertiti per ottenere un codice sorgente pulito. Questo rafforza inoltre qualsiasi condizionale booleano.
+
+La crittografia numerica si basa sull'offuscamento del flusso GEN3 e può, in uscita decompilata, mostrare come segue
+
+Assume il seguente scenario:
+- $x$ è il numero che vogliamo crittografare
+- $n$ è il "seed" del blocco
+- $d$ è il numero crittografato
+
+Secondo la semplice meccanica xor: $x\oplus n\oplus n=x$
+
+Quindi, per definizione, se $n$ è il nostro seme, al runtime dobbiamo calcolare $d$ come $d = x\oplus n$. Poi, dobbiamo modificare le istruzioni di bytecode come:
+
+```java
+int value = x;
+```
+
+diventa
+```java
+int value = x;
+```
+
+Dove $d$ è il valore calcolato prima del tempo sotto forma di costante e $n$ il predicato opaco. Esempio:
+```java
+int valore = 5;
+```
+diventa
+```java
+int predicate = 0x100;
+int value = 105 ^ predicate;
+```
 
 ## Configurazione
 
+Attualmente, c'è solo una modalità di cifratura numerica, `STANDARD`
+
 ```js
-flowSwitch {
+numberEncryption {
     enabled: true
     exempt: []
 }
 ```
 
 ## Esempi
-
 #### Unofuscato
 ```java
-public static void main(String[] args) {
-    int number = callNumber();
-
-    switch (number) {
-        case 1: 
-            System.out.println("Oh no!");
-            break;
-        case 2: 
-            System.out.println("Hello world!");
-            break
-        default: 
-            throw new IllegalStateException("Something went wrong!");
-    }
-    /*[...]*/
-}
-/*[...]*/
+int var = 1000;
+System.out.println(var + 1 + 2 + 3);
 ```
 
 #### Offuscato
 ```java
-public static void main(String[] args) {
-    /*[...]*/
-    int number = callNumber();
-
-    switch (number ^ hash(n ^ 0x9932783)) {
-        case 0x928EF8C: 
-            System.out.println("Hello world!");
-            break
-        case 0x9873783: 
-            System.out.println("Oh no!");
-            break;
-        default: 
-            throw new IllegalStateException("Something went wrong!");
-    }
-    /*[...]*/
-}
-/*[...]*/
+int var = 0xA0290233 ^ n;
+System.out.println(var + 0x92083838 ^ n + 0x92083839 ^ n + 0x92083840 ^ n);
 ```
+
