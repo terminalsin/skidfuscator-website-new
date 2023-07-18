@@ -1,257 +1,51 @@
+## Szyfrowanie adnotacji
 
-# Konfiguracja
+Transformer szyfrowania adnotacji przekształca każdy string i liczbę zawartą w adnotacjach w określone wywołanie metody, w celu ukrycia go w czasie wykonywania. Może to być praktyczne w przypadku adresów URL, kluczy prywatnych itp.
 
-Tutaj dowiesz się wszystkiego o konfiguracji. Należy pamiętać o przeczytaniu tych szczegółów bardzo uważnie. W razie jakichkolwiek problemów prosimy o kontakt. Dla członków premium przysługuje bezpłatna usługa konfiguracji przez nasz zespół.
+::: warning
+Nie powinieneś ufać jedynie temu. Proszę nie polegać na szyfrowaniu adnotacji jako na wyłącznej ochronie twojego oprogramowania . Domyślnie należy założyć, że wystarczająco utalentowany człowiek może uzyskać do nich dostęp przy wystarczająco dużej cierpliwości.
+:::
 
-## Podstawowe konfiguracje
 
-Podstawą konfiguracji jest [prostota](https://github.com/lightbend/config). Oznacza to, że domyślnie obsługujemy trzy następujące formaty: Java Properties, JSON i HOCON.
+## Konfiguracja
 
-Zasadniczo **zalecamy korzystanie z HOCON**, ponieważ jest prostszy, bardziej elegancki i ogólnie łatwy w użyciu. Zobacz dołączoną domyślną konfigurację:
-
-```javascript
-exempt: []
-
-libs: []
-
-stringEncryption {
-  type: STANDARD
-  enabled: true
-  exempt: []
-}
-
-numberEncryption {
-  enabled: true
-  exempt: []
+```js
+stringAnnotationEncryption {
+    enabled: true
+    exempt: []
 }
 
 intAnnotationEncryption {
-  enabled: true
-  exempt: []
-}
-
-stringAnnotationEncryption {
-  enabled: true
-  exempt: []
-}
-
-exceptionReturn {
-  enabled: true
-  exempt: []
-}
-
-flowCondition {
-  enabled: true
-  exempt: []
-}
-
-flowException {
-  enabled: true
-  strength: AGGRESSIVE
-  exempt: []
-}
-
-flowRange {
-  enabled: true
-  exempt: []
-}
-
-flowFactoryMaker {
-  enabled: true
-  exempt: []
-}
-
-flowSwitch {
-  enabled: true
-  exempt: []
-}
-
-outliner {
-  enabled: true
-  exempt: []
-}
-
-ahegao {
-  enabled: true
-  exempt: []
-}
-
-native: {
-  enabled: false
-  exempt: []
-}
-
-driver: {
-  enabled: false
-}
-
-reference {
-  enabled: false
-}
-
-fileCrasher: {
-  enabled: false
-}
-
-classRenamer {
-  enabled: false
-  type: CUSTOM
-  prefix: "skido/"
-  chars: [
-    "K"
-    "oO",
-    "o0"
-  ]
-  depth: 3
-}
-
-methodRenamer {
-  enabled: false
-  type: CUSTOM
-  chars: [
-    "K"
-    "oO",
-    "o0"
-  ]
-  depth: 3
-}
-
-fieldRenamer {
-  enabled: false
-  type: ALPHABETICAL
+    enabled: true
+    exempt: []
 }
 ```
 
-## Wykluczenia
+## Przykłady
 
-Korzystanie z wykluczeń jest identyczne jak w poprzednim systemie. Aby dowiedzieć się więcej o wykluczeniach, przejdź [tutaj](../exclusion.md)
+### Brak zaciemnienia
 
-::: warning 
-Java analizuje ciąg znaków poprzez oczyszczanie ukośnika. Oznacza to, że MUSISZ podwoić wszystkie ukośniki
-:::
-
-### Wykluczanie klasy
-
-Aby wykluczyć określoną klasę, należy użyć wyjątku class regex:
-```js
-class{^my\/class}
-```
-
-Aby zmieścić to w konfiguracji, należy przekazać to jako string.
-
-
-```js
-exempt: [
-    "class{^my\\/class}"
-]
-```
-
-### Wykluczanie metody
-
-Aby wykluczyć określoną metodę, należy użyć wyjątku method regex:
-```js
-method{^myMethod}
-```
-
-Aby zmieścić to w konfiguracji, należy przekazać to jako string.
-
-```js
-exempt: [
-    "method{^myMethod}"
-]
-```
-
-### Wykluczanie metody w określonej klasie
-
-Tak jak dowiedziałeś się wcześniej, aby wykluczyć metodę i klasę, musimy wykonać następujące czynności:
-```js
-class{^my\/class}
-method{^myMethod}
-```
-
-Teraz, aby wykluczyć metodę w tej konkretnej klasie, wszystko, co należy zrobić, to połączyć te dwie metody w jednym wierszu:
-
-```js
-class{^my\/class} method{^myMethod}
-```
-
-W związku z tym w konfiguracji wyglądałoby to następująco:
-
-```js
-exempt: [
-    "class{^my\/class} method{^myMethod}"
-]
-```
-
-## Biblioteki
-
-Biblioteki są ważnym aspektem obliczania ścieżki klas i zapewniania maksymalnej ochrony oprogramowania. W tym przypadku należy podać prawidłowy argument ścieżki Java jako string
-
-Poniżej znajduje się kod implementacji:
 ```java
-public File[] getLibs() {
-    return this.getStringList("libraries", Collections.emptyList())
-                .stream()
-                .map(File::new)
-                .distinct()
-                .toArray(File[]::new);
+@SecretAnnotation(secret = "Super secret", secret2 = 1337)
+public class Fancy {
+    public String getSecret() {
+        return this.getClass().getAnnotation(SecretAnnotation.class).secret();
+    }
+
+    public int getSecre2t() {
+        return this.getClass().getAnnotation(SecretAnnotation.class).secret2();
+    }
 }
 ```
 
-Poniżej znajduje się przykład prawidłowych ścieżek java:
-```
-C:\test.jar
-test.jar
-./test.jar
-/Home/test.jar
-```
+### Zaciemniony kod
 
-W konfiguracji byłyby one reprezentowane w następujący sposób:
+```java @SecretAnnotation(secret = "oifjaioejaifjea9è!efèaefFEf==", secret2 = 0x9FE7FE7F) public class Fancy { public String getSecret() { /* [...] */ return this.aofheoafo(this.getClass().getAnnotation(SecretAnnotation.class).secret(), n ^ 0x997AF8F); }
 
-```js
-libraries [
-    "C:\\test.jar",
-    "test.jar",
-    "./test.jar",
-    "/Home/test.jar"
-]
-```
-
-## Sterownik
-
-Sterownik jest częścią Skidfuscator. Ta funkcja jest tylko dla wersji Premium. W skrócie, dla każdej obfuskacji generowany i kompilowany jest nowy sterownik dla następujących architektur:
-
-| System operacyjny | Wspierane architektury |
-| ----------------- | ---------------------- |
-| Windows           | x64_86                 |
-| MacOS             | x64_86, AARCH64 (ARM)  |
-| Linux             | x64_86 (AMD64)         |
-
-Aby wyłączyć tę funkcję (:warning: znacznie zmniejsza to siłę zaciemniania), należy zmienić `false` na `true`:
-
-```js
-driver: false
-```
-
-
-## Transformers
-
-Każdy transformer można indywidualnie włączyć/wyłączyć.
-
-
-#### String Encryption
-
-Transformator szyfrowania ciągów znaków przekształca każdy ciąg znaków w określone wywołanie metody, w celu ukrycia go w czasie wykonywania. Może to być praktyczne w przypadku adresów URL, kluczy prywatnych itp.
-
-::: warning
-Nie ufaj tylko temu. Proszę nie polegać na szyfrowaniu ciągu jako na wyłącznej ochronie twojego oprogramowania . Domyślnie należy założyć, że wystarczająco utalentowany człowiek może uzyskać do nich dostęp przy wystarczająco dużej cierpliwości.
-:::
-
-Obecnie dostępne są dwa tryby szyfrowania: `STANDARD` i `POLYMORPHIC`.
-
-#### Number Encryption
-
-Transformator szyfrowania liczb szyfruje dowolną liczbę całkowitą, która ma zostać ukryta. Jest to idealne rozwiązanie i utrudnianie osobom dekompilującym uzyskanie czystego kodu źródłowego. Ponadto wzmacnia to wszelkie warunki oparte na wartościach boolean.
-
-
-#### 
+    public int getSecre2t() {
+        /* [...] */
+        return this.getClass().getAnnotation(SecretAnnotation.class).secret2() ^ n ^ 0x90AF9F7;
+    }
+    
+    /* [...] */
+}```
