@@ -1,51 +1,135 @@
-## String Encryption
+# Writing Exclusions (Skidfuscator >= 2.0.0)
 
-Transformator szyfrowania ciągów znaków przekształca każdy ciąg znaków w określone wywołanie metody, w celu ukrycia go w czasie wykonywania. Może to być praktyczne w przypadku adresów URL, kluczy prywatnych itp.
+A regex (regular expression) is a type of search pattern used to identify character strings. It is typically used to search for, replace and validate text. Regexes are written in a formal language and are used in programming, data science and other applications.
 
-::: warning
-Nie ufaj tylko temu. Proszę nie polegać na szyfrowaniu ciągu jako na wyłącznej ochronie twojego oprogramowania . Domyślnie należy założyć, że wystarczająco utalentowany człowiek może uzyskać do nich dostęp przy wystarczająco dużej cierpliwości.
-:::
+Skidfuscator uses regexes to handle the inclusion and exclusion aspect of it's configuration.
 
+Understanding exclusions might be tricky at first, but trust me, it is quite easy once you get the hang of it.
 
-## Konfiguracja
+First and foremost, it's important to understand basic regex.
 
-Obecnie dostępne są dwa tryby szyfrowania: `STANDARD` i `POLYMORPHIC`.
+## Basics of Regex (Regular expressions)
 
-```js
-stringEncryption {
-    enabled: true
-    type: POLYMORPHIC
-    exempt: []
-}
+- Here's a basic string to match everything:
+```java
+(.*?)
 ```
 
-## Przykłady
-
-### Brak zaciemnienia
-
+So the following would happen:
 ```java
-System.out.println("Hello world");
+abozeofez // Matches!
+zeigzoegze // Matches!
 ```
 
-### Standard
+***
 
+- To match any string which contains "roar", you'd have
 ```java
-System.out.println(superDuperMethod("\u2be6\uabec\uebfe\uebfe\uabe0\uabf7\ue7f1", n ^ 0x9F878R));
+roar
+````
+
+So the following would happen:
+```java
+roar // Matches!
+asdafroar // Matches!
+grrr // No match!
 ```
 
-### Polymorphic
+***
+
+Aby dopasować dowolny ciąg rozpoczynający się _z_ "uwu", musiałbyś:
 ```java
-StringBuilder string = new StringBuilder("\u2be6\uabec\uebfe\uebfe\uabe0\uabf7\ue7f1\uabe0\u6bfa\uebfe\uabee\uabf5");
-for (int a=0, b, c; a < string.length(); a++) {
-    b = string.charAt(a);
-    b = (((b & 0xffff) << 0x6) | (b >> 0xa)) & 0xffff;
-    c = ((b >> 0x0) ^ (b >> 0x7)) & ((1 << 0x4) - 1);
-    b ^= (c << 0x0) | (c << 0x7);
-    b ^= 0x600f ^ n;
-    b -= 0x2aa2 ^ n;
-    b += 0x25b0 ^ n;
-    b ^= 0x9852 ^ n;
-    string.setCharAt(a, (char) b);
-}
-System.out.println(string)
+^uwu
+```
+
+Stałoby się więc tak:
+```java
+kitty-uwu // Brak dopasowania!
+uwu-kitty // Dopasowano!
+```
+
+- `kitty-uwu` nie będzie pasować, ponieważ uwu jest przyrostkiem, a zatem nie zaczyna się od słowa `uwu`.
+- `uwu-kitty` *będzie pasować*, ponieważ określony prawidłowy prefiks jest obecny.
+
+***
+
+Jeśli chcesz dowiedzieć się więcej o Regex, zajrzyj tutaj: [Regex tutorial](https://medium.com/factory-mind/regex-tutorial-a-simple-cheatsheet-by-examples-649dc1c3f285).
+
+## Writing exclusions
+This is very simple and easy to do.
+
+- Create a file to write your exclusions in, we recommend using a txt file.
+
+Skidfuscator reads inclusions and exclusions the same way: if it matches a regex pattern, __**it will not be read or obfuscated****.
+
+### Exclusions
+By using regex forward matching as seen below, you are able to match any type of class. Remember to escape any "/" with a "\\" to prevent Regex from comitting seppuku and you spending hours figuring out what's wrong.
+
+See below various examples of matching classes & methods for exclusions:
+
+```java
+// Spowoduje to dopasowanie dowolnej metody o nazwie "main"
+method{main} 
+// To dopasuje każdą metodę, która zaczyna się od "com.apache" 
+// (dowolna nazwa klasy zastępuje "." znakiem "/")
+class{^com\/apache} 
+// Spowoduje to dopasowanie dowolnej metody zaczynającej się od "com.google" 
+// (dowolna nazwa klasy zastępuje "." znakiem "/")
+class{^com\/google} 
+// Spowoduje to dopasowanie dowolnej metody w klasie "Controller"
+class{Controller$} 
+// Spowoduje to dopasowanie dowolnej metody w klasie "com.example.MyClass"
+class{^com\/example\/MyClass$}
+```
+
+#### Multiple exclusions
+
+To be able to exclude for example several methods, or packages, it's quite simple really! All you have to do is create a new line and add the new exemption :)
+
+```java
+class{^com\/apache} // Matches apache
+class{^com\/google} // Matches google
+```
+
+
+### Inclusions
+As opposed to exclusions, you may want to **only include a particular set of classes or a package** in your obfuscated jar. Fret not, this is possible, albeit a little more complicated.
+
+```java
+// Spowoduje to dopasowanie wszystkich klas pakietu "com.example"
+class{^(?!(com\/example)).*$} 
+
+// Spowoduje to dopasowanie wszystkich klas pakietu "com.example" i 
+// wszystkie klasy pakietu "com.eclipse". 
+// Możesz dodać dowolną liczbę pakietów za pomocą argumentu "|".
+class{^(?!(com\/example)|(com\/eclipse)).*$} 
+```
+
+## Debugging Exclusions
+
+I strongly recommend using a regex debugger, such as [Regex101](https://regex101.com/), to be able to figure out what matches and what does not.
+
+All class names, by default, follow the format "package1/package2/class1". Whilst you may see in the JVM it is formatted differently, in the case of Skidfuscator, the above format was decided to be the most effective and reflective of Jar/Zip file hierarchy.
+
+## Exemplar Exclusions File
+
+A lot of our clients develop Minecraft modifications or plugins, see below a template / exemplar configuration file with the most commonly required exclusions:
+
+```java
+// Wykluczenia pakietów poniżej
+class{^net\/minecraftforge} // Pasuje do Minecraft Forge
+class{^net\/minecraft\/client} // Pasuje do klienta Minecraft
+class{^net\/minecraft\/server} // Pasuje do serwera Minecraft
+class{^org\/bukkit} // Pasuje do Bukkit
+class{^com\/mojang} // Pasuje do Mojang
+class{^me\/johnymuffin} // Pasuje do JohnyMuffin
+class{^com\/sk89q} // Dopasowania Sk89q
+class{^org\/spigotmc} // Pasuje do SpigotMC
+class{^org\/apache\/commons} // Pasuje do Apache Commons
+class{^org\/jline} // Pasuje do JLine
+
+// Wykluczenia metod poniżej 
+method{^net\.minecraft\.client} // Wyklucza wszystkie metody z pakietu net.minecraft.client 
+method{^net\.minecraft\.util} // Wyklucza wszystkie metody z pakietu net.minecraft.util 
+method{^net\.minecraft\.client\.Minecraft} // Wyklucza wszystkie metody z klasy Minecraft
 ```
