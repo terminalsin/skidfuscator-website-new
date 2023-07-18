@@ -1,19 +1,15 @@
-## Driver Härtung
+# Hallo, unbekannter
 
-Der Treiber ist der gehärtete Teil von Skidfuscator. Diese Funktion ist für Premium-Nutzer reserviert. Kurz gesagt, pro obfuscation, wird ein neuer Treiber für die folgenden Architekturen generiert und kompiliert:
+Willkommen zu dem skidfuscator-java-obfuscator Wiki!
 
-| Betriebssystem | Unterstützte Architekturen |
-| -------------- | -------------------------- |
-| Windows        | x64_86                     |
-| MacOS          | x64_86, AARCH64 (ARM)      |
-| Linux          | x64_86 (AMD64)             |
+Du dachtest vorher, wir hätten nicht viel zu besprechen, oder? Hier haben wir die ganzen Leckereien, ha.
 
-
-## Konfiguration
-Um diese Funktion zu aktivieren (:warning: erhöht deutlich die Obfuscationstärke), müssen Sie die Boolean-Funktion umstellen:
-
-```js
-driver: {
-    enabled: false // standardmäßig deaktiviert
-}
-```
+# Inhaltsverzeichnis
+1. [Installation](/docs/installation.html)
+2. [Getting Started](/docs/gettingstarted.html)
+3. [Exclusions](/docs/exclusion.html)
+4. [Libraries](/docs/libraries.html)
+5. [About Us](/docs/about.html)
+6. [Intro to Java Obfuscation](/docs/javaobf.html)
+7. [Bug Reporting](/docs/bugreporting.html)
+8. [Transformers](/docs/transformers.html)
