@@ -1,6 +1,73 @@
-# Forge 1.8.8
+# Trasformatori
 
-## Introduzione
-Forgia Minecraft 1.8., notoriamente utilizzato per mod Skyblock, mod legacy e client hackerati, è specificamente diverso nel modo in cui funziona in combinazione con altre versioni di Forge. Più tipicamente, è necessario impostare un ambiente completo per ottenere la versione decompilata di Minecraft per essere in grado di ottenere la dipendenza, uno che è richiesto per superare lo stato di compilazione.
+Ecco l'indice dove sarò dettagliato ogni trasformatore uno per uno. Questo dovrebbe aiutare a capire un po 'quello che sta accadendo dietro le quinte e come tali trasformazioni sono efficaci contro il reverse engineering.
 
-## 
+Andremo oltre il seguente indice:
+- Numero Di Osolamento
+- Cifratura Stringa
+
+## Numero Di Obbuscazione
+
+Assume il seguente scenario:
+- $x$ è il numero che vogliamo crittografare
+- $n$ è il "seed" del blocco
+- $d$ è il numero crittografato
+
+Secondo la semplice meccanica xor: $x\oplus n\oplus n=x$
+
+Quindi, per definizione, se $n$ è il nostro seme, al runtime dobbiamo calcolare $d$ come $d = x\oplus n$. Poi, dobbiamo modificare le istruzioni di bytecode come:
+
+```java
+int value = x;
+```
+
+diventa
+```java
+int value = x;
+```
+
+Dove $d$ è il valore calcolato prima del tempo sotto forma di costante e $n$ il predicato opaco. Esempio:
+```java
+int value = x;
+```
+diventa
+```java
+int predicate = 0x100;
+int value = 105 ^ predicate;
+```
+
+## Cifratura Stringa
+
+La cifratura delle stringhe si basa su tre condizioni di base prima di poter essere trattata:
+1. La costante di stringa deve essere disponibile nel pool costante
+2. La stringa costante deve essere formattata sotto UTF-8
+3. La stringa non deve essere vuota
+
+Con questo siamo in grado di iniettare un sistema di crittografia simmetrica all'interno del codice per poter oscurare la stringa dai tipici decompiler/dissassembler.
+
+### Xor Algorithm
+
+A partire da questo momento, usiamo un semplice algoritmo xor che è abbastanza resiliente per essere in grado di calcolare la nostra stringa crittografata. Mentre questo algoritmo è matematicamente della qualità più povera, e potrebbe essere incrinato molto probabilmente nel tempo polinomiale se non nel tempo lineare, il nostro obiettivo qui è quello di proporre una facile e proof-of-concept implementazione di come un predicato opaco può indurire la crittografia delle stringhe. In versioni future di Skidfuscator, faremo uso di un motore polimorfico.
+
+L'algoritmo attualmente funziona in questo modo:
+
+Let $f_y(x)=x\oplus y\oplus n$ rappresenta il metodo di crittografia e decrittografia per un carattere in una Stringa per un dato $n$ e $m_{max}$ di 255
+
+$y=i\mod m$
+
+dove $i$ rappresenta l'indice del carattere nella stringa, $m$ rappresenta la dimensione dell'array intero casuale con "chiavi" casuali, $n$ rappresenta il predicato opaco intero, $x$ il personaggio all'indice $i$ della stringa.
+
+By definition: $$ \begin{align} f_y(f_y(x))&=x\oplus y\oplus n\oplus y\oplus n\\
+&=x\oplus y\oplus y\oplus n\oplus n\\ f_y(f_y(x))&=x \end{align} $$
+
+Quindi otteniamo un algoritmo di crittografia / decrittografia utilizzabile che è indurito da un predicato opaco e una suite di chiavi intere memorizzate localmente. L'attuazione può essere vista [qui](https://github.com/terminalsin/skidfuscator-java-obfuscator/blob/master/dev.skidfuscator.obfuscator/obfuscator/src/main/java/dev/skidfuscator/obfuscator/transform/impl/string/BasicEncryptionGenerator.java)
+
+La delimitazione si riferisce al processo di estrazione del codice da un metodo e di collocarlo in un metodo separato e autonomo. Questo viene spesso fatto come un modo per migliorare la leggibilità e la mantenibilità del codice, in quanto può rendere più facile capire che cosa un metodo sta facendo suddividendolo in più piccoli pezzi di codice più mirati.
+
+Il disegno può anche essere usato come una forma di offuscamento del codice, in quanto può rendere più difficile per qualcuno che cerca di invertire l'ingegnere o capire il codice per vedere il flusso complessivo e la struttura del programma. Spezzando il codice in pezzi più piccoli e separandolo in diversi metodi, può essere una procedura molto più dura per qualcuno per capire le relazioni tra le diverse parti del flusso e come si adattano insieme per svolgere una particolare funzione.
+
+![Illustrazione del grafico](https://i.imgur.com/2HMq0a4.png)
+
+La cosa fantastica di delineare è: non è *tecnicamente* reversibile! Per essere in grado di tornare a uno stato originale di una buona offuscazione contorno, un deobfuscatore *deve fare inlining*, che è euristico e *non* garantisce che l'output sia sempre semanticamente corretto con il codice sorgente originale. Inoltre, questo richiede al deobfuscator di manomettere con variabili e altre varie forme di manipolazione sensibile bytecode che tutti possono portare a frame ed eccezioni di calcolo.
+
+Nel complesso, delineare offuscamento è abbastanza ordinato :)
