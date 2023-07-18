@@ -1,51 +1,49 @@
-## @Merkintä Salaus
+## Poikkeuksen Palautus
 
-Seuraavan sukupolven annotaatioiden salausmuuntaja muuttaa jokaisen annotaatioiden sisältämän merkkijonon ja kokonaisluvun tietyksi metodikutsuksi, jonka tarkoituksena on piilottaa se ajonaikana. Tämä voi olla käytännöllistä ei-arkaluonteisille verkko-osoitteille, yksityisille avaimille jne.
+Edistyksellinen poikkeuspalautussuojamme on tehokas ohjelmointitekniikka, jota käytetään tekemään ohjelman ohjausvirrasta huomattavasti vaikeammin ymmärrettävää ja analysoitavaa häivyttämällä palautustulokset ja standardoimalla jokaisen metodin palautusarvo tyhjäksi.
 
-::: warning
-Asiakkaaseen ei pidä luottaa, EI KOSKAAN. Älä luota merkkijonosalaukseemme ohjelmistosi ainoana suojana. Oletusarvoisesti sinun pitäisi olettaa, että käänteismuokkaajat pääsevät käsiksi näihin riittävän ajan ja kärsivällisyyden avulla.
-:::
+Pähkinänkuoressa, tämä tekniikka korvaa normaalin palautuksen lausunnot lukuun ottamatta käsittelylohkoja, jotka tekevät ohjelman ohjaus virtaus vähemmän ennustettavissa. Kun poikkeus herää, ohjelma hyppää nimetylle poikkeuskäsittelijälle, joka palauttaa halutun arvon tai suorittaa halutun toiminnon. Tämä tekee koodista vaikean lukea, analysoida ja takaisinmallintaa, mikä tarjoaa suojan peukalointia tai piratismia vastaan.
 
+'''warning Tämä häivytystekniikka on vakaa ja onnistuu aina kääntämään suurempia ohjelmia. Juuri tästä syystä se on oletusarvoisesti pois päältä. '''
 
 ## Konfiguroi
 
 ```js
-stringAnnotationEncryption {
-    enabled: true
-    exempt: []
-}
-
-intAnnotationEncryption {
-    enabled: true
+exceptionReturn {
+    enabled: false
     exempt: []
 }
 ```
 
 ## Esimerkkejä
 
-### Unohtunut
+### Suojaamaton
 
 ```java
-@SecretAnnotation(secret = "Supersalaisuus", secret2 = 1337)
-public class Fancy {
-    public String getSecret() {
-        return this.getClass().getAnnotation(SecretAnnotation.class).secret();
-    }
+int number = callNumber();
+ [...]
+}
 
-    public int getSecre2t() {
-        return this.getClass().getAnnotation(SecretAnnotation.class).secret2();
-    }
+int callNumber() {
+    return 1;
 }
 ```
 
 ### Suojattu
+```java
+try {
+    callNumber();
+} catch (IntNumberException ex) {
+    int number = ex.getValue();
+}
 
-```java @SecretAnnotation(secret = "oifjaioejaifjea9è!efèaefFEf==", secret2 = 0x9FE7FE7F) public class Fancy { public String getSecret() { /* [...] */ return this.aofheoafo(this.getClass().getAnnotation(SecretAnnotation.class).secret(), n ^ 0x997AF8F); }
+[...]
 
-    public int getSecre2t() {
-        /* [...] */
-        return this.getClass().getAnnotation(SecretAnnotation.class).secret2() ^ n ^ 0x90AF9F7;
-    }
-    
-    /* [...] */
-}```
+void callNumber() {
+    throw new IntNumberException(1);
+}
+```
+
+
+
+
