@@ -1,22 +1,16 @@
-## Szyfrowanie adnotacji
+## Wyjątek zwrotu
 
-Transformer szyfrowania adnotacji przekształca każdy ciąg znaków i liczbę całkowitą zawartą w adnotacjach w określone wywołanie metody, w celu ukrycia go w czasie wykonywania. Może to być praktyczne w przypadku adresów URL, kluczy prywatnych itp.
+Zaciemnianie zwracanych wartości wyjątków to technika programistyczna stosowana w celu utrudnienia zrozumienia i analizy przepływu sterowania w programie poprzez zaciemnianie zwracanych wyników i standaryzację każdej metody tak, aby miała pustą wartość zwracaną.
 
-::: warning
-Nie powinieneś ufać jedynie temu. Proszę nie polegać na szyfrowaniu ciągu jako na wyłącznej ochronie twojego oprogramowania . Domyślnie należy założyć, że wystarczająco utalentowany człowiek może uzyskać do nich dostęp przy wystarczająco dużej cierpliwości.
-:::
+W skrócie, technika ta zastępuje normalne instrukcje powrotu blokami obsługi wyjątków, które sprawiają, że przepływ sterowania programu jest mniej przewidywalny. Gdy zostanie zgłoszony wyjątek, program przeskakuje do wyznaczonego programu obsługi wyjątków, który następnie zwraca żądaną wartość lub wykonuje zamierzoną akcję. Sprawia to, że kod jest trudniejszy do odczytania ianalizy, zapewniając w ten sposób wysoki poziom ochrony przed manipulacją lub piractwem.
 
+'''warning Ta technika zaciemniania jest wciąż eksperymentalna i może nie kompilować się pomyślnie na większych programach. Z tego powodu jest ona domyślnie wyłączona. '''
 
 ## Konfiguracja
 
 ```js
-stringAnnotationEncryption {
-    enabled: true
-    exempt: []
-}
-
-intAnnotationEncryption {
-    enabled: true
+exceptionReturn {
+    enabled: false
     exempt: []
 }
 ```
@@ -26,26 +20,30 @@ intAnnotationEncryption {
 ### Brak zaciemnienia
 
 ```java
-@SecretAnnotation(secret = "Super secret", secret2 = 1337)
-public class Fancy {
-    public String getSecret() {
-        return this.getClass().getAnnotation(SecretAnnotation.class).secret();
-    }
+int number = callNumber();
+ [...]
+}
 
-    public int getSecre2t() {
-        return this.getClass().getAnnotation(SecretAnnotation.class).secret2();
-    }
+int callNumber() {
+    return 1;
 }
 ```
 
 ### Zaciemniony kod
+```java
+try {
+    callNumber();
+} catch (IntNumberException ex) {
+    int number = ex.getValue();
+}
 
-```java @SecretAnnotation(secret = "oifjaioejaifjea9è!efèaefFEf==", secret2 = 0x9FE7FE7F) public class Fancy { public String getSecret() { /* [...] */ return this.aofheoafo(this.getClass().getAnnotation(SecretAnnotation.class).secret(), n ^ 0x997AF8F); }
+[...]
 
-    public int getSecre2t() {
-        /* [...] */
-        return this.getClass().getAnnotation(SecretAnnotation.class).secret2() ^ n ^ 0x90AF9F7;
-    }
-    
-    /* [...] */
-}```
+void callNumber() {
+    throw new IntNumberException(1);
+}
+```
+
+
+
+
