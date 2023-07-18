@@ -1,49 +1,60 @@
-## Poikkeuksen Palautus
+## Väärennettyihin virheisiin Perustuva Suojaus
 
-Edistyksellinen poikkeuspalautussuojamme on tehokas ohjelmointitekniikka, jota käytetään tekemään ohjelman ohjausvirrasta huomattavasti vaikeammin ymmärrettävää ja analysoitavaa häivyttämällä palautustulokset ja standardoimalla jokaisen metodin palautusarvo tyhjäksi.
+Väärennettyihin virheisiin perustuva suojaus on hämärtymismuunnos, joka lisää Java-koodiisi lisäsuojauskerroksia, mikä vaikeuttaa kelvollisen Java-koodin tulostamista decompilereille. Se tekee tämän muuttamalla ohjaus virtausta ja ottamalla käyttöön poikkeus putoavat kuitenkin koodi tavalla, joka vaikeuttaa logiikkaa muuttamatta ohjelman toiminnallisuutta.
 
-Lyhyesti sanottuna tämä tekniikka korvaa normaalit palautuslausekkeet poikkeuskäsittelylohkoilla, jotka tekevät ohjelman ohjausvirrasta vähemmän ennustettavan. Kun poikkeus herää, ohjelma hyppää nimetylle poikkeuskäsittelijälle, joka palauttaa halutun arvon tai suorittaa halutun toiminnon. Tämä tekee koodista vaikean lukea, analysoida ja takaisinmallintaa, mikä tarjoaa suojan peukalointia tai piratismia vastaan.
-
-'''warning Tämä tekniikka on erittäin tehokas, sen poistaminen käytöstä voi vähentää suojauksen voimakkuutta. Juuri tästä syystä se on oletusarvoisesti pois päältä. '''
+Korkealla tasolla muuntaja toimii seuraavalla tavalla:
+- Ensin muuntaja tutkii koodisi menetelmät ja ohittaa abstraktit menetelmät, init-menetelmät ja ne, joissa ei ole koodia yhteensopivuusongelmien välttämiseksi.
+- Sitten muuntaja sitten määrittää asianmukaisen obfuscation strategia (Heikko, Hyvä, tai Aggressiivinen) perustuu kokoonpano asetukset. Jokaisella strategialla on erilainen hämärtymisen taso ja se vaikuttaa siihen, kuinka usein siihen lisätään poikkeukseseen liittyvä koodi.
+- Kun se on tehty, dor jokainen lohko ohjausvirtauskaaviossa, muuntaja tarkistaa, pitäisikö se vapauttaa hämärtymisestä. Se ohittaa tyhjät lohkot, välityspalvelinlohkot ja poikkeusherkät lohkot. Jos lohko voidaan hämärtää, muuntaja päättää, sovelletaanko valittuun strategiaan perustuvaa hämärtymistä vai ei.
+- Sovellettaessa muuntaja tuottaa ainutlaatuisen siemenen ja käyttää hashing turvata läpinäkymätön ennustaa. Se sitten lisää valheellinen ehdollinen hypätä heittää lausunto, aiheuttaa virtaus pudota läpi.
+- Joissakin tapauksissa muuntaja voi lisätä ylimääräisen obfuskaation kerroksen lisäämällä toissijaisen ehdollisen hyppyilmoituksen sekä alku- että satunnaisia sijainteja lohkoon.
 
 ## Konfiguroi
 
+Tälle muuntajalle on tarjolla kolme tilaa:
+- `WEAK`: Jos aiemmin on suoritettu, suorita satunnainen totuus, jos viimeinen ei ole suoritettu, suorita (75 %: n keskimääräinen lisäysaste)
+- `HYVÄ`: Aina suorita kerran (100% Luokitus)
+- `AGGRESSIIVINEN` Suoritetaan aina kahdesti (200 keskimääräinen lisäysprosentti)
+
 ```js
-exceptionReturn {
-    enabled: false
+flowException {
+    enabled: true
+    strength: AGGRESSIVE // Voi olla 'WEAK', 'GOOD' tai 'AGGRESSIVE'
     exempt: []
 }
 ```
 
 ## Esimerkkejä
 
-### Suojaamaton
-
+#### Suojaamaton
 ```java
-int number = callNumber();
- [...]
+public static void main(String[] args) {
+    int number = callNumber();
+    /*[...]*/
 }
-
-int callNumber() {
-    return 1;
-}
+/*[...]*/
 ```
 
-### Suojattu
+#### Suojattu
 ```java
-try {
-    callNumber();
-} catch (IntNumberException ex) {
-    int number = ex.getValue();
-}
+public static void main(String[] args) {
+    /*[...]*/
+    while (true) {
+        if (n ^ 0x8AF8EF8F == 0xA88FFA) {
+            break;
+        }
 
-[...]
+        n = n ^ 0x28847D;
+        int number = callNumber();
 
-void callNumber() {
-    throw new IntNumberException(1);
+        if (n ^ 0xAA9F8FFD == 0x989F7AF) {
+            break;
+        }
+
+        throw new IllegalStateException();
+    }
+
+    /*[...]*/
 }
+/*[...]*/
 ```
-
-
-
-
