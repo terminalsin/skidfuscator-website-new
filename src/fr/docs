@@ -1,15 +1,20 @@
-# Hello Stranger
+# Signalement de bugs
 
-Bienvenue sur le wiki de skidfuscator-java-obfuscator !
+Si vous pensez avoir rencontré un problème ou découvert un bug avec Skidfuscator, nous encourageons nos utilisateurs à signaler le problème à notre équipe afin de vous assurer que vous avez une expérience agréable.
 
-You thought we didn't have much to talk about previously did you? Now we have all the goodies, ha.
+**Veuillez signaler tout problème ou bug sur notre Github qui peut être trouvé en cliquant sur [ici](https://github.com/skidfuscatordev/skidfuscator-java-obfuscator).**
 
-# Table des matières
-1. [Installation](/docs/installation.html)
-2. [Démarrage](/docs/gettingstarted.html)
-3. [Exclusions](/docs/exclusion.html)
-4. [Bibliothèques](/docs/libraries.html)
-5. [À propos de nous](/docs/about.html)
-6. [Introduction à l'obfuscation Java](/docs/javaobf.html)
-7. [Signalement de bugs](/docs/bugreporting.html)
-8. [Transformateurs](/docs/transformers.html)
+Vous pouvez signaler le bug en rejoignant notre serveur Discord et en ouvrant un ticket.
+
+Veuillez vous assurer de formater votre rapport de bogue de la manière suivante:
+1. Le bug que vous rencontrez.
+2. Screenshot of the full stacktrace message.
+3. Le jar original que vous essayez d'obfusquer.
+4. Le jar obfusqué (le cas échéant.)
+5. Tous les fichiers de configuration que vous utilisez.
+
+Alternativement, si vous avez l'impression d'avoir besoin d'aide, rejoignez notre Discord et ouvrez un ticket.
+
+<iframe src="https://discord.com/widget?id=904888546609987674&theme=dark" width="350" height="500" allowtransparency="true" frameborder="0" sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"></iframe>
+
+Notre équipe reviendra vers vous et nous ferons de notre mieux pour résoudre votre problème !
