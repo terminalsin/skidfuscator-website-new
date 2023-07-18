@@ -1,49 +1,60 @@
-## Exception Return
+# Pierwsze kroki
 
-Zaciemnianie zwracanych wartości wyjątków to technika stosowana w celu utrudnienia zrozumienia i analizy przepływu sterowania w programie poprzez zaciemnianie zwracanych wyników i standaryzację każdej metody tak, aby miała pustą wartość zwracaną.
+Pobrałeś już Skidfuscator na swój komputer i zastanawiasz się, jak go uruchomić?
 
-W skrócie, technika ta zastępuje normalne instrukcje blokami obsługi wyjątków, które sprawiają, że przepływ sterowania programu jest mniej przewidywalny. Gdy zostanie wyświetlony wyjątek, program przeskakuje do wyznaczonego programu obsługi wyjątków, który następnie zwraca żądaną wartość lub wykonuje zamierzoną akcję. Sprawia to, że kod jest trudniejszy do odczytania i analizy, zapewniając w ten sposób wysoki poziom ochrony przed manipulacją lub piractwem.
+Skidfuscator działa za pośrednictwem wiersza poleceń, przy użyciu Java CLI. Zdecydowanie zalecamy zapoznanie się z tym, aby cieszyć się płynnym działaniem.
 
-'''warning Ta technika zaciemniania jest wciąż eksperymentalna i może nie kompilować się pomyślnie na większych programach. Z tego powodu jest ona domyślnie wyłączona. '''
+## Dostępne opcje CLI
 
-## Konfiguracja
+Wystarczy uruchomić `java -jar <yourSkidfuscatorFile.jar>` i zostaną wyświetlone różne opcje:
 
-```js
-exceptionReturn {
-    enabled: false
-    exempt: []
-}
+![Opcje Skidfuscator](https://i.imgur.com/Yu70Pcq.png)
+
+
+#### Twój wybrany plik
+Plik, który chcesz zaciemnić za pomocą Skidfuscator.
+```cli
+<input>
 ```
 
-## Przykłady
-
-### Brak zaciemnienia
-
-```java
-int number = callNumber();
- [...]
-}
-
-int callNumber() {
-    return 1;
-}
+#### Twoje wykluczenia
+Ścieżka do pliku zawierającego wykluczenia.
+```cli
+--exempt=<exempt>
 ```
 
-### Zaciemniony kod
-```java
-try {
-    callNumber();
-} catch (IntNumberException ex) {
-    int number = ex.getValue();
-}
-
-[...]
-
-void callNumber() {
-    throw new IntNumberException(1);
-}
+#### Pomiń obliczenie
+**UŻYWAJ TEGO NA WŁASNE RYZYKO** Całkowicie pomija krytyczne formy obliczeń, takie jak biblioteki. Wsparcie może być ograniczone, jeśli zdecydujesz się skorzystać z tej opcji.
+```cli
+`--fuckit
 ```
 
+#### Twoje biblioteki
+Ścieżka do folderu zawierającego biblioteki / zależności wymagane do zaciemnienia pliku jar.
+```cli
+--libs=<libs>
+```
 
+#### Rezygnacja z analizy
+Ta opcja nie zapewni nam żadnych analiz, takich jak napotkane błędy lub statystyki użytkowania obfuscatora.
+```cli
+--notrack
+```
 
+#### Zaciemniony plik
+Ścieżka do miejsca, w którym ma zostać stworzony zaciemniony plik, jeśli ta opcja pozostanie pusta, zostanie stworzony w katalogu, w którym został uruchomiony Skidfuscator.
+```cli
+--output=<output>
+```
 
+#### Phantom computation
+Umożliwia włączenie obliczeń dla klas, ponownie, jeśli ta opcja jest używana, wsparnie może być ograniczone. Zdecydowanie zalecamy dostarczenie wymaganych bibliotek.
+```cli
+--phantom
+```
+
+#### Specifying runtime
+Ścieżka do java runtime.
+```cli
+--runtime=<runtime>
+```
