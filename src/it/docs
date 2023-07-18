@@ -1,25 +1,17 @@
-## Contorno
 
-La delimitazione si riferisce al processo di estrazione del codice da un metodo e di collocarlo in un metodo separato e autonomo. Questo viene spesso fatto come un modo per migliorare la leggibilità e la mantenibilità del codice, in quanto può rendere più facile capire che cosa un metodo sta facendo suddividendolo in più piccoli pezzi di codice più mirati.
+## Intervallo Di Flusso
+Un passaggio di offuscamento della gamma di eccezioni di flusso è una tecnica utilizzata nell'ottimizzazione del compilatore per aggiungere offuscazione al codice di gestione delle eccezioni di un programma.
 
-Il disegno può anche essere usato come una forma di offuscamento del codice, in quanto può rendere più difficile per qualcuno che cerca di invertire l'ingegnere o capire il codice per vedere il flusso complessivo e la struttura del programma. Spezzando il codice in pezzi più piccoli e separandolo in diversi metodi, può essere una procedura molto più dura per qualcuno per capire le relazioni tra le diverse parti del flusso e come si adattano insieme per svolgere una particolare funzione.
+L'idea alla base di questa tecnica è quella di modificare le routine di gestione delle eccezioni del programma (come i blocchi di try-cattura) per includere ulteriori istruzioni di controllo che rendono più difficile capire il flusso logico del programma.
 
-![Illustrazione del grafico](https://i.imgur.com/2HMq0a4.png)
+Ad esempio, un semplice blocco di try-catch potrebbe essere trasformato in una struttura più complessa che include blocchi di try-catch annidati o istruzioni aggiuntive di ramificazione. Questo può rendere più difficile per un osservatore capire il comportamento di gestione delle eccezioni del programma e potenzialmente scoprire vulnerabilità che potrebbero essere sfruttate.
 
-La cosa fantastica di delineare è: non è *tecnicamente* reversibile! Per essere in grado di tornare a uno stato originale di una buona offuscazione contorno, un deobfuscatore *deve fare inlining*, che è euristico e *non* garantisce che l'output sia sempre semanticamente corretto con il codice sorgente originale. Inoltre, questo richiede al deobfuscator di manomettere con variabili e altre varie forme di manipolazione sensibile bytecode che tutti possono portare a frame ed eccezioni di calcolo.
-
-Nel complesso, delineare offuscamento è abbastanza ordinato :)
-
-::: warning
-Il trasformatore del contorno è ancora molto presto in sviluppo. A causa di come funziona il verificatore Java, non tutti gli scenari possono essere verificati correttamente, il che può portare ad alcuni problemi di compilazione. Si prega di utilizzare a proprio rischio e, se vi sono problemi, si prega di segnalarle.
-
-Nota per sé: Odio i fotogrammi dello stack
-:::
+Questa tecnica è spesso utilizzata in combinazione con altre tecniche di offuscamento per fornire ulteriori strati di protezione. Tuttavia, va notato che l'aggiunta di complessità inutile per il codice di gestione delle eccezioni può anche rendere più difficile il debug e mantenere il programma, quindi dovrebbe essere usato in modo giudizioso.
 
 ## Configurazione
 
 ```js
-outliner {
+flowRange {
      enabled: true
      exempt: []
 }
@@ -28,33 +20,54 @@ outliner {
 ## Esempi
 
 #### Unofuscato
-
 ```java
-public static void main(String[] args) {
-    int number = callNumber();
-    /*[...]*/
-}
-
-static int callNumber() {
-    return 1;
-}
+finale String uwu = "UwU";
+System.out.println(uwu);
 ```
 
 #### Offuscato
 ```java
-public static void main(String[] args) {
-    step1_AF8FZE8EF7Z89F();
-    /*[...]*/
-}
+final String uwu = "UwU";
 
-static void step1_AF8FZE8EF7Z89F() {
-    int number = callNumber();
-}
-
-
-static int callNumber() {
-    return 1;
+while (true) {
+     label1: {
+          try {
+               if (this.a(0x92A8B44, n) >> 8 != 0x97F7F)
+                    throw new IllegalReflectiveException();
+               break label1;
+          } catch (IllegalReflectiveException ex) {
+               System.out.println(uwu);
+          }
+     }
 }
 ```
 
+#### Rappresentanza IR
+```
+ Original flow:       Obfuscated Flow:
 
+ ┌─────────┐            ┌─────────┐
+ │ Block A │            │ Block A │
+ └────┬────┘            └────┬────┘
+      │                      │
+ ┌────▼────┐         ┌───────▼────────┐
+ │ Block B │         │ Random If Stmt │
+ └─────────┘         └───────┬────────┘
+                             │
+                   ┌─────┐◄──┴───►┌─────┐
+                   │ Yes │        │ No  │
+                   └─────┘        └──┬──┘
+                                     │
+                               ┌─────▼─────┐
+                               │ Exception │
+                               └───────────┘
+
+                      ┌─────────────┐
+                      │  Exception  │
+                      │   Catcher   │
+                      └──────┬──────┘
+                             │
+                        ┌────▼────┐
+                        │ Block B │
+                        └─────────┘
+```
