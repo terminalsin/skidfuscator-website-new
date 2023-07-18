@@ -1,19 +1,13 @@
+## Commutation de flux
 
-## Plage de flux
-Une passe d'obfuscation de la plage de flux est une technique utilisée dans l'optimisation du compilateur pour ajouter de l'obfuscation au code de gestion des exceptions d'un programme.
-
-L'idée derrière cette technique est de modifier les routines de gestion des exceptions du programme (comme les blocs "try-catch") pour inclure des instructions de flux de contrôle supplémentaires qui rendent plus difficile la compréhension du flux logique du programme.
-
-Par exemple, un simple bloc "try-catch" peut être transformé en une structure plus complexe qui comprend des blocs "try-catch" imbriqués ou des instructions de branchement supplémentaires. Cela peut rendre plus difficile pour un observateur de comprendre le comportement de gestion des exceptions du programme et potentiellement découvrir des vulnérabilités exploitables.
-
-Cette technique est souvent utilisée en conjonction avec d'autres techniques d'obfuscation pour fournir des couches de protection supplémentaires. Cependant, il convient de noter que l'ajout d'une complexité inutile au code de gestion des exceptions peut également rendre plus difficile le débogage et la maintenance du programme, il convient donc de l'utiliser avec discernement.
+Ce transformateur spécifique cible exclusivement vos instructions "switch" pour obfusquer les variables, masquant ainsi les énumérations, les constantes et les cibles de chaînes de caractères. Cela est réalisé grâce à l'utilisation du prédicat opaque et d'un mécanisme de hachage spécial pour empêcher toute technique d'ingénierie inverse évidente.
 
 ## Configuration
 
 ```js
-flowRange {
-     enabled: true
-     exempt: []
+flowSwitch {
+    enabled: true
+    exempt: []
 }
 ```
 
@@ -21,53 +15,41 @@ flowRange {
 
 #### Non obfusqué
 ```java
-final String uwu = "UwU";
-System.out.println(uwu);
+public static void main(String[] args) {
+    int number = callNumber();
+
+    switch (number) {
+        case 1: 
+            System.out.println("Oh no!");
+            break;
+        case 2: 
+            System.out.println("Hello world!");
+            break
+        default: 
+            throw new IllegalStateException("Something went wrong!");
+    }
+    /*[...]*/
+}
+/*[...]*/
 ```
 
 #### Obfusqué
 ```java
-final String uwu = "UwU";
+public static void main(String[] args) {
+    /*[...]*/
+    int number = callNumber();
 
-while (true) {
-     label1: {
-          try {
-               if (this.a(0x92A8B44, n) >> 8 != 0x97F7F)
-                    throw new IllegalReflectiveException();
-               break label1;
-          } catch (IllegalReflectiveException ex) {
-               System.out.println(uwu);
-          }
-     }
+    switch (number ^ hash(n ^ 0x9932783)) {
+        case 0x928EF8C: 
+            System.out.println("Hello world!");
+            break
+        case 0x9873783: 
+            System.out.println("Oh no!");
+            break;
+        default: 
+            throw new IllegalStateException("Something went wrong!");
+    }
+    /*[...]*/
 }
-```
-
-#### Représentation IR (Représentation intermédiaire)
-```
- Flux original :       Flux obfusqué :
-
- ┌─────────┐            ┌─────────┐
- │ Block A │            │ Block A │
- └────┬────┘            └────┬────┘
-      │                      │
- ┌────▼────┐         ┌───────▼────────┐
- │ Block B │         │ Random If Stmt │
- └─────────┘         └───────┬────────┘
-                             │
-                   ┌─────┐◄──┴───►┌─────┐
-                   │ Yes │        │ No  │
-                   └─────┘        └──┬──┘
-                                     │
-                               ┌─────▼─────┐
-                               │ Exception │
-                               └───────────┘
-
-                      ┌─────────────┐
-                      │  Exception  │
-                      │   Catcher   │
-                      └──────┬──────┘
-                             │
-                        ┌────▼────┐
-                        │ Block B │
-                        └─────────┘
+/*[...]*/
 ```
