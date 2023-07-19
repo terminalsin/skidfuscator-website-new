@@ -1,51 +1,142 @@
-## String Encryption
+# Pisanie wykluczeń (Skidfuscator >= 2.0.0)
 
-Transformer szyfrowania stringów przekształca każdy string w określone wywołanie metody, w celu ukrycia go w czasie wykonywania. Może to być praktyczne w przypadku adresów URL, kluczy prywatnych itp.
+Wyrażenie regularne (regex) to rodzaj wzorca wyszukiwania używanego do identyfikowania stringów. Jest on zwykle używany do wyszukiwania, zastępowania i sprawdzania poprawności tekstu. Regeksy są napisane w języku formalnym i są używane w programowaniu, nauce o danych i innych aplikacjach.
 
-::: warning
-Nie ufaj tylko temu. Proszę nie polegać na szyfrowaniu stringów jako na wyłącznej ochronie twojego oprogramowania . Domyślnie należy założyć, że wystarczająco utalentowany człowiek może uzyskać do nich dostęp przy wystarczająco dużej cierpliwości.
-:::
+Skidfuscator wykorzystuje wyrażenia regularne do obsługi aspektu włączania i wykluczania swojej konfiguracji.
 
+Zrozumienie wykluczeń może być początkowo trudne, ale uwierz mi, jest to dość łatwe, gdy już się to zrozumie.
 
-## Konfiguracja
+Przede wszystkim ważne jest, aby zrozumieć podstawowe wyrażenia regularne.
 
-Obecnie dostępne są dwa tryby szyfrowania: `STANDARD` i `POLYMORPHIC`.
+## Podstawy Regex (wyrażeń regularnych)
 
-```js
-stringEncryption {
-    enabled: true
-    type: POLYMORPHIC
-    exempt: []
-}
+- Oto podstawowy ciąg do wykrywania wszystkiego:
+```java
+(.*?)
 ```
 
-## Przykłady
-
-### Brak zaciemnienia
-
+Stałoby się więc, co następuje:
 ```java
-System.out.println("Hello world");
+abozeofez // Wykryto!
+zeigzoegze // Wykryto!
 ```
 
-### Standard
+***
 
+- Aby dopasować dowolny ciąg, który zawiera "ryk", musiałbyś mieć
 ```java
-System.out.println(superDuperMethod("\u2be6\uabec\uebfe\uebfe\uabe0\uabf7\ue7f1", n ^ 0x9F878R));
+ryk
+
+````
+
+
+
+
+
+Stałoby się więc, co następuje:
+
+``java
+
+ryk // Dopasowano!
+asdafryk // Dopasowano!
+grrr // Nie dopasowania!
 ```
 
-### Polymorphic
+***
+
+Aby dopasować dowolny ciąg rozpoczynający się _z_ "uwu", musiałbyś:
 ```java
-StringBuilder string = new StringBuilder("\u2be6\uabec\uebfe\uebfe\uabe0\uabf7\ue7f1\uabe0\u6bfa\uebfe\uabee\uabf5");
-for (int a=0, b, c; a < string.length(); a++) {
-    b = string.charAt(a);
-    b = (((b & 0xffff) << 0x6) | (b >> 0xa)) & 0xffff;
-    c = ((b >> 0x0) ^ (b >> 0x7)) & ((1 << 0x4) - 1);
-    b ^= (c << 0x0) | (c << 0x7);
-    b ^= 0x600f ^ n;
-    b -= 0x2aa2 ^ n;
-    b += 0x25b0 ^ n;
-    b ^= 0x9852 ^ n;
-    string.setCharAt(a, (char) b);
-}
-System.out.println(string)
+^uwu
+```
+
+Stałoby się więc tak:
+```java
+kitty-uwu // Brak dopasowania!
+uwu-kitty // Dopasowano!
+```
+
+- `kitty-uwu` nie będzie pasować, ponieważ uwu jest przyrostkiem, a zatem nie zaczyna się od słowa `uwu`.
+- `uwu-kitty` *będzie pasować*, ponieważ określony prawidłowy prefiks jest obecny.
+
+***
+
+Jeśli chcesz dowiedzieć się więcej o Regex, zajrzyj tutaj: [Regex tutorial](https://medium.com/factory-mind/regex-tutorial-a-simple-cheatsheet-by-examples-649dc1c3f285).
+
+## Pisanie Wykluczeń
+Jest to bardzo proste i łatwe do wykonania.
+
+- Utwórz plik, w którym zapiszesz swoje wykluczenia, zalecamy użycie pliku txt.
+
+Skidfuscator odczytuje wtrącenia i wykluczenia w ten sam sposób: jeśli pasuje do wzorca Regex, __**nie zostanie odczytane ani zaciemnione****.
+
+### Wykluczenia
+Używając dopasowania Regex do przodu, jak pokazano poniżej, można dopasować dowolny typ klasy. Pamiętaj, aby uciec od dowolnego "/" za pomocą "\\", aby zapobiec uszkodzeniu Regex i spędzeniu godzin na zastanawianiu się, co jest nie tak.
+
+Poniżej znajdują się różne przykłady pasujących klas i metod wykluczeń:
+
+```java
+// Spowoduje to dopasowanie dowolnej metody o nazwie "main"
+method{main} 
+// To dopasuje każdą metodę, która zaczyna się od "com.apache" 
+// (dowolna nazwa klasy zastępuje "." znakiem "/")
+class{^com\/apache} 
+// Spowoduje to dopasowanie dowolnej metody zaczynającej się od "com.google" 
+// (dowolna nazwa klasy zastępuje "." znakiem "/")
+class{^com\/google} 
+// Spowoduje to dopasowanie dowolnej metody w klasie "Controller"
+class{Controller$} 
+// Spowoduje to dopasowanie dowolnej metody w klasie "com.example.MyClass"
+class{^com\/example\/MyClass$}
+```
+
+#### Wiele wykluczeń
+
+Aby móc wykluczyć na przykład kilka metod lub pakietów, jest to naprawdę proste! Wystarczy utworzyć nową linię i dodać nowe wykluczenie :)
+
+```java
+class{^com\/apache} // Matches apache
+class{^com\/google} // Matches google
+```
+
+
+### Włączenia
+W przeciwieństwie do wykluczeń, możesz chcieć **zawierać tylko określony zestaw klas lub pakiet** w swoim zaciemnionym pliku. Bez obaw, jest to możliwe, choć nieco bardziej skomplikowane.
+
+```java
+// Spowoduje to dopasowanie wszystkich klas pakietu "com.example"
+class{^(?!(com\/example)).*$} 
+
+// Spowoduje to dopasowanie wszystkich klas pakietu "com.example" i 
+// wszystkie klasy pakietu "com.eclipse". 
+// Możesz dodać dowolną liczbę pakietów za pomocą argumentu "|".
+class{^(?!(com\/example)|(com\/eclipse)).*$} 
+```
+
+## Debugowanie Wykluczeń
+
+Zdecydowanie zalecam użycie debuggera Regex, takiego jak [Regex101](https://regex101.com/), aby móc dowiedzieć się, co pasuje, a co nie.
+
+Wszystkie nazwy klas są domyślnie zgodne z formatem "pakiet1/pakiet2/klasa1". Chociaż w JVM można zobaczyć, że jest on sformatowany inaczej, w przypadku Skidfuscatora powyższy format został uznany za najbardziej efektywny i odzwierciedlający hierarchię plików Jar/Zip.
+
+## Przykładowy plik Wykluczeń
+
+Wielu naszych klientów opracowuje modyfikacje lub wtyczki do gry Minecraft, zobacz poniżej szablon / przykładowy plik konfiguracyjny z najczęściej wymaganymi wykluczeniami:
+
+```java
+// Wykluczenia pakietów poniżej
+class{^net\/minecraftforge} // Pasuje do Minecraft Forge
+class{^net\/minecraft\/client} // Pasuje do klienta Minecraft
+class{^net\/minecraft\/server} // Pasuje do serwera Minecraft
+class{^org\/bukkit} // Pasuje do Bukkit
+class{^com\/mojang} // Pasuje do Mojang
+class{^me\/johnymuffin} // Pasuje do JohnyMuffin
+class{^com\/sk89q} // Dopasowania Sk89q
+class{^org\/spigotmc} // Pasuje do SpigotMC
+class{^org\/apache\/commons} // Pasuje do Apache Commons
+class{^org\/jline} // Pasuje do JLine
+
+// Wykluczenia metod poniżej 
+method{^net\.minecraft\.client} // Wyklucza wszystkie metody z pakietu net.minecraft.client 
+method{^net\.minecraft\.util} // Wyklucza wszystkie metody z pakietu net.minecraft.util 
+method{^net\.minecraft\.client\.Minecraft} // Wyklucza wszystkie metody z klasy Minecraft
 ```
