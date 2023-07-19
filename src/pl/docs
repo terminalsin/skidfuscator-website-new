@@ -1,60 +1,25 @@
-# Pierwsze kroki
+# Instalacja
 
-Jeśli już pobrałeś Skidfuscator na swój komputer i chcesz wiedzieć, jak go uruchomić, to oto kilka wskazówek dotyczących uruchamiania programu.
+Skidfuscator można pobrać ze strony internetowej, repozytorium GitHub lub serwera Discord.
 
-Skidfuscator jest uruchamiany za pomocą wiersza poleceń i korzysta z interfejsu wiersza poleceń Java CLI. Zdecydowanie zalecamy zapoznanie się z tym, aby móc cieszyć się płynnym działaniem i optymalnym korzystaniem z programu.
+## Nasze platformy
+- [Strona](https://skidfuscator.dev)
+- [Discord](https://discord.gg/7pVgsRweeh)
+- [GitHub](https://github.com/terminalsin/skidfuscator-java-obfuscator)
 
-## Dostępne opcje
+Warto pamiętać, że na GitHubie dostępna jest jedynie nasza bezpłatna, publiczna wersja Skidfuscatora.
 
-Wystarczy uruchomić `java -jar <yourSkidfuscatorFile.jar>` i zostaną wyświetlone różne opcje:
+## Publiczna wersja
 
-![Opcje Skidfuscator](https://i.imgur.com/Yu70Pcq.png)
+Link do pobrania publicznej wersji Skidfuscatora można znaleźć pod tym [linkiem](https://github.com/skidfuscatordev/skidfuscator-java-obfuscator/releases/), a jeśli chodzi o wersję Enterprise, należy odwiedzić naszą stronę internetową lub dołączyć do naszego serwera Discord.
 
+Pamiętaj, że Skidfuscator wymaga zainstalowanej wersji Java 8 (JDK 1.8 lub nowszej) do poprawnego działania.
 
-#### Twój wybrany plik
-Plik, który chcesz zaciemnić za pomocą Skidfuscator.
-```cli
-<input>
-```
+Najprostszym sposobem uruchomienia Skidfuscatora jest użycie parametru "-jar" w wierszu poleceń, co spowoduje wyświetlenie różnych opcji rozpoczęcia obfuskacji pliku.
 
-#### Twoje wykluczenia
-Ścieżka do pliku zawierającego wykluczenia.
-```cli
---exempt=<exempt>
-```
+## Przydzielanie większej ilości pamięci
+Warto zauważyć, że zazwyczaj konieczne jest przypisanie większej ilości pamięci JVM niż domyślnie, aby Skidfuscator działał prawidłowo. Jeśli użyjesz parametru "-Xmx512m", przypiszesz maszynie JVM maksymalną ilość 512 MB pamięci, co powinno być wystarczające dla większości zastosowań. Jednak ważne jest, aby nie przekraczać fizycznie dostępnej pamięci maszyny JVM i nie przydzielać jej więcej pamięci niż jest dostępne. W przeciwnym razie, gdy maszyna JVM zaczyna korzystać z pamięci wirtualnej, wydajność znacząco spada.
 
-#### Pomiń obliczenie
-**UŻYWAJ TEGO NA WŁASNE RYZYKO** Całkowicie pomija krytyczne formy obliczeń, takie jak biblioteki. Wsparcie może być ograniczone, jeśli zdecydujesz się skorzystać z tej opcji.
-```cli
-`--fuckit
-```
+Zobacz poniżej, jak dodać więcej pamięci:
 
-#### Twoje biblioteki
-Ścieżka do folderu zawierającego biblioteki / zależności wymagane do zaciemnienia pliku jar.
-```cli
---libs=<libs>
-```
-
-#### Rezygnacja z analizy
-Ta opcja nie zapewni nam żadnych analiz, takich jak napotkane błędy lub statystyki użytkowania obfuscatora.
-```cli
---notrack
-```
-
-#### Zaciemniony plik
-Ścieżka do miejsca, w którym ma zostać stworzony zaciemniony plik, jeśli ta opcja pozostanie pusta, zostanie stworzony w katalogu, w którym został uruchomiony Skidfuscator.
-```cli
---output=<output>
-```
-
-#### Phantom computation
-Umożliwia włączenie obliczeń dla klas, ponownie, jeśli ta opcja jest używana, wsparnie może być ograniczone. Zdecydowanie zalecamy dostarczenie wymaganych bibliotek.
-```cli
---phantom
-```
-
-#### Specifying runtime
-Ścieżka do java runtime.
-```cli
---runtime=<runtime>
-```
+`java -Xmx4g -jar skidfuscator.jar` w wierszu poleceń.
