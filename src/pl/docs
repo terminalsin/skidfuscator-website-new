@@ -1,15 +1,14 @@
-# Witaj!
+# Biblioteki
 
-Cieszymy się, że odwiedzasz wiki Skidfuscatora!
+Choć czasem budzą pewne frustracje, są nieodzownym elementem tworzenia oprogramowania Umożliwiają uproszczenie konfiguracji i innych zadań. Mamy nadzieję, że w przyszłości wtyczki Maven automatyzują proces obsługi bibliotek. Jednak jest to tylko jeden z wielu elementów na naszej liście rzeczy do zrobienia.
 
-Teraz wszystkie nasze informacje są dokładnie opisane. Wcześniej mogło wydawać się, że nie mieliśmy wielu treści, ale teraz zyskaliśmy pełną dokumentację.
+Dodawanie bibliotek jest całkiem proste:
+1. Utwórz folder o nazwie "libs"
+2. Przeciągnij wszystkie biblioteki do wspomnianego folderu
+3. Dodaj "-li=<ścieżka do folderu>" do wiersza poleceń
 
-# Spis treści
-1. [Instalacja](/docs/installation.html)
-2. [Pierwsze kroki](/docs/gettingstarted.html)
-3. [Wykluczenia](/docs/exclusion.html)
-4. [Biblioteki](/docs/libraries.html)
-5. [O nas](/docs/about.html)
-6. [Wprowadzenie](/docs/javaobf.html)
-7. [Zgłaszanie błędów](/docs/bugreporting.html)
-8. [Transformers](/docs/transformers.html)
+Przykład:
+```console
+java -jar obfuscator-1.0.0-SNAPSHOT.jar -li=libs -ex exception.txt FluffyClicker.jar
+```
+![Przykładowe zdjęcie](https://i.imgur.com/AYxEoYp.png)
