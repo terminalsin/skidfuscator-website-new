@@ -1,37 +1,73 @@
-# Wprowadzenie do obfuskacji w Java
+# Transformers
 
-Dla tych, którzy są nowicjuszami w obfuskacji java, aby uzyskać podstawowy wgląd w to, jak może działać obfuskacja java, zalecamy przeczytanie poniższego prostego przewodnika. Bardziej skomplikowane dyskusje można znaleźć na naszym blogu tutaj https://blog.skidfuscator.dev.
+Oto indeks, w którym będę szczegółowo opisywał każdy transformator jeden po drugim. Powinno to pomóc w zrozumieniu, co dzieje się za kulisami i jak takie transformacje są skuteczne przeciwko inżynierii wstecznej.
 
-## Czym jest zaciemnianie Java?
-Zaciemnienie jest procesem utrudniającym zrozumienie czegoś. Jest on często wykorzystywany do ochrony przed nieuprawnionym dostępem i użyciem; Zaciemnianie może być wykorzystywane do ukrywania poufnych informacji, takich jak hasła, przed łatwym pozyskaniem przez hakerów lub inne złośliwe podmioty. Służy również do ochrony oprogramowania przed inżynierią wsteczną, która może być wykorzystywana do odkrywania sposobu działania zastrzeżonego oprogramowania i tworzenia konkurencyjnych produktów.
+Omówimy poniższy indeks:
+- Szyfrowanie Liczb
+- Szyfrowanie stringów
 
-### Ostrożność
-W kontekście zaciemniania Java, zaciemnianie służy do ochrony bazy kodu aplikacji Java przed ujawnieniem, skopiowaniem lub modyfikacją. Jest on używany w celu utrudnienia osobom dekompilującym zrozumienia kodu, co pomaga chronić kod źródłowy przed kradzieżą. Zaciemnianie odbywa się poprzez zmianę nazw klas, zmiennych i metod, a także poprzez usuwanie niepotrzebnego lub niechcianego kodu i różnych innych technik exploitów, aby utrudnić uzyskanie oryginalnego kodu Java. Sprawia to, że kod jest trudniejszy do zrozumienia, co utrudnia hakerom identyfikację luk w zabezpieczeniach lub zrozumienie sposobu działania kodu.
+## Szyfrowanie Liczb
 
-### Nadmiarowość
-Zaciemnianie Java może być również wykorzystane do zmniejszenia rozmiaru aplikacji. Usuwając niepotrzebny kod i zmieniając nazwy klas, metod i zmiennych, można znacznie zmniejszyć rozmiar aplikacji. Może to być korzystne dla aplikacji, które muszą być dystrybuowane w sieci, ponieważ może skrócić czas pobierania i poprawić wydajność aplikacji.
+Przyjmijmy następujący scenariusz:
+- $x$ to liczba, którą chcemy zaszyfrować
+- $n$ to "ziarno" bloku
+- $d$ jest zaszyfrowaną liczbą
 
-## Rodzaje znanych technik zaciemniania
+Zgodnie z prostą mechaniką xor: $x\oplus n\oplus n=x$
 
-### Control flow obfuscation
-Zaciemnianie przepływu sterowania w Javie to technika wykorzystywana do ukrywania struktury kodu programu i utrudniania jego zrozumienia. Jego działanie polega na zmianie przepływu sterowania programu, czyli kolejności wykonywania instrukcji. Odbywa się to poprzez zmianę kolejności instrukcji, dodanie nadmiarowych instrukcji i wprowadzenie dodatkowych poziomów przepływu sterowania. Na przykład pętla może zostać zastąpiona instrukcją rozgałęzienia, która przeskakuje do innej części kodu, lub funkcja może zostać zastąpiona zagnieżdżonym zestawem funkcji, które muszą być wykonywane w kolejności. Co więcej, zaciemnianie przepływu sterowania może utrudnić zrozumienie sposobu działania kodu, a także może utrudnić inżynierię wsteczną. Pomaga to również chronić przed ingerencją w kod, ponieważ utrudnia wstrzyknięcie złośliwego kodu do programu.
+Tak więc, z definicji, jeśli $n$ jest naszym seedem, w czasie wykonywania musimy obliczyć $d$ w taki sposób, że $d = x\oplus n$. Następnie musimy zmodyfikować instrukcję kodu bajtowego, np:
 
-### Szyfrowanie Ciągów i Liczb
-Szyfrowanie liczb i stringów jest rodzajem zaciemniania używanym w programowaniu w języku Java. Szyfrowanie liczb odnosi się do procesu kodowania liczb w taki sposób, że nie można ich zobaczyć w postaci zwykłego tekstu. This is done by transforming the numbers into a different form, such as binary or hexadecimal, or by using a key to encrypt the numbers. This makes it difficult for someone to decrypt the numbers and gain access to the code. String encryption is similar to number encryption, but it is used to protect strings of text. This is done by transforming the characters in the string into a different form, such as a base64 encoding, or by using a key to encrypt the string. This makes it difficult for someone to decrypt the string and understand its contents.
+```java
+int value = x;
+```
 
-## Evaluating Quality
+staje się
+```java
+int value = d ^ n;
+```
 
-Making sure that an obfuscator produces a high quality output after applying obfuscation transformers is essential. At Skidfuscator, we assess various factors into what can affect the quality of obfuscated java code.
+Gdzie $d$ jest wartością obliczoną z wyprzedzeniem w postaci stałej, a $n$ nieprzezroczystym predykatem. Np:
+```java
+int value = 5;
+```
+staje się
+```java
+int predicate = 0x100;
+int value = 105 ^ predicate;
+```
 
-### Code size and complexity
-The size and complexity of the obfuscated code are essential factors to consider when evaluating the quality of obfuscated Java code. Obfuscation should not significantly increase the size of the code, as this can lead to performance issues and potential bugs. At Skidfuscator, we aim to make your code as obscure as possible without significantly enlarging it whilst maintaining maximum security.
+## Szyfrowanie stringów
 
-### Security
-Security is a critical factor in evaluating the quality of obfuscated Java code. The obfuscation technique in question should be effective in protecting the code from reverse engineering attempts. This can be evaluated by analyzing the code's resistance to reverse engineering tools, such as decompilers and disassemblers.
+Szyfrowanie stringów opiera się na trzech podstawowych warunkach przed ich przetworzeniem:
+1. Stała łańcuchowa musi być dostępna w puli stałych
+2. Stała łańcuchowa musi być sformatowana w UTF-8
+3. String nie może być pusty
 
-### Performance
-The obfuscated code's performance is another crucial factor in evaluating its quality. Obfuscation should not significantly impact the code's execution time or memory usage. It is also important to note that the obfuscated code should not introduce any new bugs or errors that could affect the code's overall performance. Any performance issues introduced by the obfuscation technique should be identified and addressed.
+Dzięki temu jesteśmy w stanie wstrzyknąć symetryczny system szyfrowania wewnątrz kodu, aby móc ukryć stringi przed typowymi dekompilatorami / deasemblerami.
 
-### Summary
+### Algorytm Xor
 
-Overall, the quality of obfuscated Java code can be evaluated based on several factors, including code size and complexity, security, maintainability, and performance. Obfuscation should not significantly impact any of these factors, and any issues introduced by the obfuscation technique should be identified and addressed promptly.
+W tej chwili używamy prostego algorytmu xor, który jest dość odporny, aby móc obliczyć nasz zaszyfrowany ciąg. Chociaż algorytm ten jest matematycznie najgorszej jakości i najprawdopodobniej można go złamać w czasie wielomianowym, jeśli nie liniowym, naszym celem jest zaproponowanie łatwej i sprawdzonej implementacji tego, jak nieprzezroczysty predykat może wzmocnić szyfrowanie ciągów znaków. W przyszłych wersjach Skidfuscatora będziemy korzystać z silnika polimorficznego.
+
+Obecnie algorytm działa w ten sposób:
+
+Niech $f_y(x)=x\oplus y\oplus n$ reprezentuje metodę szyfrowania i deszyfrowania znaku w stringu dla danego $n$ i $m_{max}$ równego 255
+
+$y=i\mod m$
+
+gdzie $i$ reprezentuje indeks znaku w łańcuchu String, $m$ reprezentuje rozmiar losowej tablicy liczb całkowitych z losowymi "kluczami", $n$ reprezentuje nieprzezroczysty predykat liczby całkowitej, $x$ znak na indeksie $i$ łańcucha String.
+
+Według definicji: $$ \begin{align} f_y(f_y(x))&=x\oplus y\oplus n\oplus y\oplus n\\
+&=x\oplus y\oplus y\oplus n\oplus n\\ f_y(f_y(x))&=x \end{align} $$
+
+W ten sposób otrzymujemy użyteczny algorytm szyfrowania/deszyfrowania, który jest wzmocniony przez nieprzezroczysty predykat i zestaw kluczy całkowitych przechowywanych lokalnie. Implementację można zobaczyć [tutaj](https://github.com/terminalsin/skidfuscator-java-obfuscator/blob/master/dev.skidfuscator.obfuscator/obfuscator/src/main/java/dev/skidfuscator/obfuscator/transform/impl/string/BasicEncryptionGenerator.java)
+
+Konturowanie odnosi się do procesu wyodrębniania kodu z metody i umieszczania go w oddzielnej, samodzielnej metodzie. Jest to często sposób na poprawę czytelności i łatwości konserwacji kodu, ponieważ może ułatwić zrozumienie, co robi metoda, dzieląc ją na mniejsze, bardziej skoncentrowane fragmenty kodu.
+
+Konturowanie może być również wykorzystywane jako forma zaciemniania kodu, ponieważ może utrudnić komuś, kto próbuje przeprowadzić inżynierię wsteczną lub zrozumieć kod, zobaczenie ogólnego przepływu i struktury programu. Rozbijając kod na mniejsze części i rozdzielając go na różne metody, ktoś może być znacznie trudniejszy do zrozumienia relacji między różnymi częściami przepływu i tego, jak pasują do siebie, aby wykonać określoną funkcję.
+
+![Graficzne wyjaśnienie konspektu](https://i.imgur.com/2HMq0a4.png)
+
+Fantastyczną rzeczą w obrysie jest to, że nie jest *technicznie* odwracalny, ponieważ został wyprodukowany we franczie! Aby móc powrócić do pierwotnego stanu dobrej obfuskacji, deobfuscator *musi wykonać inlining*, co jest heurystyką i *nie gwarantuje*, że dane wyjściowe będą zawsze semantycznie poprawne z oryginalnym kodem zródłowym. Co więcej, wymaga to od deobfuscatora manipulowania zmiennymi i innymi wrażliwymi formami manipulacji kodem bajtowym, co może prowadzić do wyjątków ramek i obliczeń.
+
+Ogólnie rzecz biorąc, zarys obfuskacja jest całkiem fajna :)
