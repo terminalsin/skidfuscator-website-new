@@ -1,14 +1,73 @@
-# Biblioteki
+# Transformers
 
-Choć czasem budzą pewne frustracje, są nieodzownym elementem tworzenia oprogramowania Umożliwiają uproszczenie konfiguracji i innych zadań. Mamy nadzieję, że w przyszłości wtyczki Maven automatyzują proces obsługi bibliotek. Jednak jest to tylko jeden z wielu elementów na naszej liście rzeczy do zrobienia.
+Oto indeks, w którym będę dokładnie omawiał każdy transformator, jeden po drugim, opisując ich działanie i zastosowanie. To powinno pomóc w zrozumieniu, co dzieje się w tle i jakie jest skuteczne zastosowanie tych transformacji w zapobieganiu dekompilacji programu.
 
-Dodawanie bibliotek jest całkiem proste:
-1. Utwórz folder o nazwie "libs"
-2. Przeciągnij wszystkie biblioteki do wspomnianego folderu
-3. Dodaj "-li=<ścieżka do folderu>" do wiersza poleceń
+Omówimy poniższy indeks:
+- Szyfrowanie liczb
+- Szyfrowanie stringów
 
-Przykład:
-```console
-java -jar obfuscator-1.0.0-SNAPSHOT.jar -li=libs -ex exception.txt FluffyClicker.jar
+## Szyfrowanie liczb
+
+Przyjmijmy następujący scenariusz:
+- $x$ to liczba, którą chcemy zaszyfrować
+- $n$ to "ziarno" bloku
+- $d$ jest zaszyfrowaną liczbą
+
+Zgodnie z prostą mechaniką xor: $x\oplus n\oplus n=x$
+
+Tak więc, z definicji, jeśli $n$ jest naszym seedem, w czasie wykonywania musimy obliczyć $d$ w taki sposób, że $d = x\oplus n$. Następnie musimy zmodyfikować instrukcję kodu bajtowego, np:
+
+```java
+int value = x;
 ```
-![Przykładowe zdjęcie](https://i.imgur.com/AYxEoYp.png)
+
+staje się
+```java
+int value = d ^ n;
+```
+
+Gdzie $d$ jest wartością obliczoną z wyprzedzeniem w postaci stałej, a $n$ nieprzezroczystym predykatem. Np:
+```java
+int value = 5;
+```
+staje się
+```java
+int predicate = 0x100;
+int value = 105 ^ predicate;
+```
+
+## Szyfrowanie stringów
+
+Szyfrowanie stringów opiera się na trzech podstawowych warunkach przed ich przetworzeniem:
+1. Stała łańcuchowa musi być dostępna w puli stałych
+2. Stała łańcuchowa musi być sformatowana w UTF-8
+3. String nie może być pusty
+
+Dzięki temu jesteśmy w stanie wstrzyknąć symetryczny system szyfrowania wewnątrz kodu, aby móc ukryć stringi przed typowymi dekompilatorami / deasemblerami.
+
+### Algorytm Xor
+
+W obecnej chwili stosujemy prosty algorytm XOR, który zapewnia wystarczającą odporność, aby zaszyfrować nasze dane. Choć ten algorytm matematycznie jest najniższej jakości i może być złamany najprawdopodobniej w czasie wielomianowym, jeśli nie liniowym, naszym celem jest zaproponowanie prostego i udokumentowanego przykładu implementacji, który pokazuje, w jaki sposób nieprzezroczysty predykat może wzmacniać szyfrowanie ciągów znaków. W przyszłych wersjach Skidfuscatora będziemy korzystać z silnika polimorficznego.
+
+Obecnie algorytm działa w ten sposób:
+
+Niech $f_y(x)=x\oplus y\oplus n$ reprezentuje metodę szyfrowania i deszyfrowania znaku w stringu dla danego $n$ i $m_{max}$ równego 255
+
+$y=i\mod m$
+
+gdzie $i$ reprezentuje indeks znaku w łańcuchu String, $m$ reprezentuje rozmiar losowej tablicy liczb całkowitych z losowymi "kluczami", $n$ reprezentuje nieprzezroczysty predykat liczby całkowitej, $x$ znak na indeksie $i$ łańcucha String.
+
+Według definicji: $$ \begin{align} f_y(f_y(x))&=x\oplus y\oplus n\oplus y\oplus n\\
+&=x\oplus y\oplus y\oplus n\oplus n\\ f_y(f_y(x))&=x \end{align} $$
+
+W ten sposób otrzymujemy użyteczny algorytm szyfrowania/deszyfrowania, który jest wzmocniony przez nieprzezroczysty predykat i zestaw kluczy całkowitych przechowywanych lokalnie. Implementację można zobaczyć [tutaj](https://github.com/terminalsin/skidfuscator-java-obfuscator/blob/master/dev.skidfuscator.obfuscator/obfuscator/src/main/java/dev/skidfuscator/obfuscator/transform/impl/string/BasicEncryptionGenerator.java)
+
+Konturowanie odnosi się do procesu wyodrębniania kodu z metody i umieszczania go w oddzielnej, samodzielnej metodzie. Jest to często sposób na poprawę czytelności i łatwości konserwacji kodu, ponieważ może ułatwić zrozumienie, co robi metoda, dzieląc ją na mniejsze, bardziej skoncentrowane fragmenty kodu.
+
+Konturowanie może być również wykorzystywane jako forma zaciemniania kodu, ponieważ może utrudnić komuś, kto próbuje przeprowadzić inżynierię wsteczną lub zrozumieć kod, zobaczenie ogólnego przepływu i struktury programu. Rozbijając kod na mniejsze części i rozdzielając go na różne metody, ktoś może być znacznie trudniejszy do zrozumienia relacji między różnymi częściami przepływu i tego, jak pasują do siebie, aby wykonać określoną funkcję.
+
+![Graficzne wyjaśnienie konspektu](https://i.imgur.com/2HMq0a4.png)
+
+Fantastyczną rzeczą w obrysie jest to, że nie jest *technicznie* odwracalny, ponieważ został wyprodukowany we franczie! Aby móc powrócić do pierwotnego stanu dobrej obfuskacji, deobfuscator *musi wykonać inlining*, co jest heurystyką i *nie gwarantuje*, że dane wyjściowe będą zawsze semantycznie poprawne z oryginalnym kodem zródłowym. Co więcej, wymaga to od deobfuscatora manipulowania zmiennymi i innymi wrażliwymi formami manipulacji kodem bajtowym, co może prowadzić do wyjątków ramek i obliczeń.
+
+Ogólnie rzecz biorąc, zarys obfuskacja jest całkiem fajna :)
