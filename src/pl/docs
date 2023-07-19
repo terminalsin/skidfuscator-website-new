@@ -1,61 +1,60 @@
-## Flow Condition
+## Outliner
 
-Ten transformer pełni rolę pierwszej linii obrony przed niepożądaną analizą kodu. Aby utrudnić statyczną analizę wykrywającą, która liczba całkowita jest ukrytym predykatem, dodajemy tę konkretną liczbę całkowitą jako dodatkowy warunek do istniejących instrukcji warunkowych (if). To nie tylko zwiększa bezpieczeństwo oprogramowania, ale również utrudnia proces deobfuskacji i dekompilacji.
+Konturowanie odnosi się do procesu wyciągania pewnej części kodu z metody i przenoszenia go do osobnej, samodzielnej metody. Konturowanie jest często stosowane w celu poprawy czytelności i łatwości konserwacji kodu poprzez podzielenie dużej metody na mniejsze, bardziej skoncentrowane fragmenty. Dzięki temu można łatwiej zrozumieć, co dokładnie wykonuje dana metoda, ponieważ jej logika jest podzielona na bardziej zrozumiałe części.
 
-W porównaniu do transformatora Flow Exception, ta metoda jest znacznie prostsza i mniej skomplikowana.
+Konturowanie może być również używane jako sposób na utrudnienie analizy kodu, ponieważ może uniemożliwić osobie próbującej zrozumieć program zobaczenie ogólnej struktury. Rozbijając kod na mniejsze fragmenty i dzieląc go na różne metody, może być trudniej dla kogoś zrozumieć, jak poszczególne części kodu ze sobą współgrają i jak pasują do siebie, aby osiągnąć określoną funkcjonalność.
+
+![Outlining graph explanation](https://i.imgur.com/2HMq0a4.png)
+
+Fantastyczną rzeczą w outliningu jest to, że nie jest on *technicznie* odwracalny! Aby odzyskać pierwotny, czytelny kod zaciemnionego kodu, deobfuscator musi dokonać procesu *inliningu*. Dodatkowo, proces deobfuskacji wymaga manipulacji zmiennymi oraz innymi delikatnymi operacjami na kodzie bajtowym, co może prowadzić do błędów i nieprawidłowego działania.
+
+Ogólnie rzecz biorąc, outlining jest całkiem fajny :)
+
+::: warning
+Transformer jest wciąż na bardzo wczesnym etapie rozwoju. Ze względu na sposób działania weryfikatora Java, nie wszystkie scenariusze mogą zostać poprawnie zweryfikowane, co może prowadzić do pewnych problemów z kompilacją. Używaj na własne ryzyko, a jeśli pojawią się jakiekolwiek problemy, zgłoś je.
+
+Note to self: I hate stack frames
+:::
 
 ## Konfiguracja
 
 ```js
-flowCondition {
-    enabled: true
-    exempt: []
+outliner {
+     enabled: true
+     exempt: []
 }
 ```
 
 ## Przykłady
 
 #### Brak zaciemnienia
+
 ```java
 public static void main(String[] args) {
     int number = callNumber();
-
-    if (number == 1) {
-        System.out.println("Hello world");
-    }
     /*[...]*/
 }
-/*[...]*/
+
+static int callNumber() {
+    return 1;
+}
 ```
 
 #### Zaciemniony kod
 ```java
 public static void main(String[] args) {
-    /*[...]*/
-    label1: {
-        while (true) {
-            if (n ^ 0x8AF8EF8F == 0xA88FFA) {
-                break;
-            }
-
-            n = n ^ 0x28847D;
-            int number = callNumber();
-
-            label2: {
-                if (number != 1)
-                    break label1;
-
-                if (n ^ 0xAA9F8FFD != 0x989F7AF)
-                    break label2;
-
-                System.out.println("Hello world");
-                break label1;
-            }
-
-            throw new IllegalStateException();
-        }
-    }
+    step1_AF8FZE8EF7Z89F();
     /*[...]*/
 }
-/*[...]*/
+
+static void step1_AF8FZE8EF7Z89F() {
+    int number = callNumber();
+}
+
+
+static int callNumber() {
+    return 1;
+}
 ```
+
+
