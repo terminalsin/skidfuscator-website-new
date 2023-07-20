@@ -1,26 +1,19 @@
-## Flow Exceptions
 
-Flow Exception, kod çözücülerin geçerli Java kodu çıktısı almasını zorlaştırmak için Java kodunuza ek güvenlik katmanları ekleyen bir gizleme dönüşümüdür. Bunu, kontrol akışını değiştirerek ve programın işlevselliğini değiştirmeden mantığı karmaşıklaştıracak şekilde istisna düşme kodu ekleyerek yapar.
+## Flow Range
+Akış istisna aralığı gizleme geçişi, bir programın istisna işleme koduna gizleme eklemek için derleyici optimizasyonunda kullanılan bir tekniktir.
 
-Yüksek seviyede, transformatör aşağıdaki şekilde çalışır:
-- İlk olarak, dönüştürücü kodunuzdaki yöntemleri inceler ve uyumluluk sorunlarını önlemek için soyut yöntemleri, init yöntemlerini ve kod içermeyenleri atlar.
-- Daha sonra dönüştürücü, yapılandırma ayarlarına göre uygun gizleme stratejisini (Zayıf, İyi veya Agresif) belirler. Her strateji farklı bir gizleme düzeyi sunar ve exceptionlarla ilgili kodun ne sıklıkta eklendiğini etkiler.
-- Bu yapıldıktan sonra, kontrol akış grafiğindeki her blok için dönüştürücü, gizlemeden muaf tutulup tutulmayacağını kontrol eder. Boş blokları, proxy bloklarını ve istisnaya duyarlı blokları atlar. Bir blok gizleme için uygunsa, dönüştürücü seçilen stratejiye göre gizlemenin uygulanıp uygulanmayacağına karar verir.
-- Uygulandığında, dönüştürücü benzersiz bir tohum üretir ve opak yüklemi güvence altına almak için hashing kullanır. Daha sonra throw deyimine sahte bir koşullu atlama ekleyerek akışın düşmesine neden olur.
-- Bazı durumlarda dönüştürücü, bloğun hem başlangıcına hem de rastgele konumlarına ikincil bir koşullu atlama ifadesi ekleyerek ek bir gizleme katmanı ekleyebilir.
+Bu tekniğin arkasındaki fikir, programın istisna işleme rutinlerini (try-catch blokları gibi), programın mantıksal akışını anlamayı zorlaştıran ek kontrol akışı talimatları içerecek şekilde değiştirmektir.
+
+Örneğin, basit bir try-catch bloğu, iç içe geçmiş try-catch blokları veya ek dallanma talimatları içeren daha karmaşık bir yapıya dönüştürülebilir. Bu, bir gözlemcinin programın istisna işleme davranışını anlamasını ve potansiyel olarak istismar edilebilecek güvenlik açıklarını ortaya çıkarmasını daha zor hale getirebilir.
+
+Bu teknik genellikle ek koruma katmanları sağlamak için diğer gizleme teknikleriyle birlikte kullanılır. Ancak, istisna işleme koduna gereksiz karmaşıklık eklemenin de programın hata ayıklama ve bakımını zorlaştırabileceği unutulmamalıdır, bu nedenle mantıklı bir şekilde kullanılmalıdır.
 
 ## Config
 
-Bu özel transformatör için üç mod mevcuttur:
-- `WEAK`: If was previously executed, run a random boolean, if last wasn't, run (75% average insertion rate)
-- `GOOD`: Always run once (100% average insertion rate)
-- `AGGRESSIVE`: Always run twice (200% average insertion rate)
-
 ```js
-flowException {
-    enabled: true
-    strength: AGGRESSIVE // Can be 'WEAK', 'GOOD' or 'AGGRESSIVE'
-    exempt: []
+flowRange {
+     enabled: true
+     exempt: []
 }
 ```
 
@@ -28,33 +21,53 @@ flowException {
 
 #### Gizlenmemiş Kod
 ```java
-public static void main(String[] args) {
-    int number = callNumber();
-    /*[...]*/
-}
-/*[...]*/
+final String uwu = "UwU";
+System.out.println(uwu);
 ```
 
 #### Gizlenmiş Kod
 ```java
-public static void main(String[] args) {
-    /*[...]*/
-    while (true) {
-        if (n ^ 0x8AF8EF8F == 0xA88FFA) {
-            break;
-        }
+final String uwu = "UwU";
 
-        n = n ^ 0x28847D;
-        int number = callNumber();
-
-        if (n ^ 0xAA9F8FFD == 0x989F7AF) {
-            break;
-        }
-
-        throw new IllegalStateException();
-    }
-
-    /*[...]*/
+while (true) {
+     label1: {
+          try {
+               if (this.a(0x92A8B44, n) >> 8 != 0x97F7F)
+                    throw new IllegalReflectiveException();
+               break label1;
+          } catch (IllegalReflectiveException ex) {
+               System.out.println(uwu);
+          }
+     }
 }
-/*[...]*/
+```
+
+#### IR Representation
+```
+ Original flow:       Obfuscated Flow:
+
+ ┌─────────┐            ┌─────────┐
+ │ Block A │            │ Block A │
+ └────┬────┘            └────┬────┘
+      │                      │
+ ┌────▼────┐         ┌───────▼────────┐
+ │ Block B │         │ Random If Stmt │
+ └─────────┘         └───────┬────────┘
+                             │
+                   ┌─────┐◄──┴───►┌─────┐
+                   │ Yes │        │ No  │
+                   └─────┘        └──┬──┘
+                                     │
+                               ┌─────▼─────┐
+                               │ Exception │
+                               └───────────┘
+
+                      ┌─────────────┐
+                      │  Exception  │
+                      │   Catcher   │
+                      └──────┬──────┘
+                             │
+                        ┌────▼────┐
+                        │ Block B │
+                        └─────────┘
 ```
