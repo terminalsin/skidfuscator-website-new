@@ -1,49 +1,6 @@
-## Exception Return
+# Forge 1.8.8
 
-İstisna dönüşü gizleme, dönüş sonuçlarını gizleyerek ve her yöntemi boş bir dönüş değerine sahip olacak şekilde standartlaştırarak bir programın kontrol akışını anlamayı ve analiz etmeyi daha zor hale getirmek için kullanılan bir programlama tekniğidir.
+## Giriş
+Skyblock modları, eski modlar ve hacklenmiş istemciler için kullanılan Forge Minecraft 1.8.8, özellikle Forge'un diğer sürümleriyle bağlantılı olarak çalışma şekli farklıdır. Most typically, you will need to set up a full environment to obtain the decompiled version of Minecraft to be able to obtain the dependency, one which is required to pass build status.
 
-In a nutshell, this technique replaces normal return statements with exception handling blocks that make the program's control flow less predictable. When an exception is raised, the program jumps to a designated exception handler, which then returns the desired value or performs the intended action. This makes the code harder to read, analyze, and reverse engineer, thus providing a level of protection against tampering or piracy.
-
-'''warning This obfuscation technique is still experimental and may not successfully compile on larger programs. For this very reason, it is disabled by default. '''
-
-## Config
-
-```js
-exceptionReturn {
-    enabled: false
-    exempt: []
-}
-```
-
-## Examples
-
-### Unobfuscated
-
-```java
-int number = callNumber();
- [...]
-}
-
-int callNumber() {
-    return 1;
-}
-```
-
-### Obfuscated
-```java
-try {
-    callNumber();
-} catch (IntNumberException ex) {
-    int number = ex.getValue();
-}
-
-[...]
-
-void callNumber() {
-    throw new IntNumberException(1);
-}
-```
-
-
-
-
+## 
