@@ -1,58 +1,53 @@
-## Sayı Şifrelemesi
+## Method Renamer
 
-Sayı şifreleme dönüştürücüsü integer tabanlı sayıları gizli olmaları için şifreler. Bu kodunuzu genel olarak okunamaz yapmak ve tersine mühendislerin temiz bir kaynak kodu elde etmesini zorlaştırmak için mükemmeldir. Bu ayrıca boolean tabanlı koşulluları da güçlendirir.
-
-Bu sayı şifrelemesi GEN3 flow kod gizleyicisine dayanır ve decompile edilmiş sonuç aşağıdaki gibidir
-
-Aşağıdaki senaryoyu varsayalım:
-- $x$ bizim şifrelemek istediğimiz sayı
-- $n$ bloğun tohumu
-- $d$ şifrelenmiş sayı
-
-Basit xor mekaniklerine göre: $x\oplus n\oplus n=x$
-
-Yani, tanım olarak, eğer $n$ bizim tohumumuz ise, çalışma zamanında $d$ sayısını $d = x\oplus n$ olarak hesaplamalıyız. Daha sonra, bytecode talimatlarını şu şekilde düzenlemeliyiz:
-
-```java
-int deger = x;
-```
-
-şuna dönüşür:
-```java
-int deger = d ^ n;
-```
-
-Bu durumda $d$ daha önceden hesaplanmış sabit değerdir ve $n$ de opak yüklemdir (opaque predicate). Örnek:
-```java
-int deger = 5;
-```
-şuna dönüşür:
-```java
-int tahmin = 0x100;
-int deger = 105 ^ tahmin;
-```
+Method yeniden adlandırıcı, method adlarının korunmasını önlemek için tüm bir methodu doğru bir şekilde yeniden adlandırmayı amaçlar. Bunu başarmak için Skidfuscator, method hiyerarşisini etkili bir şekilde korumak için "method grupları" oluşturur. Örneğin, `class B`, `class A`'yı genişletirse ve `class A`, `methodA()`'yı uygularsa, hem `class A` hem de `class B` için `methodA()`'ya yapılan tüm çağrıların yeniden adlandırılması gerekecektir.
 
 ## Config
+Method yeniden adlandırıcı şu anda girdiye dayalı olarak geleneksel özel sözlük `CUSTOM` ile birlikte bir sözlüğü, `ALPHABETICAL`, desteklemektedir. Bu senaryoda aşağıdaki seçenekler mevcuttur:
+- Derinlik: Varsayılan olarak kaç tane değişmez kullanılacağı (örneğin: 3 derinlik ilk öğe için o0o0o0'a yol açacaktır veya 1 derinlik ilk öğe için o0'a yol açacaktır)
+- Karakterler: Transformatör tarafından kullanılacak karakterler.
 
-Şu anda, Sayı Şifrelemesinin sadece bir modu var, `STANDARD`
+::: warning
+Şu an itibariyle, dönüştürücü yinelenen karakterleri işlemez ve yanlış bir şekilde aynı yöntem adlarını oluşturur. For example, do not use "o", "0" and "o0" as the latter is a combination of the previous two characters.
+:::
 
 ```js
-numberEncryption {
-    enabled: true
-    exempt: []
+methodRenamer {
+    enabled: false
+    type: CUSTOM // or 'ALPHABETICAL'
+    chars: [
+        "K"
+        "oO",
+        "o0"
+    ]
+    depth: 3
 }
 ```
 
 ## Örnekler
+
 #### Gizlenmemiş Kod
+
 ```java
-int dgr = 1000;
-System.out.println(dgr + 1 + 2 + 3);
+public static void main(String[] args) {
+    int number = callNumber();
+    /*[...]*/
+}
+
+static int callNumber() {
+    return 1;
+}
 ```
 
-#### Gizlenmiş Kod
+#### Gizlenmiş kod
 ```java
-int dgr = 0xA0290233 ^ n;
-System.out.println(dgr + 0x92083838 ^ n + 0x92083839 ^ n + 0x92083840 ^ n);
-```
+public static void main(String[] args) {
+    int number = o0k0k0Kk();
+    /*[...]*/
+}
 
+
+static int o0k0k0Kk() {
+    return 1;
+}
+```
