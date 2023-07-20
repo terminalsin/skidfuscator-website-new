@@ -1,49 +1,61 @@
-## Exception Return
+## Flow Condition
 
-İstisna dönüşü gizleme, dönüş sonuçlarını gizleyerek ve her yöntemi boş bir dönüş değerine sahip olacak şekilde standartlaştırarak bir programın kontrol akışını anlamayı ve analiz etmeyi daha zor hale getirmek için kullanılan bir programlama tekniğidir.
+Bu dönüştürücü, opak yüklem analizine karşı bir ilk kalkan görevi görür. Statik analizin hangi tamsayının opak bir yüklem olduğunu tespit etmesini önlemek için, bu özel tamsayıyı zaten var olan if ifadelerine ekstra koşullar eklemek için kullanırız. Bu sadece yazılımınıza ekstra güvenlik katmakla kalmaz, aynı zamanda birçok aracın deobfuscation ve decompilation sürecini de engeller.
 
-Özetle, bu teknik normal geri dönüş deyimlerinin yerine programın kontrol akışını daha az tahmin edilebilir hale getiren istisna işleme bloklarını koyar. Bir istisna ortaya çıktığında, program belirlenmiş bir istisna işleyicisine atlar ve bu işleyici istenen değeri döndürür veya amaçlanan eylemi gerçekleştirir. Bu, kodun okunmasını, analiz edilmesini ve tersine mühendislik yapılmasını zorlaştırır, böylece kurcalama veya korsanlığa karşı bir koruma düzeyi sağlar.
-
-Bu şifreleme tekniği hala deneyseldir ve daha büyük programlarda başarılı bir şekilde çalışmayabilir. Bu sebeple, varsayılan olarak bu özellik kapalıdır. '''
+Flow Exception dönüştürücüsüne kıyasla bu, yalnızca bir uç durumu işleyen çok daha basitleştirilmiş bir sürümdür.
 
 ## Config
 
 ```js
-exceptionReturn {
-    enabled: false
+flowCondition {
+    enabled: true
     exempt: []
 }
 ```
 
 ## Örnekler
 
-### Şifrelenmemiş
-
+#### Gizlenmemiş Kod
 ```java
-int number = callNumber();
- [...]
-}
+public static void main(String[] args) {
+    int number = callNumber();
 
-int callNumber() {
-    return 1;
+    if (number == 1) {
+        System.out.println("Hello world");
+    }
+    /*[...]*/
 }
+/*[...]*/
 ```
 
-### Şifrelenmiş
+#### Gizlenmiş Kod
 ```java
-try {
-    callNumber();
-} catch (IntNumberException ex) {
-    int number = ex.getValue();
-}
+public static void main(String[] args) {
+    /*[...]*/
+    label1: {
+        while (true) {
+            if (n ^ 0x8AF8EF8F == 0xA88FFA) {
+                break;
+            }
 
-[...]
+            n = n ^ 0x28847D;
+            int number = callNumber();
 
-void callNumber() {
-    throw new IntNumberException(1);
+            label2: {
+                if (number != 1)
+                    break label1;
+
+                if (n ^ 0xAA9F8FFD != 0x989F7AF)
+                    break label2;
+
+                System.out.println("Hello world");
+                break label1;
+            }
+
+            throw new IllegalStateException();
+        }
+    }
+    /*[...]*/
 }
+/*[...]*/
 ```
-
-
-
-
