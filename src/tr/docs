@@ -1,73 +1,58 @@
+## Sayı Şifrelemesi
 
-## Flow Range
-Akış istisna aralığı gizleme geçişi, bir programın istisna işleme koduna gizleme eklemek için derleyici optimizasyonunda kullanılan bir tekniktir.
+Sayı şifreleme dönüştürücüsü integer tabanlı sayıları gizli olmaları için şifreler. Bu kodunuzu genel olarak okunamaz yapmak ve tersine mühendislerin temiz bir kaynak kodu elde etmesini zorlaştırmak için mükemmeldir. Bu ayrıca boolean tabanlı koşulluları da güçlendirir.
 
-Bu tekniğin arkasındaki fikir, programın istisna işleme rutinlerini (try-catch blokları gibi), programın mantıksal akışını anlamayı zorlaştıran ek kontrol akışı talimatları içerecek şekilde değiştirmektir.
+Bu sayı şifrelemesi GEN3 flow kod gizleyicisine dayanır ve decompile edilmiş sonuç aşağıdaki gibidir
 
-Örneğin, basit bir try-catch bloğu, iç içe geçmiş try-catch blokları veya ek dallanma talimatları içeren daha karmaşık bir yapıya dönüştürülebilir. Bu, bir gözlemcinin programın istisna işleme davranışını anlamasını ve potansiyel olarak istismar edilebilecek güvenlik açıklarını ortaya çıkarmasını daha zor hale getirebilir.
+Aşağıdaki senaryoyu varsayalım:
+- $x$ bizim şifrelemek istediğimiz sayı
+- $n$ bloğun tohumu
+- $d$ şifrelenmiş sayı
 
-Bu teknik genellikle ek koruma katmanları sağlamak için diğer gizleme teknikleriyle birlikte kullanılır. Ancak, istisna işleme koduna gereksiz karmaşıklık eklemenin de programın hata ayıklama ve bakımını zorlaştırabileceği unutulmamalıdır, bu nedenle mantıklı bir şekilde kullanılmalıdır.
+Basit xor mekaniklerine göre: $x\oplus n\oplus n=x$
+
+Yani, tanım olarak, eğer $n$ bizim tohumumuz ise, çalışma zamanında $d$ sayısını $d = x\oplus n$ olarak hesaplamalıyız. Daha sonra, bytecode talimatlarını şu şekilde düzenlemeliyiz:
+
+```java
+int deger = x;
+```
+
+şuna dönüşür:
+```java
+int deger = d ^ n;
+```
+
+Bu durumda $d$ daha önceden hesaplanmış sabit değerdir ve $n$ de opak yüklemdir (opaque predicate). Örnek:
+```java
+int deger = 5;
+```
+şuna dönüşür:
+```java
+int tahmin = 0x100;
+int deger = 105 ^ tahmin;
+```
 
 ## Config
 
+Şu anda, Sayı Şifrelemesinin sadece bir modu var, `STANDARD`
+
 ```js
-flowRange {
-     enabled: true
-     exempt: []
+numberEncryption {
+    enabled: true
+    exempt: []
 }
 ```
 
 ## Örnekler
-
 #### Gizlenmemiş Kod
 ```java
-final String uwu = "UwU";
-System.out.println(uwu);
+int dgr = 1000;
+System.out.println(dgr + 1 + 2 + 3);
 ```
 
 #### Gizlenmiş Kod
 ```java
-final String uwu = "UwU";
-
-while (true) {
-     label1: {
-          try {
-               if (this.a(0x92A8B44, n) >> 8 != 0x97F7F)
-                    throw new IllegalReflectiveException();
-               break label1;
-          } catch (IllegalReflectiveException ex) {
-               System.out.println(uwu);
-          }
-     }
-}
+int dgr = 0xA0290233 ^ n;
+System.out.println(dgr + 0x92083838 ^ n + 0x92083839 ^ n + 0x92083840 ^ n);
 ```
 
-#### IR Representation
-```
- Original flow:       Obfuscated Flow:
-
- ┌─────────┐            ┌─────────┐
- │ Block A │            │ Block A │
- └────┬────┘            └────┬────┘
-      │                      │
- ┌────▼────┐         ┌───────▼────────┐
- │ Block B │         │ Random If Stmt │
- └─────────┘         └───────┬────────┘
-                             │
-                   ┌─────┐◄──┴───►┌─────┐
-                   │ Yes │        │ No  │
-                   └─────┘        └──┬──┘
-                                     │
-                               ┌─────▼─────┐
-                               │ Exception │
-                               └───────────┘
-
-                      ┌─────────────┐
-                      │  Exception  │
-                      │   Catcher   │
-                      └──────┬──────┘
-                             │
-                        ┌────▼────┐
-                        │ Block B │
-                        └─────────┘
-```
