@@ -1,19 +1,49 @@
-## Driver Hardening
+## Exception Return
 
-Sürücü, Skidfuscator'ın sertleştirme kısmıdır. Bu özellik sadece premiumda vardır. Özetle, gizleme başına, aşağıdaki mimariler için yeni bir sürücü oluşturulur ve derlenir:
+İstisna dönüşü gizleme, dönüş sonuçlarını gizleyerek ve her yöntemi boş bir dönüş değerine sahip olacak şekilde standartlaştırarak bir programın kontrol akışını anlamayı ve analiz etmeyi daha zor hale getirmek için kullanılan bir programlama tekniğidir.
 
-| İşletim sistemi | Desteklenen mimariler |
-| --------------- | --------------------- |
-| Windows         | x64_86                |
-| MacOS           | x64_86, AARCH64 (ARM) |
-| Linux           | x64_86 (AMD64)        |
+In a nutshell, this technique replaces normal return statements with exception handling blocks that make the program's control flow less predictable. When an exception is raised, the program jumps to a designated exception handler, which then returns the desired value or performs the intended action. This makes the code harder to read, analyze, and reverse engineer, thus providing a level of protection against tampering or piracy.
 
+'''warning This obfuscation technique is still experimental and may not successfully compile on larger programs. For this very reason, it is disabled by default. '''
 
 ## Config
-Bu özelliği etkinleştirmek için (:warning: bu, şifreleme gücünü önemli ölçüde artırır), boolean'ı değiştirmeniz gerekir:
 
 ```js
-driver: {
-    enabled: false // Disabled by default
+exceptionReturn {
+    enabled: false
+    exempt: []
 }
 ```
+
+## Examples
+
+### Unobfuscated
+
+```java
+int number = callNumber();
+ [...]
+}
+
+int callNumber() {
+    return 1;
+}
+```
+
+### Obfuscated
+```java
+try {
+    callNumber();
+} catch (IntNumberException ex) {
+    int number = ex.getValue();
+}
+
+[...]
+
+void callNumber() {
+    throw new IntNumberException(1);
+}
+```
+
+
+
+
