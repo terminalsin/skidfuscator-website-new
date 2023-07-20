@@ -1,51 +1,49 @@
-## Annotation Şifrelemesi
+## Exception Return
 
-Annotation Encryption Transformer, çalışma zamanında gizlemek amacıyla ek açıklamalarda bulunan her String ve tamsayıyı belirli bir yöntem çağrısına dönüştürür. This can be practical for non-sensitive URLs, private keys, etc...
+İstisna dönüşü gizleme, dönüş sonuçlarını gizleyerek ve her yöntemi boş bir dönüş değerine sahip olacak şekilde standartlaştırarak bir programın kontrol akışını anlamayı ve analiz etmeyi daha zor hale getirmek için kullanılan bir programlama tekniğidir.
 
-:: warning  
-Client'e temel olarak güvenmemelisiniz. Lütfen String şifrelemeye, uygulamanız için tek koruma olarak güvenmeyin. Varsayılan olarak, yeterince yetenekli bir tersine mühendisin aşağıdakilerle bunlara erişebileceğini varsaymalısınız.
-:::
+Özetle, bu teknik normal geri dönüş deyimlerinin yerine programın kontrol akışını daha az tahmin edilebilir hale getiren istisna işleme bloklarını koyar. Bir istisna ortaya çıktığında, program belirlenmiş bir istisna işleyicisine atlar ve bu işleyici istenen değeri döndürür veya amaçlanan eylemi gerçekleştirir. Bu, kodun okunmasını, analiz edilmesini ve tersine mühendislik yapılmasını zorlaştırır, böylece kurcalama veya korsanlığa karşı bir koruma düzeyi sağlar.
 
+Bu şifreleme tekniği hala deneyseldir ve daha büyük programlarda başarılı bir şekilde çalışmayabilir. Bu sebeple, varsayılan olarak bu özellik kapalıdır. '''
 
 ## Config
 
 ```js
-stringAnnotationEncryption {
-    enabled: true
-    exempt: []
-}
-
-intAnnotationEncryption {
-    enabled: true
+exceptionReturn {
+    enabled: false
     exempt: []
 }
 ```
 
 ## Örnekler
 
-### Gizlenmemiş Kod
+### Şifrelenmemiş
 
 ```java
-@SecretAnnotation(secret = "Super secret", secret2 = 1337)
-public class Fancy {
-    public String getSecret() {
-        return this.getClass().getAnnotation(SecretAnnotation.class).secret();
-    }
+int number = callNumber();
+ [...]
+}
 
-    public int getSecre2t() {
-        return this.getClass().getAnnotation(SecretAnnotation.class).secret2();
-    }
+int callNumber() {
+    return 1;
 }
 ```
 
-### Gizlenmiş Kod
+### Şifrelenmiş
+```java
+try {
+    callNumber();
+} catch (IntNumberException ex) {
+    int number = ex.getValue();
+}
 
-```java @SecretAnnotation(secret = "oifjaioejaifjea9è!efèaefFEf==", secret2 = 0x9FE7FE7F) public class Fancy { public String getSecret() { /* [...] */ return this.aofheoafo(this.getClass().getAnnotation(SecretAnnotation.class).secret(), n ^ 0x997AF8F); }
+[...]
 
-    public int getSecre2t() {
-        /* [...] */
-        return this.getClass().getAnnotation(SecretAnnotation.class).secret2() ^ n ^ 0x90AF9F7;
-    }
-    
-    /* [...] */
-}```
+void callNumber() {
+    throw new IntNumberException(1);
+}
+```
+
+
+
+
