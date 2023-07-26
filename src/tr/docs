@@ -1,31 +1,53 @@
-# Felsefemiz
+## Method Yeniden Adlandırıcı
 
-## Biz kimiz?
-Skidfuscator olarak, Java geliştiricilerinin haklarını ve ürünlerini korumalarına yardımcı olmaktan büyük bir tutku duyuyoruz. Ekip olarak deneyimli yazılım geliştiricileri olarak, kodunuzu tersine mühendislik ve izinsiz erişime karşı korumanın önemini anlıyoruz. İşte bu nedenle Skidfuscator'ü geliştirdik, yazılımınızı değiştirilme ve tersine mühendislikten koruyan güçlü bir Java bytecode şifreleyicisi.
+Method yeniden adlandırıcı, method adlarının korunmasını önlemek için tüm bir methodu doğru bir şekilde yeniden adlandırmayı amaçlar. Bunu başarmak için Skidfuscator, method hiyerarşisini etkili bir şekilde korumak için "method grupları" oluşturur. Örneğin, `class B`, `class A`'yı genişletirse ve `class A`, `methodA()`'yı uygularsa, hem `class A` hem de `class B` için `methodA()`'ya yapılan tüm çağrıların yeniden adlandırılması gerekecektir.
 
-## Misyonumuz
-Misyonumuz, Java geliştiricilerine haklarını ve ürünlerini korumak için gerekli olan aracı sağlamaktır. Java platformunun yüksek kaliteli yazılım uygulamaları geliştirmek için yaygın olarak kullanıldığının farkındayız ve Java kodunuzu korumanın rekabet avantajınızı sürdürmek için önemli olduğuna inanıyoruz. İşte bu nedenle güvenilir, kullanıcı dostu bir Java şifreleyicisi ve Java uygulamalarınızı tersine mühendislik ve değiştirme işlemlerine karşı korumanıza yardımcı olan Skidfuscator'ü geliştirdik.
+## Yapılandırma Ayarı
+Method yeniden adlandırıcı şu anda girdiye dayalı olarak geleneksel özel sözlük `CUSTOM` ile birlikte bir sözlüğü, `ALPHABETICAL`, desteklemektedir. Bu senaryoda aşağıdaki seçenekler mevcuttur:
+- Derinlik: Varsayılan olarak kaç tane değişmez kullanılacağı (örneğin: 3 derinlik ilk öğe için o0o0o0'a yol açacaktır veya 1 derinlik ilk öğe için o0'a yol açacaktır)
+- Karakterler: Transformatör tarafından kullanılacak karakterler.
 
-## Neden Skidfuscatorü geliştirdik?
-Skidfuscator olarak, Java geliştiricilerinin uygulama ve ürünşerini korumak için uygun fiyatlı ve etkili şifreleme çözümlerine erişim sağlamalarına önem veriyoruz. Ekibimiz, kullanımı kolay ancak en güçlü saldırılara bile dayanacak kadar güçlü olan en üst düzeyde şifreleme çözümleri sunma konusunda kararlıdır. Ürünümüzü sürekli olarak iyileştirmek ve yazılım koruma, şifreleme alanındaki en son gelişmelerle güncel kalmak için çaba harcıyoruz.
+::: warning
+Şu an itibariyle, dönüştürücü yinelenen karakterleri işlemez ve yanlış bir şekilde aynı yöntem adlarını oluşturur. For example, do not use "o", "0" and "o0" as the latter is a combination of the previous two characters.
+:::
 
-Şifrelemenin, özellikle bu alanla yeni tanışan geliştiriciler için karmaşık ve zorlu bir süreç olabileceğinin farkındayız. İşte bu nedenle Skidfuscator'ü mümkün olduğunca kullanıcı dostu bir şekilde tasarladık. Şifreleyicimizle Java bytecode'unuzu özel yetenekler veya bilgiye ihtiyaç duymadan hızlı ve kolay bir şekilde şifreleyebilirsiniz. Kapsamlı belgelerimiz ve mükemmel destek hizmetlerimiz, şifrelemeye hemen başlayarak yazılımınızı korumanızı sağlar.
+```js
+methodRenamer {
+    enabled: false
+    type: CUSTOM // or 'ALPHABETICAL'
+    chars: [
+        "K"
+        "oO",
+        "o0"
+    ]
+    depth: 3
+}
+```
 
-Skidfuscator olarak, işbirliği ve iletişimin gücüne inanıyoruz. Müşterilerimizle yakın bir şekilde çalışarak onların benzersiz ihtiyaçlarını ve zorluklarını anlamaya özen gösteriyoruz ve her zaman kişiye özel destek ve danışmanlık sağlamaya hazırız. Ekibimiz, kodunuzu ve ürününüzü korumanıza ve hedeflerinize ulaşmanıza, ne kadar büyük veya küçük olursa olsun, yardımcı olmaya adanmıştır.
+## Örnekler
 
-Skidfuscator, Java kodunuzu korumak için en iyi çözümdür. Güçlü şifreleyicimiz, yazılımınızı tersine mühendislik ve değiştirmeye karşı korumak için tasarlanmıştır, böylece kodunuz güvende kalır ve güvence altına alınır. Müşterilerimize üst düzey bir şifreleme çözümü, mükemmel destek ve kullanıcı dostu bir şifreleyici sunma konusunda kararlıyız. Bu şifreleyici kolay kullanımıyla etkili bir şekilde çalışır. Skidfuscator'ü seçin ve bugün Java uygulamalarınızı izinsiz erişime ve hırsızlığa karşı koruyun.
+#### Gizlenmemiş Kod
 
-## Methodojimiz
+```java
+public static void main(String[] args) {
+    int number = callNumber();
+    /*[...]*/
+}
 
-Skidfuscator olarak, uzun vadeli ve dirençli bir yaklaşımın sürdürülebilirlik için önemli olduğuna inanıyoruz. Kısa vadeli düzeltmeler ve hızlı çözümler geçici çözüm sağlayabilirken, genellikle ileride daha fazla sorun yaratır ve uzun vadeli ilerlemeyi engeller.
+static int callNumber() {
+    return 1;
+}
+```
 
-### Yaklaşımımız
-Sorunlara dirençli ve sürdürülebilir bir şekilde yaklaşmak için, sadece semptomlarını ele almaktan ziyade sorunun ana nedenini anlamaya öncelik veriyoruz. Bir sorunu detaylı bir şekilde analiz ederek, onun meydana gelmesine katkıda bulunan temel faktörleri belirleyebilir ve bu faktörlere doğrudan çözümler geliştirerek hedefe yönelik çözümler oluşturabiliriz.
+#### Gizlenmiş kod
+```java
+public static void main(String[] args) {
+    int number = o0k0k0Kk();
+    /*[...]*/
+}
 
-Sorunun ana nedenini belirlemenin yanı sıra, karmaşık konulara yaklaşırken işbirliğine ve bilgi paylaşımına öncelik veriyoruz. Hiçbir kişi veya ekip her şeyin cevabına sahip değildir ve çözümler genellikle çeşitli grupların bir araya gelmiş çabaları ve görüşleriyle ortaya çıkar. Ekiplerimizi çeşitli alanlarda işbirliği yapmaya teşvik ediyor ve gerektiğinde dış ortakların uzmanlık bilgisini kullanarak, bir sorunun tüm yönlerini ele alan kapsamlı çözümlere ulaşmalarına yardımcı oluyoruz.
 
-### Vurgumuz
-Ayrıca, sürekli gelişim ve öğrenme konusuna büyük önem veriyoruz. Farkındayız ki en kapsamlı çözümler bile zamanla geliştirilebilir ve dünya sürekli olarak değişiyor ve gelişiyor. Bu nedenle, ekiplerimizi çözümlerimizin etkililiğini düzenli olarak değerlendirme ve geliştirme fırsatlarını belirlemeye teşvik ediyoruz. Ayrıca, ekiplerimizin kendi alanlarında en son araştırmaları ve en iyi uygulamaları takip etmelerini sağlamak için sürekli eğitim ve gelişimi önceliklendiriyoruz.
-
-### Önceliğimiz
-Sorun çözme konusunda uzun vadeli ve dayanıklı bir yaklaşımı önceliklendirerek, toplumu faydalı etkileyen sürdürülebilir çözümler oluşturabileceğimize inanıyoruz. Hızlı çözümler ve kısa vadeli yaklaşımların iyi olabileceğini kabul ediyoruz, ancak bu tür yaklaşımların genellikle istenmeyen olumsuz sonuçlara yol açtığını ve uzun vadeli ilerlemeyi engellediğini farkındayız. Bunun yerine, işbirliğine, sürekli gelişime ve sürdürülebilir uygulamalara öncelik vererek, çözümlerimizin etkili ve verimli olduğundan emin oluyoruz.
+static int o0k0k0Kk() {
+    return 1;
+}
+```
