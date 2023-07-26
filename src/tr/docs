@@ -1,257 +1,49 @@
+## Exception Return
 
-# Yapılandırma
+İstisna dönüşü gizleme, dönüş sonuçlarını gizleyerek ve her yöntemi boş bir dönüş değerine sahip olacak şekilde standartlaştırarak bir programın kontrol akışını anlamayı ve analiz etmeyi daha zor hale getirmek için kullanılan bir programlama tekniğidir.
 
-Burada yapılandırmanın neler sunduğu hakkında her şeyi öğreneceksin. Buradaki detayları bir kartal gibi keskin oku. Eğer herhangi bir sorunla karşılaşırsan, lütfen destekle iletişime geç. Premium üyeleri, takımımız tarafından ücretsiz yapılandırma hizmetine tabii tutulur.
+Özetle, bu teknik normal geri dönüş deyimlerinin yerine programın kontrol akışını daha az tahmin edilebilir hale getiren istisna işleme bloklarını koyar. Bir istisna ortaya çıktığında, program belirlenmiş bir istisna işleyicisine atlar ve bu işleyici istenen değeri döndürür veya amaçlanan eylemi gerçekleştirir. Bu, kodun okunmasını, analiz edilmesini ve tersine mühendislik yapılmasını zorlaştırır, böylece kurcalama veya korsanlığa karşı bir koruma düzeyi sağlar.
 
-## Yapılandırmanın temelleri
+Bu şifreleme tekniği hala deneyseldir ve daha büyük programlarda başarılı bir şekilde çalışmayabilir. Bu sebeple, varsayılan olarak bu özellik kapalıdır. '''
 
-Yapılandırmanın temeli [lightbend config](https://github.com/lightbend/config)'e dayanır. Bu demektir ki varsayılan olarak şu üç yapılandırma formatını destekliyoruz: Java Properties, JSON ve HOCON.
+## Yapılandırma Ayarı
 
-Prensip olarak, sade, daha şık ve çok yönlü kolay kullanımı nedeniyle **HOCON kullanmanızı şiddetle tavsiye ediyoruz**. İşte varsayılan yapılandırma:
-
-```javascript
-exempt: []
-
-libs: []
-
-stringEncryption {
-  type: STANDARD
-  enabled: true
-  exempt: []
-}
-
-numberEncryption {
-  enabled: true
-  exempt: []
-}
-
-intAnnotationEncryption {
-  enabled: true
-  exempt: []
-}
-
-stringAnnotationEncryption {
-  enabled: true
-  exempt: []
-}
-
+```js
 exceptionReturn {
-  enabled: true
-  exempt: []
-}
-
-flowCondition {
-  enabled: true
-  exempt: []
-}
-
-flowException {
-  enabled: true
-  strength: AGGRESSIVE
-  exempt: []
-}
-
-flowRange {
-  enabled: true
-  exempt: []
-}
-
-flowFactoryMaker {
-  enabled: true
-  exempt: []
-}
-
-flowSwitch {
-  enabled: true
-  exempt: []
-}
-
-outliner {
-  enabled: true
-  exempt: []
-}
-
-ahegao {
-  enabled: true
-  exempt: []
-}
-
-native: {
-  enabled: false
-  exempt: []
-}
-
-driver: {
-  enabled: false
-}
-
-reference {
-  enabled: false
-}
-
-fileCrasher: {
-  enabled: false
-}
-
-classRenamer {
-  enabled: false
-  type: CUSTOM
-  prefix: "skido/"
-  chars: [
-    "K"
-    "oO",
-    "o0"
-  ]
-  depth: 3
-}
-
-methodRenamer {
-  enabled: false
-  type: CUSTOM
-  chars: [
-    "K"
-    "oO",
-    "o0"
-  ]
-  depth: 3
-}
-
-fieldRenamer {
-  enabled: false
-  type: ALPHABETICAL
+    enabled: false
+    exempt: []
 }
 ```
 
-## Ayrıştırmalar
+## Örnekler
 
-Ayrıştırmaların kullanımı eski sistemde nasıl yapılıyorsa aynen öyle. Ayrıştırmalar hakkında daha fazla şey öğrenmek için, [şu sayfaya](../exclusion.md) gidin
+### Şifrelenmemiş
 
-::: warning 
-Java stringleri ters slaşı ayrıştırarak sunar. Bu da demek ki tüm ters slaşları MUTLAKA çift kullanmalısınız
-:::
-
-### Bir sınıfı ayrıştırmak
-
-Başlarken temel olarak, belli bir sınıfı ayrıştırmak için, sınıf regex ayrıştırmasını kullanmalısın:
-```js
-class{^benim\/sinifim}
-```
-
-Bunu yapılandırmada kullanmak için, bir string olarak girmelisin.
-
-
-```js
-exempt: [
-    "class{^benim\\/sinifim}"
-]
-```
-
-### Bir metodu ayrıştırmak
-
-Başlarken temel olarak, belli bir metodu ayrıştırmak için, metod regex ayrıştırmasını kullanmalısın:
-```js
-method{^benimMetodum}
-```
-
-Bunu yapılandırmada kullanmak için, bir string olarak girmelisin.
-
-```js
-exempt: [
-    "method{^benimMetodum}"
-]
-```
-
-### Belli bir sınıfta bir metodu ayrıştırmak
-
-Aynı az önce öğrendiğimiz gibi, bir metodu ve bir sınıfı ayrıştırmak için şunu yapmalıyız:
-```js
-class{^benim\/sinifim}
-method{^benimMetodum}
-```
-
-Şimdi, belli bir sınıfın İÇİNDE bir metodu ayrıştırmak için, yapılması gereken tek şey bu ikisinin tek bir satırda birleştirilmesidir, örnek olarak:
-
-```js
-class{^benim\/sinifim} method{^benimMetodum}
-```
-
-Dolayısıyla yapılandırmada şu şekilde olur:
-
-```js
-exempt: [
-    "class{^benim\/sinifim} method{^benimMetodum}"
-]
-```
-
-## Kütüphaneler
-
-Kütüphaneler, classpath hesaplanmasında ve maksimum korumanın sağlanmasında önemli bir unsurdur. Bu durumda, dize olarak geçerli bir Java yolu bağımsız değişkeni sağlamalısınız
-
-Aşağıda uygulama kodu yer almaktadır:
 ```java
-public File[] getLibs() {
-    return this.getStringList("libraries", Collections.emptyList())
-                .stream()
-                .map(File::new)
-                .distinct()
-                .toArray(File[]::new);
+int number = callNumber();
+ [...]
+}
+
+int callNumber() {
+    return 1;
 }
 ```
 
-Aşağıda geçerli java yollarına bir örnek verilmiştir:
-```
-C:\test.jar
-test.jar
-./test.jar
-/Home/test.jar
-```
+### Şifrelenmiş
+```java
+try {
+    callNumber();
+} catch (IntNumberException ex) {
+    int number = ex.getValue();
+}
 
-Yapılandırmada bunlar aşağıdaki gibi gösterilir:
+[...]
 
-```js
-libraries [
-    "C:\\test.jar",
-    "test.jar",
-    "./test.jar",
-    "/Home/test.jar"
-]
-```
-
-## Driver
-
-Sürücü, Skidfuscator'ın sertleştirme kısmıdır. Bu özellik Premium'a ayrılmıştır. Özetle, gizleme başına, aşağıdaki mimariler için yeni bir sürücü oluşturulur ve derlenir:
-
-| İşletim Sistemi | Desteklenen mimariler |
-| --------------- | --------------------- |
-| Windows         | x64_86                |
-| MacOS           | x64_86, AARCH64 (ARM) |
-| Linux           | x64_86 (AMD64)        |
-
-Bu özelliği kapatmak için (:warning: bu, şifreleme gücünü önemli ölçüde düşürür), boolean'ı değiştirmeniz gerekir:
-
-```js
-driver: false
+void callNumber() {
+    throw new IntNumberException(1);
+}
 ```
 
 
-## Dönüştürücüler
-
-Her bir transformatörü ayrı ayrı etkinleştirebilir/devre dışı bırakabilirsiniz.
 
 
-#### String Gizlemesi
-
-String şifreleme dönüştürücüsü, tüm Stringleri gizlemek amacıyla spesifik bir metoda dönüştürür. Bu gizlenmesi gereken URLler, özel anahtarlar gibi şeyler için uygun olabilir...
-
-:: warning  
-Client'e temel olarak güvenmemelisiniz. Lütfen String şifrelemeye, uygulamanız için tek koruma olarak güvenmeyin. Varsayılan olarak, yeterince yetenekli bir tersine mühendisin aşağıdakilerle bunlara erişebileceğini varsaymalısınız.
-:::
-
-String şifrelemesi için şu an iki mod var: `STANDARD` ve `POLYMORPHIC`
-
-#### Sayı Şifrelemesi
-
-Sayı şifreleme dönüştürücüsü integer tabanlı sayıları gizli olmaları için şifreler. Bu kodunuzu genel olarak okunamaz yapmak ve tersine mühendislerin temiz bir kaynak kodu elde etmesini zorlaştırmak için mükemmeldir. Bu ayrıca boolean tabanlı koşulluları da güçlendirir.
-
-
-#### 
