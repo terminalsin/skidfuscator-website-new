@@ -54,7 +54,7 @@ Classlar için hayalet hesaplama özelliğini etkinleştirmenize olanak sağlar,
 ```
 
 #### Çalışma zamanını belirtme
-The path to your java runtime.
+Java çalıştırma zamanınızın (Jre) yolu.
 ```cli
 --runtime=<runtime>
 ```
