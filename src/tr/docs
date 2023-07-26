@@ -1,31 +1,257 @@
-# Felsefemiz
 
-## Biz kimiz?
-Skidfuscator olarak, Java geliştiricilerinin haklarını ve ürünlerini korumalarına yardımcı olmaktan büyük bir tutku duyuyoruz. Ekip olarak deneyimli yazılım geliştiricileri olarak, kodunuzu tersine mühendislik ve izinsiz erişime karşı korumanın önemini anlıyoruz. İşte bu nedenle Skidfuscator'ü geliştirdik, yazılımınızı değiştirilme ve tersine mühendislikten koruyan güçlü bir Java bytecode şifreleyicisi.
+# Yapılandırma
 
-## Misyonumuz
-Misyonumuz, Java geliştiricilerine haklarını ve ürünlerini korumak için gerekli olan aracı sağlamaktır. Java platformunun yüksek kaliteli yazılım uygulamaları geliştirmek için yaygın olarak kullanıldığının farkındayız ve Java kodunuzu korumanın rekabet avantajınızı sürdürmek için önemli olduğuna inanıyoruz. İşte bu nedenle güvenilir, kullanıcı dostu bir Java şifreleyicisi ve Java uygulamalarınızı tersine mühendislik ve değiştirme işlemlerine karşı korumanıza yardımcı olan Skidfuscator'ü geliştirdik.
+Burada yapılandırmanın neler sunduğu hakkında her şeyi öğreneceksin. Buradaki detayları bir kartal gibi keskin oku. Eğer herhangi bir sorunla karşılaşırsan, lütfen destekle iletişime geç. Premium üyeleri, takımımız tarafından ücretsiz yapılandırma hizmetine tabii tutulur.
 
-## Neden Skidfuscatorü geliştirdik?
-At Skidfuscator, we believe that Java developers should have access to affordable and effective obfuscation solutions for protecting their intellectual property. Our team is committed to delivering top-quality obfuscation solutions that are easy to use, yet powerful enough to withstand even the most determined attacks. We are constantly working to improve our product and stay up-to-date with the latest developments in software protection and obfuscation.
+## Yapılandırmanın temelleri
 
-We understand that obfuscation can be a complex and challenging process, especially for developers who are new to this field. That is why we have designed Skidfuscator to be as user-friendly and intuitive as possible. With our obfuscator, you can quickly and easily obfuscate your Java bytecode, without the need for any special skills or knowledge. Our comprehensive documentation and excellent support services ensure that you can get started with obfuscation in no time and protect your software.
+Yapılandırmanın temeli [lightbend config](https://github.com/lightbend/config)'e dayanır. Bu demektir ki varsayılan olarak şu üç yapılandırma formatını destekliyoruz: Java Properties, JSON ve HOCON.
 
-At Skidfuscator, we believe in the power of collaboration and open communication. We work closely with our clients to understand their unique needs and challenges, and we are always ready to provide personalized support and advice. Our team is dedicated to helping you protect your intellectual property and achieve your goals, no matter how big or small they may be.
+Prensip olarak, sade, daha şık ve çok yönlü kolay kullanımı nedeniyle **HOCON kullanmanızı şiddetle tavsiye ediyoruz**. İşte varsayılan yapılandırma:
 
-Skidfuscator is the ultimate solution for you to protect your Java code. Our powerful obfuscator is designed to safeguard your software against reverse engineering and tampering, ensuring that your intellectual property remains safe and secure. We are committed to providing our clients with a top-quality obfuscation solution, excellent support, and user-friendly obfuscator that is easy to use and highly effective. Choose Skidfuscator today and protect your Java applications against unauthorized access and theft.
+```javascript
+exempt: []
 
-## Our Methodology
+libs: []
 
-At Skidfuscator, we believe that a long-term and resilient approach to problem-solving is essential for sustainable success. While short-term fixes and quick solutions may provide temporary relief, they often create more problems down the line and hinder long-term progress.
+stringEncryption {
+  type: STANDARD
+  enabled: true
+  exempt: []
+}
 
-### Our approach
-To ensure that we approach problems in a resilient and sustainable manner, we prioritize understanding the root cause of an issue rather than simply addressing its symptoms. By taking the time to analyze a problem thoroughly, we can identify the underlying factors that contribute to its occurrence and develop targeted solutions that address those factors directly.
+numberEncryption {
+  enabled: true
+  exempt: []
+}
 
-In addition to identifying the root cause of a problem, we also prioritize collaboration and knowledge-sharing when approaching complex issues. We recognize that no one person or team has all the answers, and that solutions often arise through the collective efforts and insights of diverse groups. We encourage our teams to collaborate across various fields and leverage the expertise of external partners when necessary to arrive at comprehensive solutions that address all facets of an issue.
+intAnnotationEncryption {
+  enabled: true
+  exempt: []
+}
 
-### Our emphasis
-Furthermore, we place a strong emphasis on continuous improvement and learning. We recognize that even the most comprehensive solutions can be improved upon over time, and that the world is constantly changing and evolving. As such, we encourage our teams to regularly evaluate the efficacy of our solutions and identify opportunities for improvement. We also prioritize ongoing education and development to ensure that our teams stay up-to-date with the latest research and best practices in their respective fields.
+stringAnnotationEncryption {
+  enabled: true
+  exempt: []
+}
 
-### Our priority
-By prioritizing a long-term and resilient approach to problem-solving, we believe that we can create sustainable solutions that benefit our community and contribute to the greater good. While it may be tempting to pursue quick fixes and short-term heuristics, we recognize that these approaches often lead to unintended negative consequences and hinder long-term progress. Instead, we prioritize collaboration, continuous improvement, and sustainable practices to ensure that our solutions are effective and efficient.
+exceptionReturn {
+  enabled: true
+  exempt: []
+}
+
+flowCondition {
+  enabled: true
+  exempt: []
+}
+
+flowException {
+  enabled: true
+  strength: AGGRESSIVE
+  exempt: []
+}
+
+flowRange {
+  enabled: true
+  exempt: []
+}
+
+flowFactoryMaker {
+  enabled: true
+  exempt: []
+}
+
+flowSwitch {
+  enabled: true
+  exempt: []
+}
+
+outliner {
+  enabled: true
+  exempt: []
+}
+
+ahegao {
+  enabled: true
+  exempt: []
+}
+
+native: {
+  enabled: false
+  exempt: []
+}
+
+driver: {
+  enabled: false
+}
+
+reference {
+  enabled: false
+}
+
+fileCrasher: {
+  enabled: false
+}
+
+classRenamer {
+  enabled: false
+  type: CUSTOM
+  prefix: "skido/"
+  chars: [
+    "K"
+    "oO",
+    "o0"
+  ]
+  depth: 3
+}
+
+methodRenamer {
+  enabled: false
+  type: CUSTOM
+  chars: [
+    "K"
+    "oO",
+    "o0"
+  ]
+  depth: 3
+}
+
+fieldRenamer {
+  enabled: false
+  type: ALPHABETICAL
+}
+```
+
+## Ayrıştırmalar
+
+Ayrıştırmaların kullanımı eski sistemde nasıl yapılıyorsa aynen öyle. Ayrıştırmalar hakkında daha fazla şey öğrenmek için, [şu sayfaya](../exclusion.md) gidin
+
+::: warning 
+Java stringleri ters slaşı ayrıştırarak sunar. Bu da demek ki tüm ters slaşları MUTLAKA çift kullanmalısınız
+:::
+
+### Bir sınıfı ayrıştırmak
+
+Başlarken temel olarak, belli bir sınıfı ayrıştırmak için, sınıf regex ayrıştırmasını kullanmalısın:
+```js
+class{^benim\/sinifim}
+```
+
+Bunu yapılandırmada kullanmak için, bir string olarak girmelisin.
+
+
+```js
+exempt: [
+    "class{^benim\\/sinifim}"
+]
+```
+
+### Bir metodu ayrıştırmak
+
+Başlarken temel olarak, belli bir metodu ayrıştırmak için, metod regex ayrıştırmasını kullanmalısın:
+```js
+method{^benimMetodum}
+```
+
+Bunu yapılandırmada kullanmak için, bir string olarak girmelisin.
+
+```js
+exempt: [
+    "method{^benimMetodum}"
+]
+```
+
+### Belli bir sınıfta bir metodu ayrıştırmak
+
+Aynı az önce öğrendiğimiz gibi, bir metodu ve bir sınıfı ayrıştırmak için şunu yapmalıyız:
+```js
+class{^benim\/sinifim}
+method{^benimMetodum}
+```
+
+Şimdi, belli bir sınıfın İÇİNDE bir metodu ayrıştırmak için, yapılması gereken tek şey bu ikisinin tek bir satırda birleştirilmesidir, örnek olarak:
+
+```js
+class{^benim\/sinifim} method{^benimMetodum}
+```
+
+Dolayısıyla yapılandırmada şu şekilde olur:
+
+```js
+exempt: [
+    "class{^benim\/sinifim} method{^benimMetodum}"
+]
+```
+
+## Kütüphaneler
+
+Kütüphaneler, classpath hesaplanmasında ve maksimum korumanın sağlanmasında önemli bir unsurdur. Bu durumda, dize olarak geçerli bir Java yolu bağımsız değişkeni sağlamalısınız
+
+Aşağıda uygulama kodu yer almaktadır:
+```java
+public File[] getLibs() {
+    return this.getStringList("libraries", Collections.emptyList())
+                .stream()
+                .map(File::new)
+                .distinct()
+                .toArray(File[]::new);
+}
+```
+
+Aşağıda geçerli java yollarına bir örnek verilmiştir:
+```
+C:\test.jar
+test.jar
+./test.jar
+/Home/test.jar
+```
+
+Yapılandırmada bunlar aşağıdaki gibi gösterilir:
+
+```js
+libraries [
+    "C:\\test.jar",
+    "test.jar",
+    "./test.jar",
+    "/Home/test.jar"
+]
+```
+
+## Driver
+
+Sürücü, Skidfuscator'ın sertleştirme kısmıdır. Bu özellik Premium'a ayrılmıştır. Özetle, gizleme başına, aşağıdaki mimariler için yeni bir sürücü oluşturulur ve derlenir:
+
+| İşletim Sistemi | Desteklenen mimariler |
+| --------------- | --------------------- |
+| Windows         | x64_86                |
+| MacOS           | x64_86, AARCH64 (ARM) |
+| Linux           | x64_86 (AMD64)        |
+
+Bu özelliği kapatmak için (:warning: bu, şifreleme gücünü önemli ölçüde düşürür), boolean'ı değiştirmeniz gerekir:
+
+```js
+driver: false
+```
+
+
+## Dönüştürücüler
+
+Her bir transformatörü ayrı ayrı etkinleştirebilir/devre dışı bırakabilirsiniz.
+
+
+#### String Gizlemesi
+
+String şifreleme dönüştürücüsü, tüm Stringleri gizlemek amacıyla spesifik bir metoda dönüştürür. Bu gizlenmesi gereken URLler, özel anahtarlar gibi şeyler için uygun olabilir...
+
+:: warning  
+Client'e temel olarak güvenmemelisiniz. Lütfen String şifrelemeye, uygulamanız için tek koruma olarak güvenmeyin. Varsayılan olarak, yeterince yetenekli bir tersine mühendisin aşağıdakilerle bunlara erişebileceğini varsaymalısınız.
+:::
+
+String şifrelemesi için şu an iki mod var: `STANDARD` ve `POLYMORPHIC`
+
+#### Sayı Şifrelemesi
+
+Sayı şifreleme dönüştürücüsü integer tabanlı sayıları gizli olmaları için şifreler. Bu kodunuzu genel olarak okunamaz yapmak ve tersine mühendislerin temiz bir kaynak kodu elde etmesini zorlaştırmak için mükemmeldir. Bu ayrıca boolean tabanlı koşulluları da güçlendirir.
+
+
+#### 
