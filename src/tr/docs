@@ -1,55 +1,53 @@
-## Akış Anahtarı (Flow Switch)
+## Method Yeniden Adlandırıcı
 
-Bu özel dönüştürücü, sadece anahtar değiştirme ifadelerinize odaklanır ve değişkenleri gizleyerek numaraları, sabitleri ve string hedeflerini etkili bir şekilde obfuskasyon yapar. Bu, opak yüklem ve özel bir karma mekanizması kullanılarak yapılır ve herhangi bir tersine mühendislik tekniğini önlemeye yöneliktir.
+Method yeniden adlandırıcı, method adlarının korunmasını önlemek için tüm bir methodu doğru bir şekilde yeniden adlandırmayı amaçlar. Bunu başarmak için Skidfuscator, method hiyerarşisini etkili bir şekilde korumak için "method grupları" oluşturur. Örneğin, `class B`, `class A`'yı genişletirse ve `class A`, `methodA()`'yı uygularsa, hem `class A` hem de `class B` için `methodA()`'ya yapılan tüm çağrıların yeniden adlandırılması gerekecektir.
 
 ## Yapılandırma Ayarı
+Method yeniden adlandırıcı şu anda girdiye dayalı olarak geleneksel özel sözlük `CUSTOM` ile birlikte bir sözlüğü, `ALPHABETICAL`, desteklemektedir. Bu senaryoda aşağıdaki seçenekler mevcuttur:
+- Derinlik: Varsayılan olarak kaç tane değişmez kullanılacağı (örneğin: 3 derinlik ilk öğe için o0o0o0'a yol açacaktır veya 1 derinlik ilk öğe için o0'a yol açacaktır)
+- Karakterler: Transformatör tarafından kullanılacak karakterler.
+
+::: warning
+Şu an itibariyle, dönüştürücü yinelenen karakterleri işlemez ve yanlış bir şekilde aynı yöntem adlarını oluşturur. For example, do not use "o", "0" and "o0" as the latter is a combination of the previous two characters.
+:::
 
 ```js
-flowSwitch {
-    enabled: true
-    exempt: []
+methodRenamer {
+    enabled: false
+    type: CUSTOM // or 'ALPHABETICAL'
+    chars: [
+        "K"
+        "oO",
+        "o0"
+    ]
+    depth: 3
 }
 ```
 
 ## Örnekler
 
-#### Şifrelenmemiş
+#### Gizlenmemiş Kod
+
 ```java
 public static void main(String[] args) {
     int number = callNumber();
-
-    switch (number) {
-        case 1: 
-            System.out.println("Oh no!");
-            break;
-        case 2: 
-            System.out.println("Hello world!");
-            break
-        default: 
-            throw new IllegalStateException("Something went wrong!");
-    }
     /*[...]*/
 }
-/*[...]*/
+
+static int callNumber() {
+    return 1;
+}
 ```
 
 #### Gizlenmiş kod
 ```java
 public static void main(String[] args) {
-    /*[...]*/
-    int number = callNumber();
-
-    switch (number ^ hash(n ^ 0x9932783)) {
-        case 0x928EF8C: 
-            System.out.println("Hello world!");
-            break
-        case 0x9873783: 
-            System.out.println("Oh no!");
-            break;
-        default: 
-            throw new IllegalStateException("Something went wrong!");
-    }
+    int number = o0k0k0Kk();
     /*[...]*/
 }
-/*[...]*/
+
+
+static int o0k0k0Kk() {
+    return 1;
+}
 ```
