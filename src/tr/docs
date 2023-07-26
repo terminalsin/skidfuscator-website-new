@@ -1,60 +1,37 @@
-# Başlarken
+# Java Şifrelemesine Giriş
 
-Demek Skidfuscator'ı bilgisayarına başarıyla indirdin ve nasıl çalıştıracağını merak ediyorsun?
+Java şifrelemesine yeni başlayanlar için, Java şifrelemesinin nasıl çalışabileceği hakkında temel bir anlayış kazanmak için aşağıdaki basit rehberi okumanızı öneririz. Daha karmaşık tartışmalar için, blogumuzu ziyaret etmenizi öneririz: https://blog.skidfuscator.dev
 
-Skidfuscator Java CLI'sini kullanarak komut satırı ile çalışır. Sorunsuz bir Skidfuscator deneyimi yaşamanız için buna alışık olmanızı tavsiye ederiz.
+## Java şifrelemesi nedir?
+Şifreleme bir şeyleri anlamayı daha zor bir hale getirmeye yarayan bir işlemdir. Bu genellikle haklarınızı izinsiz erişim ve kullanımdan korumak için kullanılır. Şifreleme, hassas bilgileri (örneğin şifreler) hackerlar veya diğer kötü niyetli kişiler tarafından kolayca ele geçirilmesini engellemek için gizlemek için kullanılabilir. Aynı zamanda yazılımın nasıl çalıştığını keşfetmek ve rakip ürünler oluşturmak için kullanılabilen tersine mühendislikten yazılımınızı korumak için de kullanılır.
 
-## Skidfuscator için CLI seçenekleri
+### Obscurity
+Java şifreleme araçlarında, şifreleme bir Java uygulamasının kod tabanını açığa çıkmaktan, kopyalanmaktan veya değiştirilmekten korumak için kullanılır. Bu şekilde, uygulamanın güvenliğini korumak amaçlanır. Şifreleme, kodun anlaşılmasını zorlaştırarak, yazılımın kaynak kodunun çalınmasını veya tersine mühendislik yapılmasını engellemeye yardımcı olur. Bu, yazılım geliştiricileri ve şirketlerin haklarını korumalarına yardımcı olur ve yazılımın güvenliğini artırır. Obfuscation is done by changing the names of classes, variables, and methods, as well as by removing unnecessary or unwanted code and various other exploitative techniques to help obtaining original java code harder. This makes the code more difficult to understand, which makes it harder for hackers to identify vulnerabilities or to understand how the code works.
 
-Basitçe `java -jar <yourSkidfuscatorFile.jar>` komutunu çalıştırın, sizi çeşitli seçenekler karşılayacak:
+### Redundancy
+Java obfuscation can also be used to reduce the size of the application. By removing unnecessary code and renaming classes, methods, and variables, the size of the application can be significantly reduced. This can be beneficial for applications that need to be distributed over networks, as it can reduce the download time and improve the performance of the application.
 
-![Skidfuscator seçenekleri](https://i.imgur.com/Yu70Pcq.png)
+## Types of known obfuscation techniques
 
+### Control flow obfuscation
+Control flow obfuscation in Java is a technique used to hide the code structure of a program and make it difficult to understand or reverse engineer. It works by altering the program's control flow, or the order in which instructions are executed. This is done by rearranging the instructions, adding redundant instructions, and introducing additional levels of control flow. For example, a loop may be replaced with a branch instruction that jumps to a different part of the code, or a function may be replaced with a nested set of functions that all have to be executed in order. Furthermore, control flow obfuscation can make it difficult to understand how the code works, and can also make it harder to reverse engineer. It also helps protect against code tampering, as it makes it harder to inject malicious code into the program.
 
-#### Jar dosyanız
-Skidfuscator kullanarak kodunu gizlemek istediğiniz jar dosyası.
-```cli
-<input>
-```
+### String and number encryption
+Number and string encryption is a type of obfuscation used in Java programming. Number encryption refers to the process of encoding numbers so that they can not be seen in plain text. This is done by transforming the numbers into a different form, such as binary or hexadecimal, or by using a key to encrypt the numbers. This makes it difficult for someone to decrypt the numbers and gain access to the code. String encryption is similar to number encryption, but it is used to protect strings of text. This is done by transforming the characters in the string into a different form, such as a base64 encoding, or by using a key to encrypt the string. This makes it difficult for someone to decrypt the string and understand its contents.
 
-#### Ayrıştırmalarınız
-Ayrıştırmalarınızı içeren dosyaya giden yol.
-```cli
---exempt=<exempt>
-```
+## Evaluating Quality
 
-#### Hesaplamayı atla
-**ÇIKABİLECEK RİSKLERİ GÖZE ALARAK KULLANIN** Hesaplamanın kütüphaneler gibi kritik formlarını atlar. Eğer bu seçeneği kullanmak isterseniz destek limitli olabilir.
-```cli
---fuckit
-```
+Making sure that an obfuscator produces a high quality output after applying obfuscation transformers is essential. At Skidfuscator, we assess various factors into what can affect the quality of obfuscated java code.
 
-#### Kütüphaneleriniz
-Jar dosyanızın kodunu gizlemek için gerekli olan kütüphaneleri / bağımlılıkları içeren klasöre giden yol.
-```cli
---libs=<libs>
-```
+### Code size and complexity
+The size and complexity of the obfuscated code are essential factors to consider when evaluating the quality of obfuscated Java code. Obfuscation should not significantly increase the size of the code, as this can lead to performance issues and potential bugs. At Skidfuscator, we aim to make your code as obscure as possible without significantly enlarging it whilst maintaining maximum security.
 
-#### Analitikleri devre dışı bırakma
-Bu seçenek bize karşılaşabileceğiniz sorunlar, veya kod gizleyicisi kullanım istatistikleri gibi herhangi bir analitiği sağlamayacak.
-```cli
---notrack
-```
+### Security
+Security is a critical factor in evaluating the quality of obfuscated Java code. The obfuscation technique in question should be effective in protecting the code from reverse engineering attempts. This can be evaluated by analyzing the code's resistance to reverse engineering tools, such as decompilers and disassemblers.
 
-#### Çıktınız
-Kodu gizlenen jar dosyasının çıktısına giden yol, eğer bu seçenek boş bırakılırsa çıktı dosya Skidfuscator'ın kullanıldığı klasörde olacaktır.
-```cli
---output=<output>
-```
+### Performance
+The obfuscated code's performance is another crucial factor in evaluating its quality. Obfuscation should not significantly impact the code's execution time or memory usage. It is also important to note that the obfuscated code should not introduce any new bugs or errors that could affect the code's overall performance. Any performance issues introduced by the obfuscation technique should be identified and addressed.
 
-#### Hayalet hesaplama
-Classlar için hayalet hesaplama özelliğini etkinleştirmenize olanak sağlar, ancak bu seçenek kullanıldığında destek kısıtlı olabilir. Gerekli kütüphaneleri sağlayın ve jar dosyanızı şifrelemeye tabi tutmanızı şiddetle tavsiye ediyoruz.
-```cli
---phantom
-```
+### Summary
 
-#### Çalışma zamanını belirtme
-Java çalıştırma zamanınızın (Jre) yolu.
-```cli
---runtime=<runtime>
-```
+Overall, the quality of obfuscated Java code can be evaluated based on several factors, including code size and complexity, security, maintainability, and performance. Obfuscation should not significantly impact any of these factors, and any issues introduced by the obfuscation technique should be identified and addressed promptly.
