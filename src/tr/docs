@@ -1,53 +1,6 @@
-## Method Yeniden Adlandırıcı
+# Forge 1.8.8
 
-Method yeniden adlandırıcı, method adlarının korunmasını önlemek için tüm bir methodu doğru bir şekilde yeniden adlandırmayı amaçlar. Bunu başarmak için Skidfuscator, method hiyerarşisini etkili bir şekilde korumak için "method grupları" oluşturur. Örneğin, `class B`, `class A`'yı genişletirse ve `class A`, `methodA()`'yı uygularsa, hem `class A` hem de `class B` için `methodA()`'ya yapılan tüm çağrıların yeniden adlandırılması gerekecektir.
+## Giriş
+Minecraft 1.8.8 için Forge, özellikle Skyblock modları, eski modlar ve hile modları için kullanılır ve diğer Forge sürümleriyle bağlantılı olarak çalışma şekli farklıdır. Genel olarak, Minecraftın decompile edilmiş versiyonunu elde etmek için bir environment kurmaşasınız, böylece build durumuna geçebilirsiniz.
 
-## Yapılandırma Ayarı
-Method yeniden adlandırıcı şu anda girdiye dayalı olarak geleneksel özel sözlük `CUSTOM` ile birlikte bir sözlüğü, `ALPHABETICAL`, desteklemektedir. Bu senaryoda aşağıdaki seçenekler mevcuttur:
-- Derinlik: Varsayılan olarak kaç tane değişmez kullanılacağı (örneğin: 3 derinlik ilk öğe için o0o0o0'a yol açacaktır veya 1 derinlik ilk öğe için o0'a yol açacaktır)
-- Karakterler: Transformatör tarafından kullanılacak karakterler.
-
-::: warning
-Şu an itibariyle, dönüştürücü yinelenen karakterleri işlemez ve yanlış bir şekilde aynı yöntem adlarını oluşturur. For example, do not use "o", "0" and "o0" as the latter is a combination of the previous two characters.
-:::
-
-```js
-methodRenamer {
-    enabled: false
-    type: CUSTOM // or 'ALPHABETICAL'
-    chars: [
-        "K"
-        "oO",
-        "o0"
-    ]
-    depth: 3
-}
-```
-
-## Örnekler
-
-#### Gizlenmemiş Kod
-
-```java
-public static void main(String[] args) {
-    int number = callNumber();
-    /*[...]*/
-}
-
-static int callNumber() {
-    return 1;
-}
-```
-
-#### Gizlenmiş kod
-```java
-public static void main(String[] args) {
-    int number = o0k0k0Kk();
-    /*[...]*/
-}
-
-
-static int o0k0k0Kk() {
-    return 1;
-}
-```
+## 
