@@ -1,60 +1,60 @@
-## Flow Exceptions
+## Outliner
 
-Flow Exception, kod çözücülerin geçerli Java kodu çıktısı almasını zorlaştırmak için Java kodunuza ek güvenlik katmanları ekleyen bir gizleme dönüşümüdür. Bunu, kontrol akışını değiştirerek ve programın işlevselliğini değiştirmeden mantığı karmaşıklaştıracak şekilde istisna düşme kodu ekleyerek yapar.
+Dışarı çıkarma, bir methoddan kodu çıkartarak ayrı, bağımsız bir methoda yerleştirme işlemini yapar. Bu genellikle kodun okunabilirliğini ve geliştirebilirliğini artırmak için yapılır, çünkü methodu daha küçük, daha odaklanmış kod parçalarına bölmek, methodun ne yaptığını anlamayı kolaylaştırır.
 
-Yüksek seviyede, transformatör aşağıdaki şekilde çalışır:
-- İlk olarak, dönüştürücü kodunuzdaki yöntemleri inceler ve uyumluluk sorunlarını önlemek için soyut yöntemleri, init yöntemlerini ve kod içermeyenleri atlar.
-- Daha sonra dönüştürücü, yapılandırma ayarlarına göre uygun gizleme stratejisini (Zayıf, İyi veya Agresif) belirler. Her strateji farklı bir gizleme düzeyi sunar ve exceptionlarla ilgili kodun ne sıklıkta eklendiğini etkiler.
-- Bu yapıldıktan sonra, kontrol akış grafiğindeki her blok için dönüştürücü, gizlemeden muaf tutulup tutulmayacağını kontrol eder. Boş blokları, proxy bloklarını ve istisnaya duyarlı blokları atlar. Bir blok gizleme için uygunsa, dönüştürücü seçilen stratejiye göre gizlemenin uygulanıp uygulanmayacağına karar verir.
-- Uygulandığında, dönüştürücü benzersiz bir tohum üretir ve opak yüklemi güvence altına almak için hashing kullanır. Daha sonra throw deyimine sahte bir koşullu atlama ekleyerek akışın düşmesine neden olur.
-- Bazı durumlarda dönüştürücü, bloğun hem başlangıcına hem de rastgele konumlarına ikincil bir koşullu atlama ifadesi ekleyerek ek bir gizleme katmanı ekleyebilir.
+Dışarı çıkarma, kodu tersine mühendislik yapmaya veya kodu anlamaya çalışan birinin programın genel akışını ve yapısını görmesini zorlaştırarak kod şifrelemesi olarak da kullanılabilir. Kodu daha küçük parçalara bölmek ve farklı methodlara ayırmak, birinin akışın farklı parçaları arasındaki ilişkileri anlamasını ve bu parçaların belirli bir işlevi nasıl gerçekleştirdiğini anlamasını daha zor bir hale getirebilir.
+
+![Outlining graph explanation](https://i.imgur.com/2HMq0a4.png)
+
+Dışarı çıkarma ile ilgili harika şey: *teknik olarak* geri döndürülemez olmasıdır! İyi bir dışarı çıkarmayı (outlining) şifrelemenin orijinal durumuna döndürebilmek için bir deobfuscator, *yöntem gömme (inlining)* yapmak zorundadır, ki bu sonucun her zaman orijinal kaynak koduyla aynı olucağını *garantilemez*. Ayrıca, bu şifreleme çözücünün(deobfuscator) değişkenlerle(integer) ve diğer çeşitli hassas bytecode manipülasyonlarıyla uğraşması gerektiğinden, hepsi hesaplama hatalarına sebep olabilir.
+
+Yani dışarı çıkarma(outlining) şifrelemeyi genel olarak oldukça etkilleyen ve kullanışlı yapan bir yöntemdir :)
+
+::: warning
+Bu dışarı çıkartma dönüştürücüsü hala geliştirme aşamasındadır. Java doğrulayıcının çalışma şeklinden dolayı, bazı senaryoların doğru bir şekilde doğrulanamaması, bazı derleme sorunlarına yol açabilir. Lütfen kendi riskinizle kullanın ve herhangi bir sorun oluşursa lütfen bunları bildirin.
+
+Kendime not: Stack çerçevelerinden nefret ediyorum
+:::
 
 ## Yapılandırma Ayarı
 
-Bu özel transformatör için üç mod mevcuttur:
-- `ZAYIF`: Daha önce çalıştırıldıysa, rastgele bir boolean değeri çalıştırır; daha önce çalıştırılmadıysa (ortalama %75 ekleme oranıyla) çalıştırır
-- `İYİ`: Her zaman bir kez çalıştır (ortalama %100 ekleme oranı)
-- `AGRESİF`: Her zaman iki kere çalıştır (ortalama 200% ekleme oranı)
-
 ```js
-flowException {
-    enabled: true
-    strength: AGGRESSIVE // Can be 'WEAK', 'GOOD' or 'AGGRESSIVE'
-    exempt: []
+outliner {
+     enabled: true
+     exempt: []
 }
 ```
 
 ## Örnekler
 
-#### Gizlenmemiş Kod
+#### Şifrelenmemiş
+
 ```java
 public static void main(String[] args) {
     int number = callNumber();
     /*[...]*/
 }
-/*[...]*/
+
+static int callNumber() {
+    return 1;
+}
 ```
 
-#### Gizlenmiş Kod
+#### Şifrelenmiş
 ```java
 public static void main(String[] args) {
-    /*[...]*/
-    while (true) {
-        if (n ^ 0x8AF8EF8F == 0xA88FFA) {
-            break;
-        }
-
-        n = n ^ 0x28847D;
-        int number = callNumber();
-
-        if (n ^ 0xAA9F8FFD == 0x989F7AF) {
-            break;
-        }
-
-        throw new IllegalStateException();
-    }
-
+    step1_AF8FZE8EF7Z89F();
     /*[...]*/
 }
-/*[...]*/
+
+static void step1_AF8FZE8EF7Z89F() {
+    int number = callNumber();
+}
+
+
+static int callNumber() {
+    return 1;
+}
 ```
+
+
