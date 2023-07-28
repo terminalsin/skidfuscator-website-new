@@ -17,21 +17,21 @@ Java şifrelemesi aynı zamanda uygulamanın boyutunu azaltmak için de kullanı
 Java'da control flow şifrelemesi, bir programın kod yapısını gizlemek ve kodun anlanmasını veya tersine mühendislik yapılmasını zorlaştırmak için kullanılan bir tekniktir. Bu, programın kontrol akışını veya talimatların hangi sıra ile çalıştırıldığını değiştirerek çalışır. Bu, talimatları yeniden düzenleyerek, gereksiz talimatlar ekleyerek ve ek düzeylerde kontrol akışı ekleyerek yapılır. Örneğin, bir döngü, kodun farklı bir bölümüne atlama talimatıyla değiştirilebilir veya bir işlev, sırayla yürütülmesi gereken iç içe geçmiş bir dizi işleve dönüştürülebilir. Ayrıca, kontrol akışı karıştırma, kodun nasıl çalıştığını anlamayı zorlaştırabilir ve tersine mühendislik yapmayı da güçleştirebilir. Ayrıca bu programa zararlı kod enjekte etmeyi zorlaştırarak kodu bozulmaya karşı korumaya yardımcı olur.
 
 ### String ve sayı şifrelemesi
-Sayı ve string şifrelemesi Java programlamasında kullanılan bir kod gizleme türüdür. Sayı şifrelemesi, sayıları düz metinde görülemeyecek şekilde gizleme işlemidir. Bu işlem, sayıları ikili veya onaltılık gibi farklı bir forma dönüştürerek veya sayıları şifrelemek için bir anahtar kullanarak gerçekleştirilir. Bu birilerinin sayıları deşifre ederek koda erişim kazanmasını zorlaştırır. String şifrelemesi, sayı şifrelemeye benzer ancak metin stringlerini korumak için kullanılır. Bunun için, string içindeki karakterler farklı bir şekilde dönüştürülür, örneğin base64 kodlaması kullanılır, veya dizeyi şifrelemek için bir anahtar kullanılır. This makes it difficult for someone to decrypt the string and understand its contents.
+Sayı ve string şifrelemesi Java programlamasında kullanılan bir kod gizleme türüdür. Sayı şifrelemesi, sayıları düz metinde görülemeyecek şekilde gizleme işlemidir. Bu işlem, sayıları ikili veya onaltılık gibi farklı bir forma dönüştürerek veya sayıları şifrelemek için bir anahtar kullanarak gerçekleştirilir. Bu birilerinin sayıları deşifre ederek koda erişim kazanmasını zorlaştırır. String şifrelemesi, sayı şifrelemeye benzer ancak metin stringlerini korumak için kullanılır. Bunun için, string içindeki karakterler farklı bir şekilde dönüştürülür, örneğin base64 kodlaması kullanılır, veya dizeyi şifrelemek için bir anahtar kullanılır. Bu birilerinin stringleri deşifre edip ne içerdiklerini öğrenmelerini zorlaştırır.
 
-## Evaluating Quality
+## Kalite Değerlendirmesi
 
-Making sure that an obfuscator produces a high quality output after applying obfuscation transformers is essential. At Skidfuscator, we assess various factors into what can affect the quality of obfuscated java code.
+Şifreyicinin, şifreleme dönüştürücülerini uyguladıktan sonra yüksek kaliteli bir çıktı sağlaması önemlidir. Skidfuscator'da, şifreleme sonucu elde edilen Java kodunun kalitesini etkileyebilecek çeşitli faktörleri değerlendiriyoruz.
 
-### Code size and complexity
-The size and complexity of the obfuscated code are essential factors to consider when evaluating the quality of obfuscated Java code. Obfuscation should not significantly increase the size of the code, as this can lead to performance issues and potential bugs. At Skidfuscator, we aim to make your code as obscure as possible without significantly enlarging it whilst maintaining maximum security.
+### Kod boyutu ve karışıklık
+Şifreleme sonucu elde edilen Java kodunun boyutu ve karmaşıklığı, kalitesini değerlendirirken önemli faktörlerdir. Şifreleme, kodun boyutunu önemli ölçüde artırmamalıdır, çünkü bu performans sorunlarına ve potansiyel hatalara yol açabilir. Skidfuscator olarak, kodunuzu maksimum güvenlikle korurken önemli ölçüde büyütmeden mümkün olduğunca belirsiz hale getirmeyi hedefliyoruz.
 
-### Security
-Security is a critical factor in evaluating the quality of obfuscated Java code. The obfuscation technique in question should be effective in protecting the code from reverse engineering attempts. This can be evaluated by analyzing the code's resistance to reverse engineering tools, such as decompilers and disassemblers.
+### Güvenlik
+Güvenlik, şifreleme yapılmış Java kodunun kalitesini değerlendirirken kritik bir faktördür. Şifreleme tekniği, kodu tersine mühendislik girişimlerine karşı etkili bir şekilde korumalıdır. Bu, kodun tersine mühendislik araçlarına (decompiler ve disassembler gibi) karşı direncini analiz etmek için değerlendirilebilir.
 
-### Performance
-The obfuscated code's performance is another crucial factor in evaluating its quality. Obfuscation should not significantly impact the code's execution time or memory usage. It is also important to note that the obfuscated code should not introduce any new bugs or errors that could affect the code's overall performance. Any performance issues introduced by the obfuscation technique should be identified and addressed.
+### Performans
+Şifreli kodun performansı, kodun kalitesini değerlendirmede başka önemli bir faktördür. Şifreleme, kodun yürütme süresini veya bellek kullanımını önemli ölçüde etkilememelidir. Ayrıca, şifreleme işlemi sonucunda oluşan kodun, genel performansı etkileyebilecek yeni hatalar içermemesi de önemlidir. Şifreleme teknikleri yüzünden ortaya çıkan performans sorunları tespit edilmeli ve gerekli önlemler alınmalıdır.
 
-### Summary
+### Özet
 
-Overall, the quality of obfuscated Java code can be evaluated based on several factors, including code size and complexity, security, maintainability, and performance. Obfuscation should not significantly impact any of these factors, and any issues introduced by the obfuscation technique should be identified and addressed promptly.
+Genel olarak, şifreleme işleminden geçmiş Java kodunun kalitesi, kodun boyutu ve karmaşıklığı, güvenlik, sürdürülebilirlik ve performans gibi birkaç faktöre dayanarak değerlendirilebilir. Şifreleme, bu faktörleri önemli ölçüde etkilememeli ve şifreleme tekniği tarafından ortaya çıkan herhangi bir sorun hızlı bir şekilde tespit edilmeli ve çözülmelidir.
