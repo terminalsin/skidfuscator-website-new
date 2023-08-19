@@ -1,31 +1,254 @@
-# Unsere Philosophie
 
-## Wer sind wir?
-At Skidfuscator, we are passionate about helping Java developers protect their intellectual property. As a team of experienced software developers, we understand the importance of safeguarding your code against reverse engineering and unauthorized access. That is why we have developed Skidfuscator, a powerful Java bytecode obfuscator that protects your software against tampering and reverse engineering.
+# Konfiguration
 
-## Unsere Mission
-Our mission is to provide Java developers with the tool they need to protect their valuable intellectual property. We understand that the Java platform is widely used for developing high-quality software applications, and we believe that protecting your Java code is essential for maintaining your competitive edge. That is why we have developed Skidfuscator, a reliable and user-friendly java obfuscator that helps you protect your Java applications against reverse engineering and tampering.
+Hier erfahren Sie alles, was es über die Konfiguration zu wissen gibt. Lese diese Details sehr aufmerksam. Sollten Probleme auftreten, wende dich bitte an den Support. Premium-Nutzer haben Anspruch auf einen kostenlosen Konfigurationsservice durch unser Team.
 
-## Warum haben wir Skidfuscator gemacht?
-At Skidfuscator, we believe that Java developers should have access to affordable and effective obfuscation solutions for protecting their intellectual property. Our team is committed to delivering top-quality obfuscation solutions that are easy to use, yet powerful enough to withstand even the most determined attacks. We are constantly working to improve our product and stay up-to-date with the latest developments in software protection and obfuscation.
+## Grundlagen der Konfiguration
 
-We understand that obfuscation can be a complex and challenging process, especially for developers who are new to this field. That is why we have designed Skidfuscator to be as user-friendly and intuitive as possible. With our obfuscator, you can quickly and easily obfuscate your Java bytecode, without the need for any special skills or knowledge. Our comprehensive documentation and excellent support services ensure that you can get started with obfuscation in no time and protect your software.
+The basis of the configuration is based on [lightbend config](https://github.com/lightbend/config). This means by default, we support the three following formats: Java Properties, JSON, and HOCON.
 
-At Skidfuscator, we believe in the power of collaboration and open communication. We work closely with our clients to understand their unique needs and challenges, and we are always ready to provide personalized support and advice. Our team is dedicated to helping you protect your intellectual property and achieve your goals, no matter how big or small they may be.
+By principle, we **highly recommend using HOCON** as it is simpler, more elegant and all-round easy to use. See attached the default config:
 
-Skidfuscator is the ultimate solution for you to protect your Java code. Our powerful obfuscator is designed to safeguard your software against reverse engineering and tampering, ensuring that your intellectual property remains safe and secure. We are committed to providing our clients with a top-quality obfuscation solution, excellent support, and user-friendly obfuscator that is easy to use and highly effective. Choose Skidfuscator today and protect your Java applications against unauthorized access and theft.
+```javascript
+exempt: []
 
-## Unsere Methodik
+libs: []
 
-At Skidfuscator, we believe that a long-term and resilient approach to problem-solving is essential for sustainable success. While short-term fixes and quick solutions may provide temporary relief, they often create more problems down the line and hinder long-term progress.
+stringEncryption {
+  type: STANDARD
+  enabled: true
+  exempt: []
+}
 
-### Unser Ansatz
-To ensure that we approach problems in a resilient and sustainable manner, we prioritize understanding the root cause of an issue rather than simply addressing its symptoms. By taking the time to analyze a problem thoroughly, we can identify the underlying factors that contribute to its occurrence and develop targeted solutions that address those factors directly.
+numberEncryption {
+  enabled: true
+  exempt: []
+}
 
-In addition to identifying the root cause of a problem, we also prioritize collaboration and knowledge-sharing when approaching complex issues. We recognize that no one person or team has all the answers, and that solutions often arise through the collective efforts and insights of diverse groups. We encourage our teams to collaborate across various fields and leverage the expertise of external partners when necessary to arrive at comprehensive solutions that address all facets of an issue.
+intAnnotationEncryption {
+  enabled: true
+  exempt: []
+}
 
-### Unser Schwerpunkt
-Furthermore, we place a strong emphasis on continuous improvement and learning. We recognize that even the most comprehensive solutions can be improved upon over time, and that the world is constantly changing and evolving. As such, we encourage our teams to regularly evaluate the efficacy of our solutions and identify opportunities for improvement. We also prioritize ongoing education and development to ensure that our teams stay up-to-date with the latest research and best practices in their respective fields.
+stringAnnotationEncryption {
+  enabled: true
+  exempt: []
+}
 
-### Unsere Prioritäten
-By prioritizing a long-term and resilient approach to problem-solving, we believe that we can create sustainable solutions that benefit our community and contribute to the greater good. While it may be tempting to pursue quick fixes and short-term heuristics, we recognize that these approaches often lead to unintended negative consequences and hinder long-term progress. Instead, we prioritize collaboration, continuous improvement, and sustainable practices to ensure that our solutions are effective and efficient.
+exceptionReturn {
+  enabled: true
+  exempt: []
+}
+
+flowCondition {
+  enabled: true
+  exempt: []
+}
+
+flowException {
+  enabled: true
+  strength: AGGRESSIVE
+  exempt: []
+}
+
+flowRange {
+  enabled: true
+  exempt: []
+}
+
+flowFactoryMaker {
+  enabled: true
+  exempt: []
+}
+
+flowSwitch {
+  enabled: true
+  exempt: []
+}
+
+outliner {
+  enabled: true
+  exempt: []
+}
+
+ahegao {
+  enabled: true
+  exempt: []
+}
+
+native: {
+  enabled: false
+  exempt: []
+}
+
+driver: {
+  enabled: false
+}
+
+reference {
+  enabled: false
+}
+
+fileCrasher: {
+  enabled: false
+}
+
+classRenamer {
+  enabled: false
+  type: CUSTOM
+  prefix: "skido/"
+  chars: [
+    "K"
+    "oO",
+    "o0"
+  ]
+  depth: 3
+}
+
+methodRenamer {
+  enabled: false
+  type: CUSTOM
+  chars: [
+    "K"
+    "oO",
+    "o0"
+  ]
+  depth: 3
+}
+
+fieldRenamer {
+  enabled: false
+  type: ALPHABETICAL
+}
+```
+
+## Ausnahmen
+
+Using exemptions is identical to how these were previously done in the old system. To learn more about exemptions, navigate to [the page](../exclusion.md)
+
+::: warning 
+Java parses string by sanitizing the backwards slash. This means you MUST double all backward slashes
+:::
+
+### Excluding a class
+
+As a starting basis, to exclude a specific class, you must use the class regex exemption:
+```js
+class{^my\/class}
+```
+
+To fit this in the config, you need to pass it as a string.
+
+
+```js
+exempt: [
+    "class{^my\\/class}"
+]
+```
+
+### Excluding a method
+
+As a starting basis, to exclude a specific method, you must use the class method exemption:
+```js
+method{^myMethod}
+```
+
+To fit this in the config, you need to pass it as a string.
+
+```js
+exempt: [
+    "method{^myMethod}"
+]
+```
+
+### Excluding a method in a specific class
+
+Just as we learnt previously, to exclude a method and a class we must do the following:
+```js
+class{^my\/class}
+method{^myMethod}
+```
+
+Now, to exclude a method IN that specific class, all that is needed to be done is for the two to be chained up in a single line, as such:
+
+```js
+class{^my\/class} method{^myMethod}
+```
+
+Hence in the config, it'd be as follow:
+
+```js
+exempt: [
+    "class{^my\/class} method{^myMethod}"
+]
+```
+
+## Bibliotheken
+
+Libraries are an important aspect of computing the classpath and ensuring maximum protection for your software. In this instance, you must provide a valid Java path argument as a string
+
+Here below is the implementation code:
+```java
+public File[] getLibs() {
+    return this.getStringList("libraries", Collections.emptyList())
+                .stream()
+                .map(File::new)
+                .distinct()
+                .toArray(File[]::new);
+}
+```
+
+Here below is an example of valid java paths:
+```
+C:\test.jar
+test.jar
+./test.jar
+/Home/test.jar
+```
+
+In the config, these would be represented as follows:
+
+```js
+libraries [
+    "C:\\test.jar",
+    "test.jar",
+    "./test.jar",
+    "/Home/test.jar"
+]
+```
+
+## Treiber
+
+The driver is the hardening part of Skidfuscator. This feature is reserved to Premium. In a nutshell, per obfuscation, a new driver is generated and compiled for the following architectures:
+
+| Operating System | Supported Architectures |
+| ---------------- | ----------------------- |
+| Windows          | x64_86                  |
+| MacOS            | x64_86, AARCH64 (ARM)   |
+| Linux            | x64_86 (AMD64)          |
+
+Um diese Funktion zu deaktivieren (:warning: dies verringert deutlich die Stärke der obfuscation), müssen Sie den Boolean verneinen:
+
+```js
+driver: false
+```
+
+
+## Transformers
+
+Man kann jeden Transformator individuell aktivieren bzw. deaktivieren.
+
+
+#### String Verschlüsselung
+
+The string encryption transformer transforms every string into a specific method call, with the purpose of hiding it in runtime. This can be practical for non-sensitive URLs, private keys, etc...
+
+::: warning
+You should not trust the client as a basis. Please do not rely on String encryption as the sole protection for your software. By default, you should assume that a talented enough reverse-engineer could gain access to these with enough time and patience.
+:::
+
+There are currently two modes for String encryption: `STANDARD` and `POLYMORPHIC`
+
+#### Nummer Verschlüsselung
+
+The number encryption transformer encrypts any integer-based numeral to be hidden. This is perfect for uglifying the code in general and making it more of a hardship for reverse-engineers to obtain a clean source code. This furthermore reinforces any boolean-based conditionals.
