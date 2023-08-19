@@ -1,14 +1,25 @@
-## Flow Condition
+## Flow Exceptions
 
-Dieser Transformer dient als erstes Schild gegen opaque predicate Analyse. Um statische Analyse daran zu hindern zu erkennen, welcher Integer ein opaque predicate ist, benutzen wir diese Integer in bereits existierenden "if" statements. Das fügt nicht nur extra Security zur Software hinzu, sondern behindert zusätzlich deobfuscation und decompilation von vielen Tools.
+Flow Exception is an obfuscation transformation that adds additional layers of security to your Java code to make it harder for decompilers to output valid Java code. It does this by altering the control flow and introducing exception fall-though code in a way that complicates the logic without changing the program's functionality.
 
-Im Vergleich zum "Flow Exception Zransformer" ist das hier eine deutlich simplere Version welche sich nur um den Randfall kümmert.
+Auf hoher Ebene funktioniert der Transformator wie folgt:
+- Zunächst untersucht der Transformator Methoden und überspringt abstrakte Methoden, Konstruktor und Methoden ohne Code, um Kompatibilitätsprobleme zu vermeiden.
+- Dann bestimmt der Transformator basierend auf der Konfiguration die entsprechende Obfuscations Strategie (Schwach, Gut oder Aggressiv). Jede Strategie bietet eine andere Ebene der Obfsucation und wirkt sich darauf aus, wie oft Code eingefügt wird.
+- Once such is done, dor each block in the control flow graph, the transformer checks whether it should be exempt from obfuscation. It skips empty blocks, proxy blocks, and exception-sensitive blocks. If a block is eligible for obfuscation, the transformer decides whether to apply the obfuscation based on the chosen strategy.
+- When applied, the transformer generates a unique seed and uses hashing to secure the opaque predicate. It then inserts a bogus conditional jump to a throw statement, causing the flow to fall-through.
+- In some cases, the transformer may add an additional layer of obfuscation by inserting a secondary conditional jump statement at both the beginning and random locations in the block.
 
 ## Konfiguration
 
+Es sind drei Modi verfügbar für diesen Transformer:
+- `WEAK`: If was previously executed, run a random boolean, if last wasn't, run (75% average insertion rate)
+- `GOOD`: Immer einmal ausführen (100% durchschnittliche Einfügerate)
+- `AGGRESSIVE`: Immer zweimal ausführen (200% durchschnittliche Einfügerate)
+
 ```js
-flowCondition {
+flowException {
     enabled: true
+    strength: AGGRESSIVE // Can be 'WEAK', 'GOOD' or 'AGGRESSIVE'
     exempt: []
 }
 ```
@@ -19,10 +30,6 @@ flowCondition {
 ```java
 public static void main(String[] args) {
     int number = callNumber();
-
-    if (number == 1) {
-        System.out.println("Hello world");
-    }
     /*[...]*/
 }
 /*[...]*/
@@ -32,29 +39,21 @@ public static void main(String[] args) {
 ```java
 public static void main(String[] args) {
     /*[...]*/
-    label1: {
-        while (true) {
-            if (n ^ 0x8AF8EF8F == 0xA88FFA) {
-                break;
-            }
-
-            n = n ^ 0x28847D;
-            int number = callNumber();
-
-            label2: {
-                if (number != 1)
-                    break label1;
-
-                if (n ^ 0xAA9F8FFD != 0x989F7AF)
-                    break label2;
-
-                System.out.println("Hello world");
-                break label1;
-            }
-
-            throw new IllegalStateException();
+    while (true) {
+        if (n ^ 0x8AF8EF8F == 0xA88FFA) {
+            break;
         }
+
+        n = n ^ 0x28847D;
+        int number = callNumber();
+
+        if (n ^ 0xAA9F8FFD == 0x989F7AF) {
+            break;
+        }
+
+        throw new IllegalStateException();
     }
+
     /*[...]*/
 }
 /*[...]*/
