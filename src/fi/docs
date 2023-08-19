@@ -1,58 +1,57 @@
-## Outliner
+## Numeroiden Salaus
 
-Outlining tarkoittaa prosessia, jossa koodia irrotetaan metodista ja sijoitetaan erilliseen, itsenäiseen metodiin. Tämä tehdään usein keinona parantaa koodin luettavuutta ja ylläpidettävyyttä, koska se voi helpottaa menetelmän toiminnan ymmärtämistä jakamalla se pienempiin, parempiin ja kohdistetumpiin koodin osiin.
+Numeron salausmuuntaja salaa minkä tahansa piilotettavan kokonaislukupohjaisen numeron. Tämä sopii täydellisesti kauhistuttamiseen koodia yleensä ja mikä tekee käänteissuunnittelijoille enemmän vaikeuksia saada puhdasta lähdekoodia. Tämä vahvistaa lisäksi kaikkia boolean-pohjaisia konditionaaleja.
 
-Outlining voidaan käyttää myös eräänlaisena koodin hämärtämisen muotona, sillä se voi vaikeuttaa sitä, että joku, joka yrittää jäljittää tai ymmärtää koodia, näkee ohjelman yleisen virtauksen ja rakenteen. Jakamalla koodi pienemmiksi paloiksi ja erottamalla se eri menetelmiin, se voi olla paljon vaikeampi menettely, että joku ymmärtää suhteita virtaus eri osien välillä ja miten he sopivat yhteen suorittaa tietyn toiminnon.
+Numeroiden salaus perustuu GEN3-virtaussuojaukseen ja voi puretussa lähdössä näyttää seuraavasti
 
-![Kaavio Viipalointijärjestelmän selitys](https://i.imgur.com/2HMq0a4.png)
+Oletetaan seuraava skenaario:
+- $x$ on numero, jonka haluat salata
+- $n$ on lohkon "siemen"
+- $d$ on salattu numero
 
-Fantastinen asia siinä on: se ei Ole *Teknisesti* Käännettävä! Voidakseen palata alkuperäiseen tilaan hyvä ääriviivat hämärtyminen, suojan poisto *täytyy tehdä inlining*, joka on heuristinen ja *ei* takaa, että ulostulo on aina semanttisesti oikein alkuperäisellä lähdekoodilla. Lisäksi tämä necessites deobfuscator mangle kanssa muuttujat ja muut eri muotoja herkkä bytecode manipulointi joka kaikki voi johtaa runko ja laskenta poikkeuksia.
+Yksinkertaisten xor mekaniikan mukaan: $x\oplus n\oplus n=x$
 
-Kaiken kaikkiaan obfuscation hahmottaminen on melko siisti :)
+Määritelmän mukaan, jos $n$ on siemen, meidän on suorituksen aikana laskettava $d$ siten, että $d = x\oplus n$. Sitten meidän on muutettava tavukoodiohjetta, kuten:
 
-::: Varoitus
-Ulompi muuntaja on vielä hyvin varhain kehitykseen. Koska Java todentaja toimii, kaikki skenaariot voidaan tarkastaa oikein, mikä voi aiheuttaa joitakin kokoamiseen liittyviä ongelmia. Ole hyvä ja käytä omalla vastuullasi, ja jos ilmenee ongelmia, ilmoita niistä.
+```java
+int value = x;
+```
 
-Huomautus itse: vihaan pinon kehyksiä
-:::
+tulee
+```java
+int value = d ^ n;
+```
+
+Jossa $d$ on arvo, joka on laskettu etukäteen vakion muodossa, ja $n$ läpinäkymätön predikaatti. Esimerkki:
+```java
+int value = 5;
+```
+tulee
+```java
+int predicate = 0x100;
+int value = 105 ^ predicate;
+```
 
 ## Konfiguroi
 
+Tällä hetkellä numeron salauksessa on vain yksi tila, `STANDARD` (normaali)
+
 ```js
-outliner {
-     enabled: true
-     exempt: []
+numberEncryption {
+    enabled: true
+    exempt: []
 }
 ```
 
 ## Esimerkkejä
-
 #### Suojaamaton
-
 ```java
-public static void main(String[] args) {
-    int number = callNumber();
-    /*[...]*/
-}
-
-static int callNumber() {
-    return 1;
-}
+int var = 1000;
+System.out.println(var + 1 + 2 + 3);
 ```
 
 #### Suojattu
 ```java
-public static void main(String[] args) {
-    step1_AF8FZE8EF7Z89F();
-    /*[...]*/
-}
-
-static void step1_AF8FZE8EF7Z89F() {
-    int number = callNumber();
-}
-
-
-static int callNumber() {
-    return 1;
-}
+int var = 0xA0290233 ^ n;
+System.out.println(var + 0x92083838 ^ n + 0x92083839 ^ n + 0x92083840 ^ n);
 ```
