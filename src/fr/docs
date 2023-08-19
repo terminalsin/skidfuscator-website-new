@@ -1,53 +1,51 @@
-## Renommage de méthode (Method Renamer)
+## Chiffrement de chaîne de caractères (String Encryption)
 
-Le renommage de méthode cherche à renommer avec précision une méthode entière pour empêcher la conservation des noms des méthodes. Pour y parvenir, Skidfuscator crée des "groupes de méthodes" pour préserver efficacement la hiérarchie des méthodes. Par exemple, si `class B` hérite de `class A`, et `class A` implémente `methodA()`, tous les appels à `methodA()` pour les classes `class A` et `class B` devront être renommées.
-
-## Configuration
-Le renommage de méthode supporte actuellement un dictionnaire, `ALPHABETICAL`, aux côtés du dictionnaire traditionnel personnalisé, `CUSTOM`, basé sur l'entrée utilisateur. Dans ce scénario, les options suivantes sont disponibles :
-- Profondeur (Depth) : Combien de littéraux seront utilisés par défaut (ex: 3 de profondeur mèneront à o0o0 pour le premier élément, ou 1 profondeur conduira à o0 pour le premier élément)
-- Caractères (Chars) : Caractères à utiliser par le transformateur.
+Le transformateur de chiffrement d'annotation transforme chaque chaîne de caractères et entier contenu dans les annotations en un appel de méthode spécifique, dans le but de le masquer à l'exécution. Cela peut être pratique pour les URL non sensibles, les clés privées, etc...
 
 ::: warning
-Actuellement, le transformateur ne gère pas les caractères dupliqués et ne crée pas de noms de méthodes identiques. Par exemple, n'utilisez pas "o", "0" et "o0" car ce dernier est une combinaison des deux caractères précédents.
+Vous ne devriez pas faire confiance au client. Ne comptez pas sur le cryptage de chaînes de caractères comme seule protection pour votre logiciel . En règle générale, vous devriez supposer qu'un rétro-ingénieur suffisamment talentueux pourrait y accéder avec suffisamment de temps et de patience.
 :::
 
+
+## Configuration
+
+Il y a actuellement deux modes pour le chiffrement des chaînes de caractères : `STANDARD` et `POLYMORPHIC`
+
 ```js
-methodRenamer {
-    enabled: false
-    type: CUSTOM // or 'ALPHABETICAL'
-    chars: [
-        "K"
-        "oO",
-        "o0"
-    ]
-    depth: 3
+stringEncryption {
+    enabled: true
+    type: POLYMORPHIC
+    exempt: []
 }
 ```
 
 ## Examples
 
-#### Non obfusqué
+### Non obfusqué
 
 ```java
-public static void main(String[] args) {
-    int number = callNumber();
-    /*[...]*/
-}
-
-static int callNumber() {
-    return 1;
-}
+System.out.println("Hello world");
 ```
 
-#### Obfusqué
+### Standard
+
 ```java
-public static void main(String[] args) {
-    int number = o0k0k0Kk();
-    /*[...]*/
-}
+System.out.println(superDuperMethod("\u2be6\uabec\uebfe\uebfe\uabe0\uabf7\ue7f1", n ^ 0x9F878R));
+```
 
-
-static int o0k0k0Kk() {
-    return 1;
+### Polymorphic
+```java
+StringBuilder string = new StringBuilder("\u2be6\uabec\uebfe\uebfe\uabe0\uabf7\ue7f1\uabe0\u6bfa\uebfe\uabee\uabf5");
+for (int a=0, b, c; a < string.length(); a++) {
+    b = string.charAt(a);
+    b = (((b & 0xffff) << 0x6) | (b >> 0xa)) & 0xffff;
+    c = ((b >> 0x0) ^ (b >> 0x7)) & ((1 << 0x4) - 1);
+    b ^= (c << 0x0) | (c << 0x7);
+    b ^= 0x600f ^ n;
+    b -= 0x2aa2 ^ n;
+    b += 0x25b0 ^ n;
+    b ^= 0x9852 ^ n;
+    string.setCharAt(a, (char) b);
 }
+System.out.println(string)
 ```
