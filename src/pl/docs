@@ -1,58 +1,57 @@
-## Outliner
+## Number Encryption
 
-Konturowanie odnosi się do procesu wyciągania pewnej części kodu z metody i przenoszenia go do osobnej, samodzielnej metody. Konturowanie jest często stosowane w celu poprawy czytelności i łatwości konserwacji kodu poprzez podzielenie dużej metody na mniejsze, bardziej skoncentrowane fragmenty. Dzięki temu można łatwiej zrozumieć, co dokładnie wykonuje dana metoda, ponieważ jej logika jest podzielona na bardziej zrozumiałe części.
+Transformer szyfrujący liczbę przekształca dowolne liczby, które mają być ukryte, za pomocą specjalnego szyfru. To doskonałe rozwiązanie, które utrudnia dekompilatorom uzyskanie czytelnego kodu źródłowego. Dodatkowo, to wzmocnienie dotyczy wszelkich warunków opartych na wartościach logicznych (boolean).
 
-Konturowanie może być również używane jako sposób na utrudnienie analizy kodu, ponieważ może uniemożliwić osobie próbującej zrozumieć program zobaczenie ogólnej struktury. Rozbijając kod na mniejsze fragmenty i dzieląc go na różne metody, może być trudniej dla kogoś zrozumieć, jak poszczególne części kodu ze sobą współgrają i jak pasują do siebie, aby osiągnąć określoną funkcjonalność.
+Szyfrowanie liczb polega na zaciemnianiu przepływu GEN3 i może być przedstawione w zdekompilowanym kodzie wynikowym w sposób następujący:
 
-![Outlining graph explanation](https://i.imgur.com/2HMq0a4.png)
+Przyjmijmy następujący scenariusz:
+- $x$ to liczba, którą chcemy zaszyfrować
+- $n$ to "ziarno" bloku
+- $d$ jest zaszyfrowaną liczbą
 
-Fantastyczną rzeczą w outliningu jest to, że nie jest on *technicznie* odwracalny! Aby odzyskać pierwotny, czytelny kod zaciemnionego kodu, deobfuscator musi dokonać procesu *inliningu*. Dodatkowo, proces deobfuskacji wymaga manipulacji zmiennymi oraz innymi delikatnymi operacjami na kodzie bajtowym, co może prowadzić do błędów i nieprawidłowego działania.
+Zgodnie z prostą mechaniką xor: $x\oplus n\oplus n=x$
 
-Ogólnie rzecz biorąc, outlining jest całkiem fajny :)
+Tak więc, z definicji, jeśli $n$ jest naszym seedem, w czasie wykonywania musimy obliczyć $d$ w taki sposób, że $d = x\oplus n$. Następnie musimy zmodyfikować instrukcję kodu bajtowego, np:
 
-::: warning
-Transformer jest wciąż na bardzo wczesnym etapie rozwoju. Ze względu na sposób działania weryfikatora Java, nie wszystkie scenariusze mogą zostać poprawnie zweryfikowane, co może prowadzić do pewnych problemów z kompilacją. Używaj na własne ryzyko, a jeśli pojawią się jakiekolwiek problemy, zgłoś je.
+```java
+int value = x;
+```
 
-Note to self: I hate stack frames
-:::
+staje się
+```java
+int value = d ^ n;
+```
+
+Gdzie $d$ jest wartością obliczoną z wyprzedzeniem w postaci stałej, a $n$ nieprzezroczystym predykatem. Np.
+```java
+int value = 5;
+```
+staje się
+```java
+int predicate = 0x100;
+int value = 105 ^ predicate;
+```
 
 ## Konfiguracja
 
+Obecnie dostępny jest tylko jeden tryb szyfrowania liczb, `STANDARD`.
+
 ```js
-outliner {
-     enabled: true
-     exempt: []
+numberEncryption {
+    enabled: true
+    exempt: []
 }
 ```
 
 ## Przykłady
-
 #### Brak zaciemnienia
-
 ```java
-public static void main(String[] args) {
-    int number = callNumber();
-    /*[...]*/
-}
-
-static int callNumber() {
-    return 1;
-}
+int var = 1000;
+System.out.println(var + 1 + 2 + 3);
 ```
 
 #### Zaciemniony kod
 ```java
-public static void main(String[] args) {
-    step1_AF8FZE8EF7Z89F();
-    /*[...]*/
-}
-
-static void step1_AF8FZE8EF7Z89F() {
-    int number = callNumber();
-}
-
-
-static int callNumber() {
-    return 1;
-}
+int var = 0xA0290233 ^ n;
+System.out.println(var + 0x92083838 ^ n + 0x92083839 ^ n + 0x92083840 ^ n);
 ```
