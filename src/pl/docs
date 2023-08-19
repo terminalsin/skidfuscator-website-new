@@ -1,58 +1,19 @@
-## Szyfrowanie adnotacji
+## Driver Hardening
 
-Transformer szyfrujący adnotacje przekształca każdy tekst i liczby zawarte w adnotacjach poprzez zastosowanie specjalnej metody, która ma na celu ukrycie ich podczas procesu wykonywania. Ten mechanizm szyfrowania może być przydatny w przypadku adresów URL, kluczy prywatnych i innych poufnych informacji, ponieważ pozwala ukryć te dane w sposób, który utrudnia ich odczytanie przez osoby nieuprawnione.
+Sterownik jest częścią Skidfuscator. Ta funkcja jest tylko dla Premium. W skrócie, dla każdej obfuskacji tworzony jest i kompilowany nowy sterownik dla różnych architektur:
 
-::: warning
-Nie powinieneś ufać jedynie temu. Nie powinieneś polegać wyłącznie na szyfrowaniu adnotacji jako jedynej formy ochrony Twojego oprogramowania W przypadku domyślnego założenia, powinniśmy być świadomi, że nawet bardzo zdolna osoba może ostatecznie uzyskać dostęp do poufnych informacji, jeśli tylko poświęci wystarczającą ilość czasu i cierpliwości. W praktyce oznacza to, że niezależnie od zastosowanych środków bezpieczeństwa, istnieje zawsze pewne ryzyko, że dane mogą zostać odczytane przez uprawnioną osobę, jeśli tylko dostatecznie się postara. W związku z tym, istotne jest, aby nie tylko polegać na pojedynczej metodzie zabezpieczenia, ale także stosować kompleksowe podejście, które obejmuje różnorodne warstwy ochronne i stałe monitorowanie, aby minimalizować ryzyko i zapewnić jak najwyższy poziom bezpieczeństwa.
-:::
+| System operacyjny | Wspierane architektury |
+| ----------------- | ---------------------- |
+| Windows           | x64_86                 |
+| MacOS             | x64_86, AARCH64 (ARM)  |
+| Linux             | x64_86 (AMD64)         |
 
 
 ## Konfiguracja
+Aby włączyć tę funkcję (:warning: znacznie zwiększa to siłę zaciemniania), należy zmienić wartość `false` na `true`:
 
 ```js
-stringAnnotationEncryption {
-    enabled: true
-    exempt: []
-}
-
-intAnnotationEncryption {
-    enabled: true
-    exempt: []
-}
-```
-
-## Przykłady
-
-### Brak zaciemnienia
-
-```java
-@SecretAnnotation(secret = "Super secret", secret2 = 1337)
-public class Fancy {
-    public String getSecret() {
-        return this.getClass().getAnnotation(SecretAnnotation.class).secret();
-    }
-
-    public int getSecre2t() {
-        return this.getClass().getAnnotation(SecretAnnotation.class).secret2();
-    }
-}
-```
-
-### Zaciemniony kod
-
-```java
-@SecretAnnotation(secret = "oifjaioejaifjea9è!efèaefFEf==", secret2 = 0x9FE7FE7F)
-public class Fancy {
-    public String getSecret() {
-        /* [...] */
-        return this.aofheoafo(this.getClass().getAnnotation(SecretAnnotation.class).secret(), n ^ 0x997AF8F);
-    }
-
-    public int getSecre2t() {
-        /* [...] */
-        return this.getClass().getAnnotation(SecretAnnotation.class).secret2() ^ n ^ 0x90AF9F7;
-    }
-
-    /* [...] */
+driver: {
+    enabled: false // Disabled by default
 }
 ```
