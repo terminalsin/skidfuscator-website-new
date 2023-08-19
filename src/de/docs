@@ -1,19 +1,45 @@
-## Driver Härtung
+## Exception Return
 
-Der Treiber ist der gehärtete Teil von Skidfuscator. Diese Funktion ist für Premium-Nutzer reserviert. Kurz gesagt, pro obfuscation, wird ein neuer Treiber für die folgenden Architekturen generiert und kompiliert:
+Exception return obfuscation ist eine Programmiertechnik, die verwendet wird, um den Kontrollfluss eines Programms durch Obfuscation von Rückgabeergebnissen zu verstehen und zu analysieren, dafür wird jede Methode standardisiert keinen Rückgabewert zu haben.
 
-| Betriebssystem | Unterstützte Architekturen |
-| -------------- | -------------------------- |
-| Windows        | x64_86                     |
-| MacOS          | x64_86, AARCH64 (ARM)      |
-| Linux          | x64_86 (AMD64)             |
+Kurz gesagt, diese Technik ersetzt normale Rückgabewerte durch exception handling Blöcke, welche den Kontrol Fluss eines Programmes schwerer vorhersehbar machen. Wenn eine Ausnahme geworfen wird, springt das Programm zu einem angegebenen exception handler, der dann den gewünschten Wert zurückgibt oder die beabsichtigte Aktion ausführt. Das erschwert das Lesen, Analysieren und reversen und bietet so einen gewissen Schutz gegen Manipulation oder Piraterie des Codes.
 
+'''Warnung Diese Obfuscation Technik ist noch experimentell und kann zu fehlern in größeren Programmen führen. Deshalb ist sie standardmäßig deaktiviert. '''
 
 ## Konfiguration
-Um diese Funktion zu aktivieren (:warning: erhöht deutlich die Obfuscationstärke), müssen Sie die Boolean-Funktion umstellen:
 
 ```js
-driver: {
-    enabled: false // standardmäßig deaktiviert
+exceptionReturn {
+    enabled: false
+    exempt: []
+}
+```
+
+## Beispiele
+
+### Unobfuscated
+
+```java
+int number = callNumber();
+ [...]
+}
+
+int callNumber() {
+    return 1;
+}
+```
+
+### Obfuscated
+```java
+try {
+    callNumber();
+} catch (IntNumberException ex) {
+    int number = ex.getValue();
+}
+
+[...]
+
+void callNumber() {
+    throw new IntNumberException(1);
 }
 ```
