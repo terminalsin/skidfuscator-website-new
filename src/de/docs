@@ -1,60 +1,76 @@
-# Erste Schritte
+# Bibliotheken
 
-Skidfuscator ist erfolgreich heruntergeladen, aber was nun?
+Ahhh wir hassen sie alle, aber um Software nicht zu vermasseln, müssen wir sie nutzen. Es vereinfacht die Konfiguration und so weiter. Hoffentlich das im Maven Plugin automatisiert. Aber bis jetzt ist das nur eine weitere Sache auf unserer Todo-Liste.
 
-Skidfuscator läuft über die Kommandozeile, über das Java CLI. Wir empfehlen Ihnen dringend, dies zu kennen, um ein nahtloses Skidfuscator Erfahrung zu genießen.
+Bibliotheken hinzuzufügen ist ganz einfach:
+1. Erstelle einen Ordner mit dem Namen "libs"
+2. Ziehe alle deine Bibliotheken in diesen Ordner
+3. Füge "-li=\<Pdad zum Ordner\>" zu dem Startbefehl für Skidfuscator hinzu
 
-## CLI Optionen für Skidfuscator
+Beispiel:
+```console
+java -jar obfuscator-1.0.0-SNAPSHOT.jar -li=libs obfuscate FluffyClicker.jar
+```
+![Bild für das Beispiel](https://i.imgur.com/AYxEoYp.png)
 
-Simply run `java -jar <yourSkidfuscatorFile.jar>` and you will be presented with various options:
+## How to get dependencies from a Gradle project ?
 
-![Skidfuscator options](https://i.imgur.com/Yu70Pcq.png)
+### Gradle Groovy
 
-
-#### Your input jar
-The input jar you want to obfuscate with Skidfuscator.
-```cli
-<input>
+Add this task to your build.gradle file:
+```groovy
+task copyDeps(type: Copy) {
+    from configurations.compile
+    into 'libs'
+}
 ```
 
-#### Your exclusions
-The path to the file which contains your exclusions.
-```cli
---exempt=<exempt>
+Then run the task:
+```console
+gradlew copyDeps
 ```
 
-#### Skip computation
-**USE THIS AT YOUR OWN RISK** Completely skips critical forms of computation such as libraries. Support may be limited if you choose to use this option.
-```cli
-`--fuckit
+### Gradle Kotlin
+
+Add this task to your build.gradle.kts file:
+```kotlin
+tasks.register<Copy>("copyDeps") {
+    from(configurations.compile)
+    into("libs")
+}
 ```
 
-#### Your libraries
-The path to the folder which contains libraries / dependencies required to obfuscate your jar file.
-```cli
---libs=<libs>
+Then run the task:
+```console
+gradlew copyDeps
 ```
 
-#### Opt out of analytics
-This option will not provide us any analytics such as errors you may encounter, or obfuscator usage statistics.
-```cli
---notrack
+## How to get dependencies from a Maven project ?
+
+Add this task to your pom.xml file:
+```xml
+<build>
+    <plugins>
+        <plugin>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <executions>
+                <execution>
+                    <id>copy-dependencies</id>
+                    <phase>package</phase>
+                    <goals>
+                        <goal>copy-dependencies</goal>
+                    </goals>
+                    <configuration>
+                        <outputDirectory>${project.build.directory}/libs</outputDirectory>
+                    </configuration>
+                </execution>
+            </executions>
+        </plugin>
+    </plugins>
+</build>
 ```
 
-#### Your output
-The path to where you would like your obfuscated jar to be output, if this option is left empty it will be output in the directory that Skidfuscator was executed in.
-```cli
---output=<output>
-```
-
-#### Phantom computation
-Allows you to enable phantom computation for classes, again, if this option is used, supported may be limited. We strongly advise you provide the necessary libraries required and obfuscate your jar file.
-```cli
---phantom
-```
-
-#### Specifying runtime
-The path to your java runtime.
-```cli
---runtime=<runtime>
+Then run the task:
+```console
+mvn package
 ```
