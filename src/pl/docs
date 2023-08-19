@@ -1,57 +1,53 @@
-## Number Encryption
+## Zmiana nazwy metod
 
-Transformer szyfrujący liczbę przekształca dowolne liczby, które mają być ukryte, za pomocą specjalnego szyfru. To doskonałe rozwiązanie, które utrudnia dekompilatorom uzyskanie czytelnego kodu źródłowego. Dodatkowo, to wzmocnienie dotyczy wszelkich warunków opartych na wartościach logicznych (boolean).
-
-Szyfrowanie liczb polega na zaciemnianiu przepływu GEN3 i może być przedstawione w zdekompilowanym kodzie wynikowym w sposób następujący:
-
-Przyjmijmy następujący scenariusz:
-- $x$ to liczba, którą chcemy zaszyfrować
-- $n$ to "ziarno" bloku
-- $d$ jest zaszyfrowaną liczbą
-
-Zgodnie z prostą mechaniką xor: $x\oplus n\oplus n=x$
-
-Tak więc, z definicji, jeśli $n$ jest naszym seedem, w czasie wykonywania musimy obliczyć $d$ w taki sposób, że $d = x\oplus n$. Następnie musimy zmodyfikować instrukcję kodu bajtowego, np:
-
-```java
-int value = x;
-```
-
-staje się
-```java
-int value = d ^ n;
-```
-
-Gdzie $d$ jest wartością obliczoną z wyprzedzeniem w postaci stałej, a $n$ nieprzezroczystym predykatem. Np.
-```java
-int value = 5;
-```
-staje się
-```java
-int predicate = 0x100;
-int value = 105 ^ predicate;
-```
+Funkcja zmiany nazwy metody ma na celu dokładne zmienienie nazwy całej metody w celu uniemożliwienia zachowania oryginalnej nazwy. Aby to osiągnąć, Skidfuscator tworzy "grupy metod", które pomagają skutecznie zachować hierarchię metod. Na przykład, jeśli `klasa B` rozszerza `klasę A`, a `klasa A` implementuje `metodęA()`, wszystkie wywołania `metodyA()` zarówno dla `klasy A`, jak i `klasy B` będą musiały zostać przemianowane.
 
 ## Konfiguracja
+Zmiana nazwy metody obsługuje obecnie jeden słownik, `ALPHABETICAL`, wraz z tradycyjnym słownikiem niestandardowym, `CUSTOM`, w oparciu o podane informacje. W tym przypadku dostępnę są 2 opcje:
+- Depth: Ile liter będzie domyślnie używanych (np. 3 głębokość doprowadzi do o0o0o0 dla pierwszego przedmiotu, lub 1 głębokość doprowadzi do o0 dla pierwszej pozycji)
+- Chars: Znaki do użycia przez transformator.
 
-Obecnie dostępny jest tylko jeden tryb szyfrowania liczb, `STANDARD`.
+::: warning
+Obecnie transformator nie obsługuje zduplikowanych znaków i nieprawidłowo tworzy identyczne nazwy metod. Na przykład nie należy używać znaków "o", "0" i "o0", ponieważ ten ostatni jest kombinacją dwóch poprzednich znaków.
+:::
 
 ```js
-numberEncryption {
-    enabled: true
-    exempt: []
+methodRenamer {
+    enabled: false
+    type: CUSTOM // or 'ALPHABETICAL'
+    chars: [
+        "K"
+        "oO",
+        "o0"
+    ]
+    depth: 3
 }
 ```
 
 ## Przykłady
+
 #### Brak zaciemnienia
+
 ```java
-int var = 1000;
-System.out.println(var + 1 + 2 + 3);
+public static void main(String[] args) {
+    int number = callNumber();
+    /*[...]*/
+}
+
+static int callNumber() {
+    return 1;
+}
 ```
 
 #### Zaciemniony kod
 ```java
-int var = 0xA0290233 ^ n;
-System.out.println(var + 0x92083838 ^ n + 0x92083839 ^ n + 0x92083840 ^ n);
+public static void main(String[] args) {
+    int number = o0k0k0Kk();
+    /*[...]*/
+}
+
+
+static int o0k0k0Kk() {
+    return 1;
+}
 ```
