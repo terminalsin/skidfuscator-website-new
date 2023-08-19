@@ -1,57 +1,53 @@
-## Numeroiden Salaus
+## Toiminto Metodin Uudelleennimeäjä
 
-Numeron salausmuuntaja salaa minkä tahansa piilotettavan kokonaislukupohjaisen numeron. Tämä sopii täydellisesti kauhistuttamiseen koodia yleensä ja mikä tekee käänteissuunnittelijoille enemmän vaikeuksia saada puhdasta lähdekoodia. Tämä vahvistaa lisäksi kaikkia boolean-pohjaisia konditionaaleja.
-
-Numeroiden salaus perustuu GEN3-virtaussuojaukseen ja voi puretussa lähdössä näyttää seuraavasti
-
-Oletetaan seuraava skenaario:
-- $x$ on numero, jonka haluat salata
-- $n$ on lohkon "siemen"
-- $d$ on salattu numero
-
-Yksinkertaisten xor mekaniikan mukaan: $x\oplus n\oplus n=x$
-
-Määritelmän mukaan, jos $n$ on siemen, meidän on suorituksen aikana laskettava $d$ siten, että $d = x\oplus n$. Sitten meidän on muutettava tavukoodiohjetta, kuten:
-
-```java
-int value = x;
-```
-
-tulee
-```java
-int value = d ^ n;
-```
-
-Jossa $d$ on arvo, joka on laskettu etukäteen vakion muodossa, ja $n$ läpinäkymätön predikaatti. Esimerkki:
-```java
-int value = 5;
-```
-tulee
-```java
-int predicate = 0x100;
-int value = 105 ^ predicate;
-```
+Menetelmän uudelleennimeäjä pyrkii täsmällisesti nimeämään kokonaisuuden menetelmäksi, joka estää menetelmän nimien säilyttämisen. Tämän saavuttamiseksi Skidfuscator luo "metodiryhmiä" säilyttämään tehokkaasti menetelmähierarkian. For example, if `class B` extends `class A`, and `class A` implements `methodA()`, all calls to `methodA()` for both `class A` and `class B` will need to be renamed.
 
 ## Konfiguroi
+Menetelmä uudelleennimeäjä tukee tällä hetkellä yksi sanakirja, `ALPHABETICAL`, rinnalla perinteisen mukautetun sanakirjan, `CUSTOM`, perustuu syötteeseen. Tässä skenaariossa on käytettävissä seuraavat vaihtoehdot:
+- Syvyys: Kuinka monta kirjainta käytetään oletusarvoisesti (esim: 3 syvyys johtaa o0o0o0 ensimmäiselle kohteelle, tai 1 syvyys johtaa o0 ensimmäisen kohteen)
+- Merkki: Muuntajan käyttämät merkit.
 
-Tällä hetkellä numeron salauksessa on vain yksi tila, `STANDARD` (normaali)
+::: warning
+Tällä hetkellä muuntaja ei käsittele päällekkäisiä merkkejä ja luo virheellisesti identtisiä metodien nimiä. Älä esimerkiksi käytä "o", "0" ja "o0", sillä jälkimmäinen on kahden edellisen merkin yhdistelmä.
+:::
 
 ```js
-numberEncryption {
-    enabled: true
-    exempt: []
+methodRenamer {
+    enabled: false
+    type: CUSTOM // or 'ALPHABETICAL'
+    chars: [
+        "K"
+        "oO",
+        "o0"
+    ]
+    depth: 3
 }
 ```
 
 ## Esimerkkejä
+
 #### Suojaamaton
+
 ```java
-int var = 1000;
-System.out.println(var + 1 + 2 + 3);
+public static void main(String[] args) {
+    int number = callNumber();
+    /*[...]*/
+}
+
+static int callNumber() {
+    return 1;
+}
 ```
 
 #### Suojattu
 ```java
-int var = 0xA0290233 ^ n;
-System.out.println(var + 0x92083838 ^ n + 0x92083839 ^ n + 0x92083840 ^ n);
+public static void main(String[] args) {
+    int number = o0k0k0Kk();
+    /*[...]*/
+}
+
+
+static int o0k0k0Kk() {
+    return 1;
+}
 ```
