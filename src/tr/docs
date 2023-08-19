@@ -1,60 +1,25 @@
-# Başlarken
+# Kurulum
 
-Demek Skidfuscator'ı bilgisayarına başarıyla indirdin ve nasıl çalıştıracağını merak ediyorsun?
+Skidfuscator websitemiz, GitHub, veya Discord sunucumuzun duyurular kanalı üzerinden dağıtılır.
 
-Skidfuscator Java CLI'sini kullanarak komut satırı ile çalışır. Sorunsuz bir Skidfuscator deneyimi yaşamanız için buna alışık olmanızı tavsiye ederiz.
+## Platformlarımız
+- [Website](https://skidfuscator.dev)
+- [Discord](https://discord.gg/7pVgsRweeh)
+- [GitHub](https://github.com/terminalsin/skidfuscator-java-obfuscator)
 
-## Skidfuscator için CLI seçenekleri
+GitHub'un sadece Skidfuscator'un bedava topluluk versiyonu için olduğunu unutmayın.
 
-Basitçe `java -jar <yourSkidfuscatorFile.jar>` komutunu çalıştırın, sizi çeşitli seçenekler karşılayacak:
+## Topluluk Versiyonu
 
-![Skidfuscator seçenekleri](https://i.imgur.com/Yu70Pcq.png)
+Topluluk versiyonu için indirme linkini [buraya](https://github.com/skidfuscatordev/skidfuscator-java-obfuscator/releases/) tıklayarak bulabilirsiniz, premium versiyon için lütfen websitemizi ziyaret edin veya Discord'umuza katılın.
 
+Skidfuscator'ın düzgün çalışması için Java 8 (yani JDK 1.8 veya daha üstü) gerektirdiğini unutmayın.
 
-#### Jar dosyanız
-Skidfuscator kullanarak kodunu gizlemek istediğiniz jar dosyası.
-```cli
-<input>
-```
+Skidfuscator'ı çalıştırmak için en temiz yol komut satırında `-jar` parametresini kullanmaktır, dosyanızın kodunu gizleme işlemine nasıl başlanacağı hakkında seçenekler sunulacaktır.
 
-#### Ayrıştırmalarınız
-Ayrıştırmalarınızı içeren dosyaya giden yol.
-```cli
---exempt=<exempt>
-```
+## Daha fazla bellek ayırmak
+Genellikle JVM'ye çalışması için varsayılan bellek miktarından daha fazlasını ayırmanız gerektiğini unutmayın. Eğer -Xmx512m parametresini kullanırsanız JVM'ye kullanması için maksimum 512MB bellek ayırmış olursunuz ki bu çoğu durumda uygun olmalıdır. Ancak, JVM'ye fiziksel olarak kullanılabilir bellekten daha fazla bellek ayırmadığınıza emin olun. Aksi takdirde JVM sanal belleği kullanmaya başlayacağı için performans büyük ölçüde düşecektir.
 
-#### Hesaplamayı atla
-**ÇIKABİLECEK RİSKLERİ GÖZE ALARAK KULLANIN** Hesaplamanın kütüphaneler gibi kritik formlarını atlar. Eğer bu seçeneği kullanmak isterseniz destek limitli olabilir.
-```cli
---fuckit
-```
+Aşağıda Skidfuscator'a nasıl daha fazla bellek ayıracağınızı inceleyin:
 
-#### Kütüphaneleriniz
-Jar dosyanızın kodunu gizlemek için gerekli olan kütüphaneleri / bağımlılıkları içeren klasöre giden yol.
-```cli
---libs=<libs>
-```
-
-#### Analitikleri devre dışı bırakma
-Bu seçenek bize karşılaşabileceğiniz sorunlar, veya kod gizleyicisi kullanım istatistikleri gibi herhangi bir analitiği sağlamayacak.
-```cli
---notrack
-```
-
-#### Çıktınız
-Kodu gizlenen jar dosyasının çıktısına giden yol, eğer bu seçenek boş bırakılırsa çıktı dosya Skidfuscator'ın kullanıldığı klasörde olacaktır.
-```cli
---output=<output>
-```
-
-#### Hayalet hesaplama
-Classlar için hayalet hesaplama özelliğini etkinleştirmenize olanak sağlar, ancak bu seçenek kullanıldığında destek kısıtlı olabilir. Gerekli kütüphaneleri sağlayın ve jar dosyanızı şifrelemeye tabi tutmanızı şiddetle tavsiye ediyoruz.
-```cli
---phantom
-```
-
-#### Çalışma zamanını belirtme
-Java çalıştırma zamanınızın (Jre) yolu.
-```cli
---runtime=<runtime>
-```
+`java -Xmx4G -jar skidfuscator.jar` in your command line interface tool.
