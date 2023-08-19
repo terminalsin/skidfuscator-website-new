@@ -1,51 +1,76 @@
-## String encryptie
+# Libraries
 
-De stringversleuteling transformatreert elke tekenreeks in een specifieke methode oproep, met als doel om te verbergen tijdens de runtime. Dit kan praktisch zijn voor niet-gevoelige URL's, privésleutels enz...
+Ahhh we all hate 'em but for the sake of not screwing up your software, we have to make use of these. It helps simplify your configurations and so and forth. Hopefully, in the maven plugin, these will be handled automatically. However that's just another thing on our todo list for now.
 
-::: waarschuwing
-Je moet de klant niet vertrouwen als basis. Gelieve geen gebruik te maken van String encryptie als de enige bescherming voor uw software. By default, you should assume that a talented enough reverse-engineer could gain access to these with enough time and patience.
-:::
+To add dependencies, it's quite simple:
+1. Create a folder called "libs"
+2. Drag all your dependencies into said folder
+3. Add "-li=\<path to folder\>" to your command line execution for skidfuscator
 
+Example:
+```console
+java -jar obfuscator-1.0.0-SNAPSHOT.jar -li=libs obfuscate FluffyClicker.jar
+```
+![Image of example](https://i.imgur.com/AYxEoYp.png)
 
-## Config
+## How to get dependencies from a Gradle project ?
 
-There are currently two modes for String encryption: `STANDARD` and `POLYMORPHIC`
+### Gradle Groovy
 
-```js
-stringEncryption {
-    enabled: true
-    type: POLYMORPHIC
-    exempt: []
+Add this task to your build.gradle file:
+```groovy
+task copyDeps(type: Copy) {
+    from configurations.compile
+    into 'libs'
 }
 ```
 
-## Examples
-
-### Unobfuscated
-
-```java
-System.out.println("Hello world");
+Then run the task:
+```console
+gradlew copyDeps
 ```
 
-### Standard
+### Gradle Kotlin
 
-```java
-System.out.println(superDuperMethod("\u2be6\uabec\uebfe\uebfe\uabe0\uabf7\ue7f1", n ^ 0x9F878R));
-```
-
-### Polymorphic
-```java
-StringBuilder string = new StringBuilder("\u2be6\uabec\uebfe\uebfe\uabe0\uabf7\ue7f1\uabe0\u6bfa\uebfe\uabee\uabf5");
-for (int a=0, b, c; a < string.length(); a++) {
-    b = string.charAt(a);
-    b = (((b & 0xffff) << 0x6) | (b >> 0xa)) & 0xffff;
-    c = ((b >> 0x0) ^ (b >> 0x7)) & ((1 << 0x4) - 1);
-    b ^= (c << 0x0) | (c << 0x7);
-    b ^= 0x600f ^ n;
-    b -= 0x2aa2 ^ n;
-    b += 0x25b0 ^ n;
-    b ^= 0x9852 ^ n;
-    string.setCharAt(a, (char) b);
+Add this task to your build.gradle.kts file:
+```kotlin
+tasks.register<Copy>("copyDeps") {
+    from(configurations.compile)
+    into("libs")
 }
-System.out.println(string)
+```
+
+Then run the task:
+```console
+gradlew copyDeps
+```
+
+## How to get dependencies from a Maven project ?
+
+Add this task to your pom.xml file:
+```xml
+<build>
+    <plugins>
+        <plugin>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <executions>
+                <execution>
+                    <id>copy-dependencies</id>
+                    <phase>package</phase>
+                    <goals>
+                        <goal>copy-dependencies</goal>
+                    </goals>
+                    <configuration>
+                        <outputDirectory>${project.build.directory}/libs</outputDirectory>
+                    </configuration>
+                </execution>
+            </executions>
+        </plugin>
+    </plugins>
+</build>
+```
+
+Then run the task:
+```console
+mvn package
 ```
