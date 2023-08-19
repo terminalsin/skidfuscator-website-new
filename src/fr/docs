@@ -1,58 +1,19 @@
-## Chiffrement des annotations (Annotation Encryption)
+## Renforcement par pilote
 
-Le transformateur de chiffrement d'annotation transforme chaque chaîne de caractères et entier contenu dans les annotations en un appel de méthode spécifique, dans le but de le masquer à l'exécution. Cela peut être pratique pour les URL non sensibles, les clés privées, etc...
+Le pilote (driver) est la partie de renforcement (hardening) de Skidfuscator. Cette fonctionnalité est réservée aux membres Premium. En résumé, pour chaque obfuscation, un nouveau pilote est généré et compilé pour les architectures suivantes :
 
-::: warning
-Vous ne devriez pas faire confiance au client. Ne comptez pas sur le cryptage de chaînes de caractères comme seule protection pour votre logiciel . En règle générale, vous devriez supposer qu'un rétro-ingénieur suffisamment talentueux pourrait y accéder avec suffisamment de temps et de patience.
-:::
+| Système d'exploitation | Architectures supportées |
+| ---------------------- | ------------------------ |
+| Windows                | x64_86                   |
+| MacOS                  | x64_86, AARCH64 (ARM)    |
+| Linux                  | x64_86 (AMD64)           |
 
 
 ## Configuration
+Pour activer cette fonctionnalité (:warning: cela augmente considérablement la puissance de l'obfuscation), vous devez modifier la valeur booléenne suivante :
 
 ```js
-stringAnnotationEncryption {
-    enabled: true
-    exempt: []
-}
-
-intAnnotationEncryption {
-    enabled: true
-    exempt: []
-}
-```
-
-## Examples
-
-### Non obfusqué
-
-```java
-@SecretAnnotation(secret = "Super secret", secret2 = 1337)
-public class Fancy {
-    public String getSecret() {
-        return this.getClass().getAnnotation(SecretAnnotation.class).secret();
-    }
-
-    public int getSecre2t() {
-        return this.getClass().getAnnotation(SecretAnnotation.class).secret2();
-    }
-}
-```
-
-### Obfusqué
-
-```java
-@SecretAnnotation(secret = "oifjaioejaifjea9è!efèaefFEf==", secret2 = 0x9FE7FE7F)
-public class Fancy {
-    public String getSecret() {
-        /* [...] */
-        return this.aofheoafo(this.getClass().getAnnotation(SecretAnnotation.class).secret(), n ^ 0x997AF8F);
-    }
-
-    public int getSecre2t() {
-        /* [...] */
-        return this.getClass().getAnnotation(SecretAnnotation.class).secret2() ^ n ^ 0x90AF9F7;
-    }
-
-    /* [...] */
+driver: {
+    enabled: false // Désactivé par défaut
 }
 ```
