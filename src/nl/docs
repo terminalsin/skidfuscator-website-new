@@ -1,58 +1,57 @@
-## Omlijning
+## Nummer encryptie
 
-Omlijning verwijst naar het proces om code uit een methode te halen en het in een afzonderlijke, zelfstandige methode te plaatsen. Dit wordt vaak gedaan als een manier om de leesbaarheid en de duurzaamheid van code te verbeteren omdat het makkelijker kan maken om te begrijpen wat een methode doet door het op te splitsen in kleinere, meer gerichte stukken code.
+The number encryption transformer encrypts any integer-based numeral to be hidden. This is perfect for uglifying the code in general and making it more of a hardship for reverse-engineers to obtain a clean source code. This furthermore reinforces any boolean-based conditionals.
 
-Omlijning kan ook worden gebruikt als een soort code obfuscation, omdat het het moeilijker kan maken voor iemand die probeert de ingenieur om te draaien of de code te begrijpen om de algehele stroom en structuur van het programma te zien. Door de code in kleinere stukjes te slopen en te scheiden in verschillende methodes, kan het een veel hardere procedure zijn voor iemand om de verhoudingen tussen de verschillende delen van de stroom te begrijpen en om samen een bepaalde functie uit te voeren.
+The number encryption relies on the GEN3 flow obfuscation and may, in decompiled output, show as follows
 
-![Uitlijning grafiek uitleg](https://i.imgur.com/2HMq0a4.png)
+Lets assume the following scenario:
+- $x$ is the number we wish to encrypt
+- $n$ is the "seed" of the block
+- $d$ is the encryped number
 
-Het fantastische aan outlining is: Het is *technisch* niet omkeerbaar! Om terug te kunnen keren naar een originele staat van een goede omlijning obfuscator *moet een deobfuscator*uitvoeren die een heuristisch en *niet* garandeert dat de uitvoer altijd semantisch correct is met de originele broncode. Verder vereist dit de deobfuscator om te mangle met variabelen en andere verschillende vormen van gevoelige bytecode manipulatie die allemaal kan leiden tot frame- en rekening-uitzonderingen.
+According to simple xor mechanics: $x\oplus n\oplus n=x$
 
-Over het geheel genomen is de obfuscatie best netjes :)
+So, by definition, if $n$ is our seed, at runtime we must compute $d$ such as $d = x\oplus n$. Then, we must modify the bytecode instruction such as:
 
-::: waarschuwing
-De outliner transformator is nog erg vroeg in ontwikkeling. Als gevolg van hoe de verificateur Java werkt, kunnen niet alle scenario's correct worden geverifieerd, wat tot compilatieproblemen kan leiden. Gebruik alstublieft op eigen risico en als zich een probleem voordoet, rapporteer deze alstublieft.
+```java
+int value = x;
+```
 
-Let op zelf: Ik haat de stack frames
-:::
+wordt
+```java
+int value = d ^ n;
+```
+
+Where $d$ is the value computed ahead of time in the form of a constant and $n$ the opaque predicate. Eg:
+```java
+int value = 5;
+```
+wordt
+```java
+int predicate = 0x100;
+int value = 105 ^ predicate;
+```
 
 ## Configuratie
 
+Op dit moment is er slechts één modus voor Nummer encryptie, `STANDARD`
+
 ```js
-outliner {
-     enabled: true
-     exempt: []
+numberEncryption {
+    enabled: true
+    exempt: []
 }
 ```
 
 ## Voorbeelden
-
 #### Unobfuscated
-
 ```java
-public static void main(String[] args) {
-    int number = callNumber();
-    /*[...]*/
-}
-
-static int callNumber() {
-    return 1;
-}
+int var = 1000;
+System.out.println(var + 1 + 2 + 3);
 ```
 
 #### Obfuscated
 ```java
-public static void main(String[] args) {
-    step1_AF8FZE8EF7Z89F();
-    /*[...]*/
-}
-
-static void step1_AF8FZE8EF7Z89F() {
-    int number = callNumber();
-}
-
-
-static int callNumber() {
-    return 1;
-}
+int var = 0xA0290233 ^ n;
+System.out.println(var + 0x92083838 ^ n + 0x92083839 ^ n + 0x92083840 ^ n);
 ```
