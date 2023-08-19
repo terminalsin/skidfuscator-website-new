@@ -1,37 +1,76 @@
-# Java Şifrelemesine Giriş
+# Kütüphaneler
 
-Java şifrelemesine yeni başlayanlar için, Java şifrelemesinin nasıl çalışabileceği hakkında temel bir anlayış kazanmak için aşağıdaki basit rehberi okumanızı öneririz. Daha karmaşık tartışmalar için, blogumuzu ziyaret etmenizi öneririz: https://blog.skidfuscator.dev
+Ahhh hepimiz bunlardan nefret ediyoruz ama yazılımınızı bozmamak için bunları kullanmamız lazım. Yapılandırmanızı sadeleştirme gibi şeylere falan yarar. Umarız ki, Maven eklentisinde, bunlar otomatik olarak halledilecek. Ancak bu şu anlık sadece yapılacak listemizdeki bir şey.
 
-## Java şifrelemesi nedir?
-Şifreleme bir şeyleri anlamayı daha zor bir hale getirmeye yarayan bir işlemdir. Bu genellikle haklarınızı izinsiz erişim ve kullanımdan korumak için kullanılır. Şifreleme, hassas bilgileri (örneğin şifreler) hackerlar veya diğer kötü niyetli kişiler tarafından kolayca ele geçirilmesini engellemek için gizlemek için kullanılabilir. Aynı zamanda yazılımın nasıl çalıştığını keşfetmek ve rakip ürünler oluşturmak için kullanılabilen tersine mühendislikten yazılımınızı korumak için de kullanılır.
+Çok basit bir şekilde bağımlılık(depencendy) eklemek için:
+1. "libs" adındaki bir klasör oluştur
+2. Tüm bağımlılıklarını o klasöre koy
+3. Skidfuscator için kullandığın komuta "-li=\<klasörün yolu\>" ekle
 
-### Obscurity
-Java şifreleme araçlarında, şifreleme bir Java uygulamasının kod tabanını açığa çıkmaktan, kopyalanmaktan veya değiştirilmekten korumak için kullanılır. Bu şekilde, uygulamanın güvenliğini korumak amaçlanır. Şifreleme, kodun anlaşılmasını zorlaştırarak, yazılımın kaynak kodunun çalınmasını veya tersine mühendislik yapılmasını engellemeye yardımcı olur. Bu, yazılım geliştiricileri ve şirketlerin haklarını korumalarına yardımcı olur ve yazılımın güvenliğini artırır. Şifreleme, sınıf isimlerini (class), değişkenleri(variable) ve methodları değiştirerek, gereksiz veya istenmeyen kodları kaldırarak ve çeşitli diğer manipülatif tekniklerle, orijinal Java koduna ulaşmayı zorlaştırmak için yapılır. Bu, kodun daha zor anlaşılmasını sağlar ve böylece hacker'ların açıkları tespit etmesini veya kodun nasıl çalıştığını anlamasını zorlaştırır.
+Örnek:
+```console
+java -jar obfuscator-1.0.0-SNAPSHOT.jar -li=libs obfuscate FluffyClicker.jar
+```
+![Örnek resim](https://i.imgur.com/AYxEoYp.png)
 
-### Redundancy (Tekrarlama)
-Java şifrelemesi aynı zamanda uygulamanın boyutunu azaltmak için de kullanılabilir. Gereksiz kodları kaldırarak sınıfları, methodları ve değişkenleri yeniden adlandırarak, uygulamanın boyutu önemli ölçüde azaltılabilir. Bu, internet üzerinden dağıtılması gereken uygulamalar için faydalı olabilir, çünkü indirme süresini azaltabilir ve uygulamanın performansını artırabilir.
+## How to get dependencies from a Gradle project ?
 
-## Bilinen şifreleme teknikleri
+### Gradle Groovy
 
-### Akış kontrolü şifrelemesi (Control flow obfuscation)
-Java'da control flow şifrelemesi, bir programın kod yapısını gizlemek ve kodun anlanmasını veya tersine mühendislik yapılmasını zorlaştırmak için kullanılan bir tekniktir. Bu, programın kontrol akışını veya talimatların hangi sıra ile çalıştırıldığını değiştirerek çalışır. Bu, talimatları yeniden düzenleyerek, gereksiz talimatlar ekleyerek ve ek düzeylerde kontrol akışı ekleyerek yapılır. Örneğin, bir döngü, kodun farklı bir bölümüne atlama talimatıyla değiştirilebilir veya bir işlev, sırayla yürütülmesi gereken iç içe geçmiş bir dizi işleve dönüştürülebilir. Ayrıca, kontrol akışı karıştırma, kodun nasıl çalıştığını anlamayı zorlaştırabilir ve tersine mühendislik yapmayı da güçleştirebilir. Ayrıca bu programa zararlı kod enjekte etmeyi zorlaştırarak kodu bozulmaya karşı korumaya yardımcı olur.
+Add this task to your build.gradle file:
+```groovy
+task copyDeps(type: Copy) {
+    from configurations.compile
+    into 'libs'
+}
+```
 
-### String ve sayı şifrelemesi
-Sayı ve string şifrelemesi Java programlamasında kullanılan bir kod gizleme türüdür. Sayı şifrelemesi, sayıları düz metinde görülemeyecek şekilde gizleme işlemidir. Bu işlem, sayıları ikili veya onaltılık gibi farklı bir forma dönüştürerek veya sayıları şifrelemek için bir anahtar kullanarak gerçekleştirilir. Bu birilerinin sayıları deşifre ederek koda erişim kazanmasını zorlaştırır. String şifrelemesi, sayı şifrelemeye benzer ancak metin stringlerini korumak için kullanılır. Bunun için, string içindeki karakterler farklı bir şekilde dönüştürülür, örneğin base64 kodlaması kullanılır, veya dizeyi şifrelemek için bir anahtar kullanılır. Bu birilerinin stringleri deşifre edip ne içerdiklerini öğrenmelerini zorlaştırır.
+Then run the task:
+```console
+gradlew copyDeps
+```
 
-## Kalite Değerlendirmesi
+### Gradle Kotlin
 
-Şifreyicinin, şifreleme dönüştürücülerini uyguladıktan sonra yüksek kaliteli bir çıktı sağlaması önemlidir. Skidfuscator'da, şifreleme sonucu elde edilen Java kodunun kalitesini etkileyebilecek çeşitli faktörleri değerlendiriyoruz.
+Add this task to your build.gradle.kts file:
+```kotlin
+tasks.register<Copy>("copyDeps") {
+    from(configurations.compile)
+    into("libs")
+}
+```
 
-### Kod boyutu ve karışıklık
-Şifreleme sonucu elde edilen Java kodunun boyutu ve karmaşıklığı, kalitesini değerlendirirken önemli faktörlerdir. Şifreleme, kodun boyutunu önemli ölçüde artırmamalıdır, çünkü bu performans sorunlarına ve potansiyel hatalara yol açabilir. Skidfuscator olarak, kodunuzu maksimum güvenlikle korurken önemli ölçüde büyütmeden mümkün olduğunca belirsiz hale getirmeyi hedefliyoruz.
+Then run the task:
+```console
+gradlew copyDeps
+```
 
-### Güvenlik
-Güvenlik, şifreleme yapılmış Java kodunun kalitesini değerlendirirken kritik bir faktördür. Şifreleme tekniği, kodu tersine mühendislik girişimlerine karşı etkili bir şekilde korumalıdır. Bu, kodun tersine mühendislik araçlarına (decompiler ve disassembler gibi) karşı direncini analiz etmek için değerlendirilebilir.
+## How to get dependencies from a Maven project ?
 
-### Performans
-Şifreli kodun performansı, kodun kalitesini değerlendirmede başka önemli bir faktördür. Şifreleme, kodun yürütme süresini veya bellek kullanımını önemli ölçüde etkilememelidir. Ayrıca, şifreleme işlemi sonucunda oluşan kodun, genel performansı etkileyebilecek yeni hatalar içermemesi de önemlidir. Şifreleme teknikleri yüzünden ortaya çıkan performans sorunları tespit edilmeli ve gerekli önlemler alınmalıdır.
+Add this task to your pom.xml file:
+```xml
+<build>
+    <plugins>
+        <plugin>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <executions>
+                <execution>
+                    <id>copy-dependencies</id>
+                    <phase>package</phase>
+                    <goals>
+                        <goal>copy-dependencies</goal>
+                    </goals>
+                    <configuration>
+                        <outputDirectory>${project.build.directory}/libs</outputDirectory>
+                    </configuration>
+                </execution>
+            </executions>
+        </plugin>
+    </plugins>
+</build>
+```
 
-### Özet
-
-Genel olarak, şifreleme işleminden geçmiş Java kodunun kalitesi, kodun boyutu ve karmaşıklığı, güvenlik, sürdürülebilirlik ve performans gibi birkaç faktöre dayanarak değerlendirilebilir. Şifreleme, bu faktörleri önemli ölçüde etkilememeli ve şifreleme tekniği tarafından ortaya çıkan herhangi bir sorun hızlı bir şekilde tespit edilmeli ve çözülmelidir.
+Then run the task:
+```console
+mvn package
+```
