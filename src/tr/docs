@@ -1,31 +1,254 @@
-# Felsefemiz
 
-## Biz kimiz?
-Skidfuscator olarak, Java geliştiricilerinin haklarını ve ürünlerini korumalarına yardımcı olmaktan büyük bir tutku duyuyoruz. Ekip olarak deneyimli yazılım geliştiricileri olarak, kodunuzu tersine mühendislik ve izinsiz erişime karşı korumanın önemini anlıyoruz. İşte bu nedenle Skidfuscator'ü geliştirdik, yazılımınızı değiştirilme ve tersine mühendislikten koruyan güçlü bir Java bytecode şifreleyicisi.
+# Yapılandırma
 
-## Misyonumuz
-Misyonumuz, Java geliştiricilerine haklarını ve ürünlerini korumak için gerekli olan aracı sağlamaktır. Java platformunun yüksek kaliteli yazılım uygulamaları geliştirmek için yaygın olarak kullanıldığının farkındayız ve Java kodunuzu korumanın rekabet avantajınızı sürdürmek için önemli olduğuna inanıyoruz. İşte bu nedenle güvenilir, kullanıcı dostu bir Java şifreleyicisi ve Java uygulamalarınızı tersine mühendislik ve değiştirme işlemlerine karşı korumanıza yardımcı olan Skidfuscator'ü geliştirdik.
+Burada yapılandırmanın neler sunduğu hakkında her şeyi öğreneceksin. Buradaki detayları bir kartal gibi keskin oku. Eğer herhangi bir sorunla karşılaşırsan, lütfen destekle iletişime geç. Premium üyeleri, takımımız tarafından ücretsiz yapılandırma hizmetine tabii tutulur.
 
-## Neden Skidfuscatorü geliştirdik?
-Skidfuscator olarak, Java geliştiricilerinin uygulama ve ürünşerini korumak için uygun fiyatlı ve etkili şifreleme çözümlerine erişim sağlamalarına önem veriyoruz. Ekibimiz, kullanımı kolay ancak en güçlü saldırılara bile dayanacak kadar güçlü olan en üst düzeyde şifreleme çözümleri sunma konusunda kararlıdır. Ürünümüzü sürekli olarak iyileştirmek ve yazılım koruma, şifreleme alanındaki en son gelişmelerle güncel kalmak için çaba harcıyoruz.
+## Yapılandırmanın temelleri
 
-Şifrelemenin, özellikle bu alanla yeni tanışan geliştiriciler için karmaşık ve zorlu bir süreç olabileceğinin farkındayız. İşte bu nedenle Skidfuscator'ü mümkün olduğunca kullanıcı dostu bir şekilde tasarladık. Şifreleyicimizle Java bytecode'unuzu özel yetenekler veya bilgiye ihtiyaç duymadan hızlı ve kolay bir şekilde şifreleyebilirsiniz. Kapsamlı belgelerimiz ve mükemmel destek hizmetlerimiz, şifrelemeye hemen başlayarak yazılımınızı korumanızı sağlar.
+Yapılandırmanın temeli [lightbend config](https://github.com/lightbend/config)'e dayanır. Bu demektir ki varsayılan olarak şu üç yapılandırma formatını destekliyoruz: Java Properties, JSON ve HOCON.
 
-Skidfuscator olarak, işbirliği ve iletişimin gücüne inanıyoruz. Müşterilerimizle yakın bir şekilde çalışarak onların benzersiz ihtiyaçlarını ve zorluklarını anlamaya özen gösteriyoruz ve her zaman kişiye özel destek ve danışmanlık sağlamaya hazırız. Ekibimiz, kodunuzu ve ürününüzü korumanıza ve hedeflerinize ulaşmanıza, ne kadar büyük veya küçük olursa olsun, yardımcı olmaya adanmıştır.
+Prensip olarak, sade, daha şık ve çok yönlü kolay kullanımı nedeniyle **HOCON kullanmanızı şiddetle tavsiye ediyoruz**. İşte varsayılan yapılandırma:
 
-Skidfuscator, Java kodunuzu korumak için en iyi çözümdür. Güçlü şifreleyicimiz, yazılımınızı tersine mühendislik ve değiştirmeye karşı korumak için tasarlanmıştır, böylece kodunuz güvende kalır ve güvence altına alınır. Müşterilerimize üst düzey bir şifreleme çözümü, mükemmel destek ve kullanıcı dostu bir şifreleyici sunma konusunda kararlıyız. Bu şifreleyici kolay kullanımıyla etkili bir şekilde çalışır. Skidfuscator'ü seçin ve bugün Java uygulamalarınızı izinsiz erişime ve hırsızlığa karşı koruyun.
+```javascript
+exempt: []
 
-## Methodojimiz
+libs: []
 
-Skidfuscator olarak, uzun vadeli ve dirençli bir yaklaşımın sürdürülebilirlik için önemli olduğuna inanıyoruz. Kısa vadeli düzeltmeler ve hızlı çözümler geçici çözüm sağlayabilirken, genellikle ileride daha fazla sorun yaratır ve uzun vadeli ilerlemeyi engeller.
+stringEncryption {
+  type: STANDARD
+  enabled: true
+  exempt: []
+}
 
-### Yaklaşımımız
-Sorunlara dirençli ve sürdürülebilir bir şekilde yaklaşmak için, sadece semptomlarını ele almaktan ziyade sorunun ana nedenini anlamaya öncelik veriyoruz. Bir sorunu detaylı bir şekilde analiz ederek, onun meydana gelmesine katkıda bulunan temel faktörleri belirleyebilir ve bu faktörlere doğrudan çözümler geliştirerek hedefe yönelik çözümler oluşturabiliriz.
+numberEncryption {
+  enabled: true
+  exempt: []
+}
 
-Sorunun ana nedenini belirlemenin yanı sıra, karmaşık konulara yaklaşırken işbirliğine ve bilgi paylaşımına öncelik veriyoruz. Hiçbir kişi veya ekip her şeyin cevabına sahip değildir ve çözümler genellikle çeşitli grupların bir araya gelmiş çabaları ve görüşleriyle ortaya çıkar. Ekiplerimizi çeşitli alanlarda işbirliği yapmaya teşvik ediyor ve gerektiğinde dış ortakların uzmanlık bilgisini kullanarak, bir sorunun tüm yönlerini ele alan kapsamlı çözümlere ulaşmalarına yardımcı oluyoruz.
+intAnnotationEncryption {
+  enabled: true
+  exempt: []
+}
 
-### Vurgumuz
-Ayrıca, sürekli gelişim ve öğrenme konusuna büyük önem veriyoruz. Farkındayız ki en kapsamlı çözümler bile zamanla geliştirilebilir ve dünya sürekli olarak değişiyor ve gelişiyor. Bu nedenle, ekiplerimizi çözümlerimizin etkililiğini düzenli olarak değerlendirme ve geliştirme fırsatlarını belirlemeye teşvik ediyoruz. Ayrıca, ekiplerimizin kendi alanlarında en son araştırmaları ve en iyi uygulamaları takip etmelerini sağlamak için sürekli eğitim ve gelişimi önceliklendiriyoruz.
+stringAnnotationEncryption {
+  enabled: true
+  exempt: []
+}
 
-### Önceliğimiz
-Sorun çözme konusunda uzun vadeli ve dayanıklı bir yaklaşımı önceliklendirerek, toplumu faydalı etkileyen sürdürülebilir çözümler oluşturabileceğimize inanıyoruz. Hızlı çözümler ve kısa vadeli yaklaşımların iyi olabileceğini kabul ediyoruz, ancak bu tür yaklaşımların genellikle istenmeyen olumsuz sonuçlara yol açtığını ve uzun vadeli ilerlemeyi engellediğini farkındayız. Bunun yerine, işbirliğine, sürekli gelişime ve sürdürülebilir uygulamalara öncelik vererek, çözümlerimizin etkili ve verimli olduğundan emin oluyoruz.
+exceptionReturn {
+  enabled: true
+  exempt: []
+}
+
+flowCondition {
+  enabled: true
+  exempt: []
+}
+
+flowException {
+  enabled: true
+  strength: AGGRESSIVE
+  exempt: []
+}
+
+flowRange {
+  enabled: true
+  exempt: []
+}
+
+flowFactoryMaker {
+  enabled: true
+  exempt: []
+}
+
+flowSwitch {
+  enabled: true
+  exempt: []
+}
+
+outliner {
+  enabled: true
+  exempt: []
+}
+
+ahegao {
+  enabled: true
+  exempt: []
+}
+
+native: {
+  enabled: false
+  exempt: []
+}
+
+driver: {
+  enabled: false
+}
+
+reference {
+  enabled: false
+}
+
+fileCrasher: {
+  enabled: false
+}
+
+classRenamer {
+  enabled: false
+  type: CUSTOM
+  prefix: "skido/"
+  chars: [
+    "K"
+    "oO",
+    "o0"
+  ]
+  depth: 3
+}
+
+methodRenamer {
+  enabled: false
+  type: CUSTOM
+  chars: [
+    "K"
+    "oO",
+    "o0"
+  ]
+  depth: 3
+}
+
+fieldRenamer {
+  enabled: false
+  type: ALPHABETICAL
+}
+```
+
+## Ayrıştırmalar
+
+Ayrıştırmaların kullanımı eski sistemde nasıl yapılıyorsa aynen öyle. Ayrıştırmalar hakkında daha fazla şey öğrenmek için, [şu sayfaya](../exclusion.md) gidin
+
+::: warning 
+Java stringleri ters slaşı ayrıştırarak sunar. Bu da demek ki tüm ters slaşları MUTLAKA çift kullanmalısınız
+:::
+
+### Bir sınıfı ayrıştırmak
+
+Başlarken temel olarak, belli bir sınıfı ayrıştırmak için, sınıf regex ayrıştırmasını kullanmalısın:
+```js
+class{^benim\/sinifim}
+```
+
+Bunu yapılandırmada kullanmak için, bir string olarak girmelisin.
+
+
+```js
+exempt: [
+    "class{^benim\\/sinifim}"
+]
+```
+
+### Bir metodu ayrıştırmak
+
+Başlarken temel olarak, belli bir metodu ayrıştırmak için, metod regex ayrıştırmasını kullanmalısın:
+```js
+method{^benimMetodum}
+```
+
+Bunu yapılandırmada kullanmak için, bir string olarak girmelisin.
+
+```js
+exempt: [
+    "method{^benimMetodum}"
+]
+```
+
+### Belli bir sınıfta bir metodu ayrıştırmak
+
+Aynı az önce öğrendiğimiz gibi, bir metodu ve bir sınıfı ayrıştırmak için şunu yapmalıyız:
+```js
+class{^benim\/sinifim}
+method{^benimMetodum}
+```
+
+Şimdi, belli bir sınıfın İÇİNDE bir metodu ayrıştırmak için, yapılması gereken tek şey bu ikisinin tek bir satırda birleştirilmesidir, örnek olarak:
+
+```js
+class{^benim\/sinifim} method{^benimMetodum}
+```
+
+Dolayısıyla yapılandırmada şu şekilde olur:
+
+```js
+exempt: [
+    "class{^benim\/sinifim} method{^benimMetodum}"
+]
+```
+
+## Kütüphaneler
+
+Kütüphaneler, classpath hesaplanmasında ve maksimum korumanın sağlanmasında önemli bir unsurdur. Bu durumda, dize olarak geçerli bir Java yolu bağımsız değişkeni sağlamalısınız
+
+Aşağıda uygulama kodu yer almaktadır:
+```java
+public File[] getLibs() {
+    return this.getStringList("libraries", Collections.emptyList())
+                .stream()
+                .map(File::new)
+                .distinct()
+                .toArray(File[]::new);
+}
+```
+
+Aşağıda geçerli java yollarına bir örnek verilmiştir:
+```
+C:\test.jar
+test.jar
+./test.jar
+/Home/test.jar
+```
+
+Yapılandırmada bunlar aşağıdaki gibi gösterilir:
+
+```js
+libraries [
+    "C:\\test.jar",
+    "test.jar",
+    "./test.jar",
+    "/Home/test.jar"
+]
+```
+
+## Driver
+
+Sürücü, Skidfuscator'ın sertleştirme kısmıdır. Bu özellik Premium'a ayrılmıştır. Özetle, gizleme başına, aşağıdaki mimariler için yeni bir sürücü oluşturulur ve derlenir:
+
+| İşletim Sistemi | Desteklenen mimariler |
+| --------------- | --------------------- |
+| Windows         | x64_86                |
+| MacOS           | x64_86, AARCH64 (ARM) |
+| Linux           | x64_86 (AMD64)        |
+
+Bu özelliği kapatmak için (:warning: bu, şifreleme gücünü önemli ölçüde düşürür), boolean'ı değiştirmeniz gerekir:
+
+```js
+driver: false
+```
+
+
+## Dönüştürücüler
+
+Her bir transformatörü ayrı ayrı etkinleştirebilir/devre dışı bırakabilirsiniz.
+
+
+#### String Gizlemesi
+
+String şifreleme dönüştürücüsü, tüm Stringleri gizlemek amacıyla spesifik bir metoda dönüştürür. Bu gizlenmesi gereken URLler, özel anahtarlar gibi şeyler için uygun olabilir...
+
+:: warning  
+Client'e temel olarak güvenmemelisiniz. Lütfen String şifrelemeye, uygulamanız için tek koruma olarak güvenmeyin. Varsayılan olarak, yeterince yetenekli bir tersine mühendisin aşağıdakilerle bunlara erişebileceğini varsaymalısınız.
+:::
+
+String şifrelemesi için şu an iki mod var: `STANDARD` ve `POLYMORPHIC`
+
+#### Sayı Şifrelemesi
+
+Sayı şifreleme dönüştürücüsü integer tabanlı sayıları gizli olmaları için şifreler. Bu kodunuzu genel olarak okunamaz yapmak ve tersine mühendislerin temiz bir kaynak kodu elde etmesini zorlaştırmak için mükemmeldir. Bu ayrıca boolean tabanlı koşulluları da güçlendirir.
