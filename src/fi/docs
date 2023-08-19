@@ -1,135 +1,60 @@
-# Kirjoitetaan Poissulkemisia (Skidfuscator >= 2.0.0)
+# Aloittaminen
 
-Regex (säännöllinen lauseke) on eräänlainen hakukuvio jota käytetään tunnistamaan merkkijonot. Regexiä käytetään yleensä tekstin etsimiseen, korvaamiseen ja vahvistamiseen. Regex on kirjoitettu virallisella kielellä, ja niitä käytetään ohjelmoinnissa, datatieteessä ja muissa sovelluksissa.
+Joten, olet nyt onnistuneesti ladattu Skidfuscator tietokoneeseen ja ihmettelevät, miten ajaa se?
 
-Skidfuscator käyttää regex käsitellä sisällyttämistä ja poissulkemista osa sen kokoonpano.
+Skidfuscator kulkee komentorivin kautta käyttäen Java-CLItä. Suosittelemme vahvasti, että olet perehtynyt tähän, jotta voit nauttia saumaton Skidfuscator kokemus.
 
-Poissulkemisten ymmärtäminen voi olla aluksi hankalaa, mutta usko pois, se on melko helppoa, kunhan ymmärrät sen.
+## CLI vaihtoehdot Skidfuscatorille
 
-Ennen kaikkea on tärkeää ymmärtää perusregex.
+Yksinkertaisesti ajaa `java -jar <yourSkidfuscatorFile.jar>` ja sinulle esitetään erilaisia vaihtoehtoja:
 
-## Regexin perusteet (säännölliset lausekkeet)
+![Skidfuscator asetukset](https://i.imgur.com/Yu70Pcq.png)
 
-- Tässä on perusmerkkijono, joka vastaa kaikkea:
-```java
-(.*?)
+
+#### Syöttö purkki
+Syöttöpurkki, jonka haluat suojata Skidfuscatorilla.
+```cli
+<input>
 ```
 
-Joten seuraavat tapahtuisi:
-```java
-abozeofez // Ottelu!
-zeigzoegze // Ottelu!
+#### Sinun poissulkemisesi
+Polku tiedostoon, joka sisältää sinun poissulkemisesi.
+```cli
+--exempt=<exempt>
 ```
 
-***
-
-- Jos haluat löytää minkä tahansa merkkijonon, joka sisältää "roar", voit käyttää komentoa
-```java
-roar
-````
-
-Joten seuraavat tapahtuisi:
-```java
-roar // Ottelut!
-asdafroar // Ottelu!
-grrr // Ei täsmää!
+#### Ohita laskenta
+**KÄYTÄ TÄMÄ OMA RISKI** täysin ohittaa kriittiset laskentamuodot, kuten kirjastot. Tuki voi olla rajoitettua, jos päätät käyttää tätä vaihtoehtoa.
+```cli
+--fuckit
 ```
 
-***
-
-Jos haluat yhdistää minkä tahansa merkkijonon, joka alkaa __ "uwu", sinulla olisi:
-```java
-^uwu
+#### Sinun kirjastot
+Polku kansioon, joka sisältää kirjastot/riippuvuudet, joita tarvitaan jar-tiedoston häivyttämiseen.
+```cli
+--libs=<libs>
 ```
 
-Tapahtuisi siis seuraavaa:
-```java
-kitty-uwu // Ei täsmää!
-uwu-kitty // Ottelu!
+#### Kieltäydy seurannasta
+Tämä vaihtoehto ei vakoile sinua eikä raportoi tietoja, kuten kohtaamiasi virheitä tai käyttötilastoja.
+```cli
+--notrack
 ```
 
-- `kitty-uwu` ei täsmää, koska uwu on loppuliite tässä skenaariossa, eikä siksi aloita vaatimuksella `uwu`.
-- `uwu-kitty` *olisi* täsmää tässä skenaariossa, koska oikea etuliite on annettu.
-
-***
-
-Jos haluat lukea lisää Regexistä, lue täältä: [Regex opetusohjelma](https://medium.com/factory-mind/regex-tutorial-a-simple-cheatsheet-by-examples-649dc1c3f285)
-
-## Kirjoitetaan poissulkemista
-Tämä on hyvin yksinkertaista ja helppoa.
-
-- Luo tiedosto, johon kirjoitat poissulkemisesi. Suosittelemme käyttämään txt-tiedostoa.
-
-Skidfuscator lukee sisällytykset ja poissulkemiset samalla tavalla: jos se vastaa säännöllistä lauseketta, __**se ei lue tai suojata****.
-
-### Poissulkemiset
-Käyttämällä regex-etsintää eteenpäin, kuten alla näkyy, voit etsiä mitä tahansa luokkatyyppiä. Muista välttää "/"-merkkiä "\\", jotta Regex ei katkea ja et viettäisi tuntikausia selvittääksesi, mikä on vialla.
-
-Alla on useita esimerkkejä vastaavuusluokista & poissulkemismenetelmät:
-
-```java
-// Tämä vastaa mitä tahansa metodia, jonka nimi on "main"
-method{main} 
-// Tämä vastaa kaikkia metodeja, jotka alkavat kirjaimella "com.apache"
-// (Korvata "." "/" Java-luokan nimessä) 
-class{^com\/apache} 
-// Tämä vastaa kaikkia menetelmiä, jotka alkavat sanalla "com.google"
-// ((Korvata "." "/" Java-luokan nimessä)
-class{^com\/google} 
-// Tämä vastaa mitä tahansa luokan "Controller" metodia
-class{Controller$} 
-// Tämä vastaa mitä tahansa luokan "com.example.MyClass" metodia
-class{^com\/example\/MyClass$}
+#### Suojattu lähtö
+Polku sinne, minne haluat obfuskuroidun purkin tulostettavan, jos tämä vaihtoehto jätetään tyhjäksi, se tulostetaan siihen hakemistoon, jossa koodisuojaus suoritettiin.
+```cli
+--output=<output>
 ```
 
-#### Useita poikkeuksia
-
-Esimerkiksi useiden menetelmien tai pakettien poissulkeminen on todella yksinkertaista! Kaikki mitä sinun tarvitsee tehdä, on luoda uusi linja ja lisätä uusi poikkeus :)
-
-```java
-class{^com\/apache} // Matches apache
-class{^com\/google} // Matches google
+#### Automaattinen riippuvuuslaskenta
+Mahdollistaa suojaimen edistyneen automaattisen luokkakohtaisen laskennan käyttöönoton, mutta jos tätä vaihtoehtoa käytetään, asiakastuki voi olla rajallista. Kehotamme sinua tarjoamaan tarvittavat kirjastot ja hämärtää purkki tiedosto.
+```cli
+--phantom
 ```
 
-
-### Sisällyttäminen
-Toisin kuin poissulkemiset, voit haluta **sisältää vain tietyn joukon luokkia tai paketin** hämäräperäisessä purkissa. Fret ei, tämä on mahdollista, vaikka hieman monimutkaisempi.
-
-```java
-// Tämä vastaa kaikkia paketin "com.example" luokkia
-class{^(?!(com\/example)).*$} 
-
-// Tämä vastaa kaikkia luokkia paketista "com.example" ja 
-// kaikki paketin "com.eclipse" luokat. 
-// Voit lisätä niin monta pakettia kuin haluat '|' merkin avulla, ja yleisessä käytössä se toimii tai-vertailumerkkinä.
-class{^(?!(com\/example)|(com\/eclipse)).*$} 
-```
-
-## Virheenkorjauksen Poissulkemiset
-
-Suosittelen käyttämään regex debugger, kuten [Regex101](https://regex101.com/), jotta voidaan selvittää, mitä ottelut ja mitä ei.
-
-Kaikki luokan nimet, oletuksena seuraa muotoa "package1/package2/class1". Vaikka saatat nähdä JVM se on muotoiltu eri tavalla, tapauksessa Skidfuscator, edellä mainittu muoto päätettiin olla tehokkain ja heijastavin Jar/Zip-tiedoston hierarkiassa.
-
-## Selitä Poissulkemat Tiedosto
-
-Monet asiakkaamme kehittävät Minecraft muutoksia tai laajennuksia, katso alla malli / exemplar kokoonpano tiedosto yleisimmin vaaditut poissulkemiset:
-
-```java
-// Pakettien poissulkemiset alla
-class{^net\/minecraftforge} // Matches Minecraft Forge
-class{^net\/minecraft\/client} // Matches Minecraft Client
-class{^net\/minecraft\/server} // Matches Minecraft Server
-class{^org\/bukkit} // Matches Bukkit
-class{^com\/mojang} // Matches Mojang
-class{^me\/johnymuffin} // Matches JohnyMuffin
-class{^com\/sk89q} // Matches Sk89q
-class{^org\/spigotmc} // Matches SpigotMC
-class{^org\/apache\/commons} // Matches Apache Commons
-class{^org\/jline} // Matches JLine
-
-// Menetelmän poikkeukset alla 
-method{^net\.minecraft\.client} // Excludes all methods from net.minecraft.client package 
-method{^net\.minecraft\.util} // Excludes all methods from net.minecraft.util package 
-method{^net\.minecraft\.client\.Minecraft} // Excludes all methods from the Minecraft class
+#### Määritellään ajoaikaa
+Polku java ajon aikana.
+```cli
+--runtime=<runtime>
 ```
