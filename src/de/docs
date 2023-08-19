@@ -1,53 +1,51 @@
-## Methoden Umbenenner
+## String Verschlüsselung
 
-The method renamer seeks to accurately renamer a whole method to prevent the conservation of method names. To achieve this, Skidfuscator creates "method groups" to effectively preserve method hierachy. For example, if `class B` extends `class A`, and `class A` implements `methodA()`, all calls to `methodA()` for both `class A` and `class B` will need to be renamed.
-
-## Konfiguration
-The method renamer currently supports one dictionary, `ALPHABETICAL`, alongside the traditional custom dictionary, `CUSTOM`, based on input. In this scenario, the following options are available:
-- Depth: How many literals will be used by default (eg: 3 depth will lead to o0o0o0 for the first item, or 1 depth will lead to o0 for the first item)
-- Chars: Characters to be used by the transformer.
+The string encryption transformer transforms every string into a specific method call, with the purpose of hiding it in runtime. This can be practical for non-sensitive URLs, private keys, etc...
 
 ::: warning
-As of right now, the transformer does not handle duplicate characters and will improperly create identical method names. For example, do not use "o", "0" and "o0" as the latter is a combination of the previous two characters.
+You should not trust the client as a basis. Please do not rely on String encryption as the sole protection for your software. By default, you should assume that a talented enough reverse-engineer could gain access to these with enough time and patience.
 :::
 
+
+## Konfiguration
+
+Momentan gibt es zwei Modi zur verschlüsselung von Strings, `STANDARD` und `POLYMORPHIC`
+
 ```js
-methodRenamer {
-    enabled: false
-    type: CUSTOM // oder 'ALPHABETICAL'
-    chars: [
-        "K"
-        "oO",
-        "o0"
-    ]
-    depth: 3
+stringEncryption {
+    enabled: true
+    type: POLYMORPHIC
+    exempt: []
 }
 ```
 
 ## Beispiele
 
-#### Unobfuscated
+### Unobfuscated
 
 ```java
-public static void main(String[] args) {
-    int number = callNumber();
-    /*[...]*/
-}
-
-static int callNumber() {
-    return 1;
-}
+System.out.println("Hello world");
 ```
 
-#### Obfuscated
+### Standard
+
 ```java
-public static void main(String[] args) {
-    int number = o0k0k0Kk();
-    /*[...]*/
-}
+System.out.println(superDuperMethod("\u2be6\uabec\uebfe\uebfe\uabe0\uabf7\ue7f1", n ^ 0x9F878R));
+```
 
-
-static int o0k0k0Kk() {
-    return 1;
+### Polymorphic
+```java
+StringBuilder string = new StringBuilder("\u2be6\uabec\uebfe\uebfe\uabe0\uabf7\ue7f1\uabe0\u6bfa\uebfe\uabee\uabf5");
+for (int a=0, b, c; a < string.length(); a++) {
+    b = string.charAt(a);
+    b = (((b & 0xffff) << 0x6) | (b >> 0xa)) & 0xffff;
+    c = ((b >> 0x0) ^ (b >> 0x7)) & ((1 << 0x4) - 1);
+    b ^= (c << 0x0) | (c << 0x7);
+    b ^= 0x600f ^ n;
+    b -= 0x2aa2 ^ n;
+    b += 0x25b0 ^ n;
+    b ^= 0x9852 ^ n;
+    string.setCharAt(a, (char) b);
 }
+System.out.println(string)
 ```
