@@ -1,72 +1,76 @@
-# Transformateurs
+# Bibliothèques
 
-Voici l'index où je détaillerai chaque transformateur un par un. Cela devrait vous aider à comprendre un peu ce qui se passe en coulisses et comment ces transformations sont efficaces contre l'ingénierie inverse.
+Ahhh, nous les détestons tous, mais pour ne pas compromettre votre logiciel, nous devons les utiliser. Cela simplifie vos configurations et ainsi de suite. Heureusement, dans le plugin Maven, cela sera géré automatiquement. Cependant, c'est juste une autre chose sur notre liste de tâches pour le moment.
 
-Nous passerons en revue l'index suivant :
-- Obfuscation des nombres
-- Chiffrement des chaînes de caractères
+Pour ajouter des dépendances, c'est assez simple :
+1. Créez un dossier appelé "libs"
+2. Faites glisser toutes vos dépendances dans ce dossier
+3. Ajoutez "-li=\<chemin vers le dossier\>" à votre commande d'exécution en ligne de commande pour Skidfuscator
 
-## Obfuscation des nombres
+Exemple :
+```console
+java -jar obfuscator-1.0.0-SNAPSHOT.jar -li=libs obfuscate FluffyClicker.jar
+```
+![Image d'exemple](https://i.imgur.com/AYxEoYp.png)
 
-Prenons le scénario suivant :
-- $x$ est le nombre que nous souhaitons chiffrer
-- $n$ est la "graine" (seed) du bloc
-- $d$ est le nombre chiffré
+## How to get dependencies from a Gradle project ?
 
-Selon les mécanismes simples de xor : $x\oplus n\oplus n=x$
+### Gradle Groovy
 
-Donc, par définition, si $n$ est notre graine, lors de l'exécution, nous devons calculer $d$ tel que $d = x\oplus n$. Ensuite, nous devons modifier l'instruction bytecode de la manière suivante :
-
-```java
-int value = x;
+Add this task to your build.gradle file:
+```groovy
+task copyDeps(type: Copy) {
+    from configurations.compile
+    into 'libs'
+}
 ```
 
-devient
-```java
-int value = d ^ n;
+Then run the task:
+```console
+gradlew copyDeps
 ```
 
-Où $d$ est la valeur calculée à l'avance sous la forme d'une constante et $n$ est le prédicat opaque. Exemple :
-```java
-int value = 5;
+### Gradle Kotlin
+
+Add this task to your build.gradle.kts file:
+```kotlin
+tasks.register<Copy>("copyDeps") {
+    from(configurations.compile)
+    into("libs")
+}
 ```
-devient
-```java
-int predicate = 0x100;
-int value = 105 ^ predicate;
+
+Then run the task:
+```console
+gradlew copyDeps
 ```
 
-## Chiffrement des chaînes de caractères
+## How to get dependencies from a Maven project ?
 
-Le chiffrement des chaînes repose sur trois conditions de base avant de pouvoir être traité :
-1. La constante de chaîne doit être disponible dans la piscine (pool) de constantes
-2. La constante de chaîne doit être formatée en UTF-8
-3. La chaîne ne doit pas être vide
+Add this task to your pom.xml file:
+```xml
+<build>
+    <plugins>
+        <plugin>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <executions>
+                <execution>
+                    <id>copy-dependencies</id>
+                    <phase>package</phase>
+                    <goals>
+                        <goal>copy-dependencies</goal>
+                    </goals>
+                    <configuration>
+                        <outputDirectory>${project.build.directory}/libs</outputDirectory>
+                    </configuration>
+                </execution>
+            </executions>
+        </plugin>
+    </plugins>
+</build>
+```
 
-Avec cela, nous sommes capables d'injecter un système de chiffrement symétrique dans le code pour pouvoir obscurcir la chaîne des décompileurs/désassembleurs classiques.
-
-### Algorithme de Xor
-
-À l'heure actuelle, nous utilisons un simple algorithme de xor qui est assez résistant pour calculer notre chaîne chiffrée. Bien que cet algorithme soit mathématiquement de très faible qualité et pourrait probablement être cassé en temps polynomial, voire linéaire, notre objectif ici est de proposer une implémentation facile et de preuve de concept de la façon dont un prédicat opaque peut renforcer le chiffrement des chaînes. Dans les versions futures de Skidfuscator, nous utiliserons un moteur polymorphique.
-
-L'algorithme fonctionne actuellement de la manière suivante :
-
-Soit $f_y(x)=x\oplus y\oplus n$ qui représente la méthode de chiffrement et de déchiffrement pour un caractère dans une chaîne donnée $n$ et $m_{max}$ de 255
-
-$y=i\mod m$
-
-où $i$ représente l'index du caractère dans la chaîne, $m$ représente la taille du tableau d'entiers aléatoires avec des "clés" aléatoires, $n$ représente le prédicat opaque entier, $x$ le caractère à l'index $i$ de la chaîne.
-
-Par définition : \begin{align} f_y(f_y(x))&=x\oplus y\oplus n\oplus y\oplus n\\ &=x\oplus y\oplus y\oplus n\oplus n\\ f_y(f_y(x))&=x \end{align}
-
-Ainsi, nous obtenons un algorithme de chiffrement/déchiffrement utilisable qui est renforcé par un prédicat opaque et une suite de clés entières stockées localement. L'implémentation peut être consultée [ici](https://github.com/terminalsin/skidfuscator-java-obfuscator/blob/master/dev.skidfuscator.obfuscator/obfuscator/src/main/java/dev/skidfuscator/obfuscator/transform/impl/string/BasicEncryptionGenerator.java).
-
-Le détourage fait référence au processus d'extraction de code d'une méthode et de placement dans une méthode séparée et indépendante. Cela est souvent fait pour améliorer la lisibilité et la maintenabilité du code, car cela peut rendre plus facile de comprendre ce qu'une méthode fait en la divisant en parties plus petites et plus ciblées.
-
-Le détourage peut également être utilisé comme une forme d'obfuscation du code, car il peut rendre plus difficile pour quelqu'un qui tente de décompiler ou de comprendre le code de voir le flux global et la structure du programme. En divisant le code en morceaux plus petits et en le séparant dans différentes méthodes, il peut être beaucoup plus difficile pour quelqu'un de comprendre les relations entre différentes parties du flux et comment elles s'assemblent pour effectuer une fonction particulière.
-
-![Explication du graphe de détourage](https://i.imgur.com/2HMq0a4.png)
-
-La chose fantastique à propos du détourage, c'est que ce n'est pas *techniquement* réversible ! Pour pouvoir revenir à un état original d'une bonne obfuscation par détourage, un désobfuscateur *doit effectuer l'insertion de code (inlining)*, qui est une heuristique et *ne garantit pas* que la sortie soit toujours sémantiquement correcte par rapport au code source original. De plus, cela nécessite au désobfuscateur de manipuler les variables et autres formes de manipulation délicate du bytecode, ce qui peut entraîner des exceptions de cadre et de calcul.
-
-Dans l'ensemble, l'obfuscation par détourage est plutôt astucieuse :)
+Then run the task:
+```console
+mvn package
+```
