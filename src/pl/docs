@@ -1,142 +1,60 @@
-# Wykluczenia (Skidfuscator >= 2.0.0)
+# Pierwsze kroki
 
-Wyrażenie regularne (regex) to specjalny wzorzec wyszukiwania, który jest używany do identyfikowania i manipulowania stringami. Jest on powszechnie stosowany do wyszukiwania, zamiany i weryfikacji tekstu. Regeksy są zapisane w specjalnym języku formalnym i znajdują zastosowanie w programowaniu, analizie danych i innych dziedzinach aplikacji.
+Jeśli już pobrałeś Skidfuscator na swój komputer i chcesz wiedzieć, jak go uruchomić, to oto kilka wskazówek dotyczących uruchamiania programu.
 
-Skidfuscator używa wyrażeń regularnych do obsługi procesu konfiguracji, włączania i wyłączania określonych elementów.
+Skidfuscator jest uruchamiany za pomocą wiersza poleceń i korzysta z interfejsu wiersza poleceń Java CLI. Zdecydowanie zalecamy zapoznanie się z tym, aby móc cieszyć się płynnym działaniem i optymalnym korzystaniem z programu.
 
-Zrozumienie wykluczeń może być początkowo trudne, ale uwierz mi, jest to dość łatwe, gdy już się to zrozumie.
+## Dostępne opcje
 
-Przede wszystkim ważne jest, aby zrozumieć podstawowe wyrażenia regularne.
+Wystarczy uruchomić `java -jar <yourSkidfuscatorFile.jar>` i zostaną wyświetlone różne opcje:
 
-## Podstawy Regex (wyrażeń regularnych)
+![Opcje Skidfuscator](https://i.imgur.com/Yu70Pcq.png)
 
-- Oto podstawowy ciąg do wykrywania wszystkiego:
-```java
-(.*?)
+
+#### Twój wybrany plik
+Plik, który chcesz zaciemnić za pomocą Skidfuscator.
+```cli
+<input>
 ```
 
-Stałoby się więc, co następuje:
-```java
-abozeofez // Wykryto!
-zeigzoegze // Wykryto!
+#### Twoje wykluczenia
+Ścieżka do pliku zawierającego wykluczenia.
+```cli
+--exempt=<exempt>
 ```
 
-***
-
-- Aby dopasować dowolny ciąg, który zawiera "ryk", musiałbyś mieć
-```java
-ryk
-
-````
-
-
-
-
-
-Stałoby się więc, co następuje:
-
-``java
-
-ryk // Dopasowano!
-asdafryk // Dopasowano!
-grrr // Nie dopasowania!
+#### Pomiń obliczenie
+**UŻYWAJ TEGO NA WŁASNE RYZYKO** Całkowicie pomija krytyczne formy obliczeń, takie jak biblioteki. Wsparcie może być ograniczone, jeśli zdecydujesz się skorzystać z tej opcji.
+```cli
+--fuckit
 ```
 
-***
-
-Aby dopasować dowolny ciąg rozpoczynający się _z_ "uwu", musiałbyś:
-```java
-^uwu
+#### Twoje biblioteki
+Ścieżka do folderu zawierającego biblioteki / zależności wymagane do zaciemnienia pliku jar.
+```cli
+--libs=<libs>
 ```
 
-Stałoby się więc tak:
-```java
-kitty-uwu // Brak dopasowania!
-uwu-kitty // Dopasowano!
+#### Rezygnacja z analizy
+Ta opcja nie zapewni nam żadnych analiz, takich jak napotkane błędy lub statystyki użytkowania obfuscatora.
+```cli
+--notrack
 ```
 
-- `kitty-uwu` nie będzie pasować, ponieważ uwu jest przyrostkiem, a zatem nie zaczyna się od słowa `uwu`.
-- `uwu-kitty` *będzie pasować*, ponieważ określony prawidłowy prefiks jest obecny.
-
-***
-
-Jeśli chcesz dowiedzieć się więcej o Regex, zajrzyj tutaj: [Regex tutorial](https://medium.com/factory-mind/regex-tutorial-a-simple-cheatsheet-by-examples-649dc1c3f285).
-
-## Pisanie Wykluczeń
-Jest to bardzo proste i łatwe do wykonania.
-
-- Utwórz plik, w którym zapiszesz swoje wykluczenia, zalecamy użycie pliku txt.
-
-Skidfuscator odczytuje wtrącenia i wykluczenia w ten sam sposób: jeśli pasuje do wzorca Regex, __**nie zostanie odczytane ani zaciemnione****.
-
-### Wykluczenia
-Używając dopasowania Regex do przodu, jak pokazano poniżej, można dopasować dowolny typ klasy. Pamiętaj, aby uciec od dowolnego "/" za pomocą "\\", aby zapobiec uszkodzeniu Regex i spędzeniu godzin na zastanawianiu się, co jest nie tak.
-
-Poniżej znajdują się różne przykłady pasujących klas i metod wykluczeń:
-
-```java
-// Spowoduje to dopasowanie dowolnej metody o nazwie "main"
-method{main} 
-// To dopasuje każdą metodę, która zaczyna się od "com.apache" 
-// (dowolna nazwa klasy zastępuje "." znakiem "/")
-class{^com\/apache} 
-// Spowoduje to dopasowanie dowolnej metody zaczynającej się od "com.google" 
-// (dowolna nazwa klasy zastępuje "." znakiem "/")
-class{^com\/google} 
-// Spowoduje to dopasowanie dowolnej metody w klasie "Controller"
-class{Controller$} 
-// Spowoduje to dopasowanie dowolnej metody w klasie "com.example.MyClass"
-class{^com\/example\/MyClass$}
+#### Zaciemniony plik
+Ścieżka do miejsca, w którym ma zostać stworzony zaciemniony plik, jeśli ta opcja pozostanie pusta, zostanie stworzony w katalogu, w którym został uruchomiony Skidfuscator.
+```cli
+--output=<output>
 ```
 
-#### Wiele wykluczeń
-
-Aby móc wykluczyć na przykład kilka metod lub pakietów, jest to naprawdę proste! Wystarczy utworzyć nową linię i dodać nowe wykluczenie :)
-
-```java
-class{^com\/apache} // Matches apache
-class{^com\/google} // Matches google
+#### Phantom computation
+Umożliwia włączenie obliczeń dla klas, ponownie, jeśli ta opcja jest używana, wsparnie może być ograniczone. Zdecydowanie zalecamy dostarczenie wymaganych bibliotek.
+```cli
+--phantom
 ```
 
-
-### Włączenia
-W przeciwieństwie do wykluczeń, możesz chcieć **zawierać tylko określony zestaw klas lub pakiet** w swoim zaciemnionym pliku. Bez obaw, jest to możliwe, choć nieco bardziej skomplikowane.
-
-```java
-// Spowoduje to dopasowanie wszystkich klas pakietu "com.example"
-class{^(?!(com\/example)).*$} 
-
-// Spowoduje to dopasowanie wszystkich klas pakietu "com.example" i 
-// wszystkie klasy pakietu "com.eclipse". 
-// Możesz dodać dowolną liczbę pakietów za pomocą argumentu "|".
-class{^(?!(com\/example)|(com\/eclipse)).*$} 
-```
-
-## Debugowanie Wykluczeń
-
-Zdecydowanie zalecam użycie debuggera Regex, takiego jak [Regex101](https://regex101.com/), aby móc dowiedzieć się, co pasuje, a co nie.
-
-Wszystkie nazwy klas są domyślnie zgodne z formatem "pakiet1/pakiet2/klasa1". Chociaż w JVM można zobaczyć, że jest on sformatowany inaczej, w przypadku Skidfuscatora powyższy format został uznany za najbardziej efektywny i odzwierciedlający hierarchię plików Jar/Zip.
-
-## Przykładowy plik Wykluczeń
-
-Wielu naszych klientów opracowuje modyfikacje lub wtyczki do gry Minecraft, zobacz poniżej szablon / przykładowy plik konfiguracyjny z najczęściej wymaganymi wykluczeniami:
-
-```java
-// Wykluczenia pakietów poniżej
-class{^net\/minecraftforge} // Pasuje do Minecraft Forge
-class{^net\/minecraft\/client} // Pasuje do klienta Minecraft
-class{^net\/minecraft\/server} // Pasuje do serwera Minecraft
-class{^org\/bukkit} // Pasuje do Bukkit
-class{^com\/mojang} // Pasuje do Mojang
-class{^me\/johnymuffin} // Pasuje do JohnyMuffin
-class{^com\/sk89q} // Dopasowania Sk89q
-class{^org\/spigotmc} // Pasuje do SpigotMC
-class{^org\/apache\/commons} // Pasuje do Apache Commons
-class{^org\/jline} // Pasuje do JLine
-
-// Wykluczenia metod poniżej 
-method{^net\.minecraft\.client} // Wyklucza wszystkie metody z pakietu net.minecraft.client 
-method{^net\.minecraft\.util} // Wyklucza wszystkie metody z pakietu net.minecraft.util 
-method{^net\.minecraft\.client\.Minecraft} // Wyklucza wszystkie metody z klasy Minecraft
+#### Specifying runtime
+Ścieżka do java runtime.
+```cli
+--runtime=<runtime>
 ```
