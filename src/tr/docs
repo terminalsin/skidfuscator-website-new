@@ -1,14 +1,25 @@
-## Akış Koşulu (Flow Condition)
+## Flow Exceptions
 
-Bu dönüştürücü, opak yüklem analizine karşı bir ilk kalkan görevi görür. Statik analizin hangi tamsayının opak bir yüklem olduğunu tespit etmesini önlemek için, bu özel tamsayıyı zaten var olan if ifadelerine ekstra koşullar eklemek için kullanırız. Bu sadece yazılımınıza ekstra güvenlik katmakla kalmaz, aynı zamanda birçok aracın deobfuscation ve decompilation sürecini de engeller.
+Flow Exception, kod çözücülerin geçerli Java kodu çıktısı almasını zorlaştırmak için Java kodunuza ek güvenlik katmanları ekleyen bir gizleme dönüşümüdür. Bunu, kontrol akışını değiştirerek ve programın işlevselliğini değiştirmeden mantığı karmaşıklaştıracak şekilde istisna düşme kodu ekleyerek yapar.
 
-Flow Exception dönüştürücüsüne kıyasla bu, yalnızca bir uç durumu işleyen çok daha basitleştirilmiş bir sürümdür.
+Yüksek seviyede, transformatör aşağıdaki şekilde çalışır:
+- İlk olarak, dönüştürücü kodunuzdaki yöntemleri inceler ve uyumluluk sorunlarını önlemek için soyut yöntemleri, init yöntemlerini ve kod içermeyenleri atlar.
+- Daha sonra dönüştürücü, yapılandırma ayarlarına göre uygun gizleme stratejisini (Zayıf, İyi veya Agresif) belirler. Her strateji farklı bir gizleme düzeyi sunar ve exceptionlarla ilgili kodun ne sıklıkta eklendiğini etkiler.
+- Bu yapıldıktan sonra, kontrol akış grafiğindeki her blok için dönüştürücü, gizlemeden muaf tutulup tutulmayacağını kontrol eder. Boş blokları, proxy bloklarını ve istisnaya duyarlı blokları atlar. Bir blok gizleme için uygunsa, dönüştürücü seçilen stratejiye göre gizlemenin uygulanıp uygulanmayacağına karar verir.
+- Uygulandığında, dönüştürücü benzersiz bir tohum üretir ve opak yüklemi güvence altına almak için hashing kullanır. Daha sonra throw deyimine sahte bir koşullu atlama ekleyerek akışın düşmesine neden olur.
+- Bazı durumlarda dönüştürücü, bloğun hem başlangıcına hem de rastgele konumlarına ikincil bir koşullu atlama ifadesi ekleyerek ek bir gizleme katmanı ekleyebilir.
 
 ## Yapılandırma Ayarı
 
+Bu özel transformatör için üç mod mevcuttur:
+- `ZAYIF`: Daha önce çalıştırıldıysa, rastgele bir boolean değeri çalıştırır; daha önce çalıştırılmadıysa (ortalama %75 ekleme oranıyla) çalıştırır
+- `İYİ`: Her zaman bir kez çalıştır (ortalama %100 ekleme oranı)
+- `AGRESİF`: Her zaman iki kere çalıştır (ortalama 200% ekleme oranı)
+
 ```js
-flowCondition {
+flowException {
     enabled: true
+    strength: AGGRESSIVE // Can be 'WEAK', 'GOOD' or 'AGGRESSIVE'
     exempt: []
 }
 ```
@@ -19,10 +30,6 @@ flowCondition {
 ```java
 public static void main(String[] args) {
     int number = callNumber();
-
-    if (number == 1) {
-        System.out.println("Hello world");
-    }
     /*[...]*/
 }
 /*[...]*/
@@ -32,29 +39,21 @@ public static void main(String[] args) {
 ```java
 public static void main(String[] args) {
     /*[...]*/
-    label1: {
-        while (true) {
-            if (n ^ 0x8AF8EF8F == 0xA88FFA) {
-                break;
-            }
-
-            n = n ^ 0x28847D;
-            int number = callNumber();
-
-            label2: {
-                if (number != 1)
-                    break label1;
-
-                if (n ^ 0xAA9F8FFD != 0x989F7AF)
-                    break label2;
-
-                System.out.println("Hello world");
-                break label1;
-            }
-
-            throw new IllegalStateException();
+    while (true) {
+        if (n ^ 0x8AF8EF8F == 0xA88FFA) {
+            break;
         }
+
+        n = n ^ 0x28847D;
+        int number = callNumber();
+
+        if (n ^ 0xAA9F8FFD == 0x989F7AF) {
+            break;
+        }
+
+        throw new IllegalStateException();
     }
+
     /*[...]*/
 }
 /*[...]*/
