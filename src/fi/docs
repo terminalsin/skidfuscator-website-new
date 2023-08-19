@@ -1,76 +1,31 @@
-# Kirjastot
+# Meidän Filosofia
 
-Ahhh me kaikki vihaamme niitä, mutta jotta emme sotke ohjelmistoasi, meidän on käytettävä näitä. Se auttaa yksinkertaistamaan kokoonpanot ja niin edelleen. Toivottavasti maven-laajennuksessa nämä käsitellään automaattisesti. Se on kuitenkin vain Toinen asia tehtävälistallamme toistaiseksi.
+## Keitä me olemme?
+Skidfuscator, olemme intohimoinen auttaa Java kehittäjät suojelemaan henkistä omaisuutta. Koska olemme kokeneita ohjelmistokehittäjiä, ymmärrämme, että on tärkeää suojata koodisi käänteistekniikalle ja luvattomalle pääsylle. Siksi olemme kehittäneet Skidfuscatorin, tehokkaan Java-byte-suojaimen, joka suojaa ohjelmistosi piratismilta, peukaloinnilta ja käänteiseltä suunnittelulta.
 
-Riippuvuuksien lisääminen on melko yksinkertaista:
-1. Luo kansio nimeltä "libs"
-2. Vedä kaikki riippuvuudet mainittuun kansioon
-3. Lisää skidfuscatorin komentorivin suoritukseen "-li=\<path to folder\>"
+## Meidän tehtävämme
+Meidän tehtävämme on tarjota Javan kehittäjille työkalu, jota he tarvitsevat suojellakseen arvokasta henkistä omaisuuttaan. Ymmärrämme, että Java alusta on laajalti käytetty laadukkaiden ohjelmistosovellusten kehittämiseen. ja uskomme, että suojaaminen Java koodi on välttämätön säilyttämiseksi kilpailukykyinen reuna. Siksi olemme kehittäneet Skidfuscatorin, luotettavan ja naisystävällisen Java-suojaimen, joka auttaa sinua suojaamaan Java-sovelluksesi käänteiseltä suunnittelulta ja muokkaukselta.
 
-Esimerkki:
-```console
-java -jar obfuscator-1.0.0-SNAPSHOT.jar -li=libs obfuscate FluffyClicker.jar
-```
-![Kuva esimerkistä](https://i.imgur.com/AYxEoYp.png)
+## Miksi olemme tehneet Skidfuscator?
+Skidfuscatorilla uskomme, että Java-kehittäjillä pitäisi olla pääsy kohtuuhintaisiin ja tehokkaisiin hämäräratkaisuihin immateriaaliomaisuutensa suojaamiseksi. Tiimimme on sitoutunut tarjoamaan laadukkaita hämäräperäisiä ratkaisuja, jotka ovat helppokäyttöisiä, mutta tarpeeksi tehokkaita kestämään jopa kaikkein päättäväisimpiä hyökkäyksiä. Pyrimme jatkuvasti parantamaan tuotteitamme ja pysymään ajan tasalla ohjelmistojen suojauksen ja hämärtymisen uusimman kehityksen kanssa.
 
-## How to get dependencies from a Gradle project ?
+Ymmärrämme, että hämärtyminen voi olla monimutkainen ja haastava prosessi, erityisesti kehittäjille, jotka ovat uusia tällä alalla. Siksi olemme suunnitelleet Skidfuscatorin olevan mahdollisimman käyttäjäystävällinen ja intuitiivinen. Obfuskaattorimme avulla voit suojata Java-bytekoodisi nopeasti ja vaivattomasti ilman erityisiä taitoja tai edistynyttä tietämystä. Kattava dokumentaatio ja erinomaiset tukipalvelut varmistavat, että voit aloittaa hämärtymällä ilman aikaa ja suojata ohjelmistoasi.
 
-### Gradle Groovy
+Skidfuscatorilla uskomme yhteistyön ja avoimen viestinnän voimaan. Teemme tiivistä yhteistyötä asiakkaidemme kanssa ymmärtääksemme heidän ainutlaatuiset tarpeensa ja haasteensa, ja olemme aina valmiita tarjoamaan henkilökohtaista tukea ja neuvoja. Tiimimme on omistautunut auttamaan sinua suojaamaan immateriaaliomaisuuttasi ja saavuttamaan tavoitteesi. Vaikka se olisi iso tai pieni.
 
-Add this task to your build.gradle file:
-```groovy
-task copyDeps(type: Copy) {
-    from configurations.compile
-    into 'libs'
-}
-```
+Skidfuscator on lopullinen ratkaisu voit suojella Java-koodiasi. Tehokas suojausohjelmamme on suunniteltu suojaamaan ohjelmistosi käänteiseltä suunnittelulta ja peukaloinnilta ja varmistamaan, että henkinen omaisuutesi pysyy turvassa. Olemme sitoutuneet tarjoamaan asiakkaillemme huippuluokan koodisuojausratkaisun, erinomaisen tuen ja käyttäjäystävällisen koodisuojan, joka on helppokäyttöinen ja erittäin tehokas. Valitse Skidfuscator tänään ja suojata Java sovelluksia luvaton pääsy ja varkaus.
 
-Then run the task:
-```console
-gradlew copyDeps
-```
+## Meidän Metodologia
 
-### Gradle Kotlin
+Me Skidfuscatorilla uskomme, että pitkäjänteinen ja joustava lähestymistapa ongelmanratkaisuun on olennaisen tärkeää kestävän menestyksen kannalta. Lyhyen aikavälin korjaukset ja nopeat ratkaisut voivat tarjota tilapäistä helpotusta, mutta ne aiheuttavat usein enemmän ongelmia ja haittaavat pitkän aikavälin edistymistä.
 
-Add this task to your build.gradle.kts file:
-```kotlin
-tasks.register<Copy>("copyDeps") {
-    from(configurations.compile)
-    into("libs")
-}
-```
+### Meidän lähestymistapamme
+Varmistetaan, että käsittelemme ongelmia kestävällä ja kestävällä tavalla, priorisoimme asian perimmäisen syyn ymmärtämistä sen sijaan, että vain puutumme sen oireisiin. Ottamalla aikaa analysoida ongelman perusteellisesti, voimme tunnistaa taustatekijät, jotka vaikuttavat sen esiintymiseen, ja kehittää kohdennettuja ratkaisuja, joilla puututaan suoraan näihin tekijöihin.
 
-Then run the task:
-```console
-gradlew copyDeps
-```
+Ongelman perimmäisen syyn tunnistamisen lisäksi asetamme etusijalle yhteistyön ja tiedon jakamisen, kun lähestymme monimutkaisia ongelmia. Tunnustamme, että kenelläkään henkilöllä tai tiimillä ei ole kaikkia vastauksia, ja että ratkaisuja syntyy usein yhteisten ponnistelujen ja näkemysten kautta eri ryhmiä. Kannustamme tiimejämme tekemään yhteistyötä eri alojen välillä ja hyödyntämään tarvittaessa ulkopuolisten kumppaneidemme asiantuntemusta, jotta voimme löytää kokonaisvaltaisia ratkaisuja, joissa käsitellään ongelman kaikkia osia.
 
-## How to get dependencies from a Maven project ?
+### Meidän painotuksemme
+Lisäksi korostamme voimakkaasti jatkuvaa parantamista ja oppimista. Tunnustamme, että jopa kaikkein kattavimpia ratkaisuja voidaan parantaa ajan mittaan ja että maailma muuttuu ja kehittyy jatkuvasti. Kannustammekin tiimiämme arvioimaan säännöllisesti toimintamme tehokkuutta ja tunnistamaan parannuskeinoja. Lisäksi priorisoimme jatkuvaa koulutusta ja kehitystä varmistaaksemme, että tiimimme pysyvät ajan tasalla uusimmista tutkimuksista ja parhaista käytännöistä omilla aloillaan.
 
-Add this task to your pom.xml file:
-```xml
-<build>
-    <plugins>
-        <plugin>
-            <artifactId>maven-dependency-plugin</artifactId>
-            <executions>
-                <execution>
-                    <id>copy-dependencies</id>
-                    <phase>package</phase>
-                    <goals>
-                        <goal>copy-dependencies</goal>
-                    </goals>
-                    <configuration>
-                        <outputDirectory>${project.build.directory}/libs</outputDirectory>
-                    </configuration>
-                </execution>
-            </executions>
-        </plugin>
-    </plugins>
-</build>
-```
-
-Then run the task:
-```console
-mvn package
-```
+### Meidän prioriteettimme
+Asettamalla ongelmanratkaisussa etusijalle pitkäjänteisen ja joustavan lähestymistavan uskomme, että voimme luoda kestäviä ratkaisuja, jotka hyödyttävät omaa yhteisöämme ja edistävät samalla merkittävästi laajempaa hyvää. Vaikka se voi olla houkuttelevaa jatkaa nopeita korjauksia ja lyhyen aikavälin heuristics, myönnämme, että nämä lähestymistavat johtavat usein tahattomiin kielteisiin seurauksiin ja haittaavat pitkän aikavälin edistymistä. Sen sijaan asetamme etusijalle yhteistyön, jatkuvan parantamisen ja kestämättömät käytännöt varmistaaksemme, että ratkaisumme ovat tehokkaita ja nopeita.
