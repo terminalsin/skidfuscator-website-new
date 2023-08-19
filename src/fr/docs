@@ -1,58 +1,57 @@
-## Détourage
+## Chiffrement des nombres (Number Encryption)
 
-Le détourage fait référence au processus d'extraction de code d'une méthode et de placement dans une méthode séparée et indépendante. Cela est souvent fait pour améliorer la lisibilité et la maintenabilité du code, car cela peut rendre plus facile de comprendre ce qu'une méthode fait en la divisant en parties plus petites et plus ciblées.
+Le transformateur de chiffrement des nombres chiffre tout chiffre basé sur des entiers pour le masquer. Ceci est parfait pour rendre le code illisible en général et rendre plus difficile pour les rétro-ingénieurs d'obtenir un code source clair. Cela renforce en outre toutes les conditions basées sur des booléens.
 
-Le détourage peut également être utilisé comme une forme d'obfuscation du code, car il peut rendre plus difficile pour quelqu'un qui tente de décompiler ou de comprendre le code de voir le flux global et la structure du programme. En divisant le code en morceaux plus petits et en le séparant dans différentes méthodes, il peut être beaucoup plus difficile pour quelqu'un de comprendre les relations entre différentes parties du flux et comment elles s'assemblent pour effectuer une fonction particulière.
+Le chiffrement des nombres repose sur l'obfuscation de flux GEN3 et peut, dans la sortie décompilée, apparaître comme suit :
 
-![Explication du graphe de détourage](https://i.imgur.com/2HMq0a4.png)
+Supposons le scénario suivant :
+- $x$ est le nombre que nous voulons chiffrer
+- $n$ est la « graine » (seed) du bloc
+- $d$ est le numéro chiffré
 
-La chose fantastique à propos du détourage, c'est que ce n'est pas *techniquement* réversible ! Pour pouvoir revenir à un état original d'une bonne obfuscation par détourage, un désobfuscateur *doit effectuer l'insertion de code (inlining)*, qui est une heuristique et *ne garantit pas* que la sortie soit toujours sémantiquement correcte par rapport au code source original. De plus, cela nécessite au désobfuscateur de manipuler les variables et autres formes de manipulation délicate du bytecode, ce qui peut entraîner des exceptions de cadre et de calcul.
+Selon la mécanique xor simple : $x\oplus n\oplus n=x$
 
-Dans l'ensemble, l'obfuscation par détourage est plutôt astucieuse :)
+Donc, par définition, si $n$ est notre graine, on doit calculer $d$ comme $d = x\oplus n$. Ensuite, nous devons modifier les instructions de bytecode telles que :
 
-::: warning
-Le transformateur d'extraction est encore au tout début de son développement. En raison du fonctionnement du vérificateur Java, tous les scénarios peuvent ne pas être correctement vérifiés, ce qui peut entraîner des problèmes de compilation. Veuillez l'utiliser à vos propres risques, et si vous rencontrez des problèmes, veuillez les signaler.
+```java
+int value = x;
+```
 
-Note pour moi-même : Je déteste les cadres de pile
-:::
+devient
+```java
+int value = d ^ n;
+```
+
+Là où $d$ est la valeur calculée à l'avance sous la forme d'une constante et $n$ le prédicat opaque. Exemple :
+```java
+int value = 5;
+```
+devient
+```java
+int predicate = 0x100;
+int value = 105 ^ predicate;
+```
 
 ## Configuration
 
+Actuellement, il n'y a qu'un seul mode de chiffrement des chiffres, `STANDARD`
+
 ```js
-outliner {
-     enabled: true
-     exempt: []
+numberEncryption {
+    enabled: true
+    exempt: []
 }
 ```
 
 ## Examples
-
 #### Non obfusqué
-
 ```java
-public static void main(String[] args) {
-    int number = callNumber();
-    /*[...]*/
-}
-
-static int callNumber() {
-    return 1;
-}
+int var = 1000;
+System.out.println(var + 1 + 2 + 3);
 ```
 
 #### Obfusqué
 ```java
-public static void main(String[] args) {
-    step1_AF8FZE8EF7Z89F();
-    /*[...]*/
-}
-
-static void step1_AF8FZE8EF7Z89F() {
-    int number = callNumber();
-}
-
-
-static int callNumber() {
-    return 1;
-}
+int var = 0xA0290233 ^ n;
+System.out.println(var + 0x92083838 ^ n + 0x92083839 ^ n + 0x92083840 ^ n);
 ```
