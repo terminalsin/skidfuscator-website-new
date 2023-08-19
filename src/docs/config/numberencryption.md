@@ -58,4 +58,3 @@ System.out.println(var + 1 + 2 + 3);
 int var = 0xA0290233 ^ n;
 System.out.println(var + 0x92083838 ^ n + 0x92083839 ^ n + 0x92083840 ^ n);
 ```
-

@@ -15,7 +15,7 @@ At Skidfuscator, we believe in the power of collaboration and open communication
 
 Skidfuscator is the ultimate solution for you to protect your Java code. Our powerful obfuscator is designed to safeguard your software against reverse engineering and tampering, ensuring that your intellectual property remains safe and secure. We are committed to providing our clients with a top-quality obfuscation solution, excellent support, and user-friendly obfuscator that is easy to use and highly effective. Choose Skidfuscator today and protect your Java applications against unauthorized access and theft.
 
-## Our Methodology 
+## Our Methodology
 
 At Skidfuscator, we believe that a long-term and resilient approach to problem-solving is essential for sustainable success. While short-term fixes and quick solutions may provide temporary relief, they often create more problems down the line and hinder long-term progress.
 

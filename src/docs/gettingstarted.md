@@ -27,7 +27,7 @@ The path to the file which contains your exclusions.
 **USE THIS AT YOUR OWN RISK**
 Completely skips critical forms of computation such as libraries. Support may be limited if you choose to use this option.
 ```cli
-`--fuckit
+--fuckit
 ```
 
 #### Your libraries 

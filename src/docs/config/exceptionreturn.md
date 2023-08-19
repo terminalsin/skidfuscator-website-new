@@ -45,7 +45,3 @@ void callNumber() {
     throw new IntNumberException(1);
 }
 ```
-
-
-
-

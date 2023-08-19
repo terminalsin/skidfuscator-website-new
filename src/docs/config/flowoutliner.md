@@ -56,5 +56,3 @@ static int callNumber() {
     return 1;
 }
 ```
-
-

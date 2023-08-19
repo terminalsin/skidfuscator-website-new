@@ -108,4 +108,3 @@ category:
 - Fixed community mappings generator.
 - Fixed exception transformer causing issues with string encryption.
 - Fixed annotation string encryption.
-

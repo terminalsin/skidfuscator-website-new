@@ -265,6 +265,3 @@ There are currently two modes for String encryption: `STANDARD` and `POLYMORPHIC
 The number encryption transformer encrypts any integer-based numeral to be hidden. This is perfect for uglifying
 the code in general and making it more of a hardship for reverse-engineers to obtain a clean source code. This
 furthermore reinforces any boolean-based conditionals.
-
-
-#### 

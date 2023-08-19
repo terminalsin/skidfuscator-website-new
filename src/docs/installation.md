@@ -22,4 +22,4 @@ It is important to note that typically you should give the JVM more than the def
 
 See below on how to add more memory to Skidfuscator: 
 
-`java -Xmx4g -jar skidfuscator.jar` in your command line interface tool.
+`java -Xmx4G -jar skidfuscator.jar` in your command line interface tool.
