@@ -1,31 +1,254 @@
-# Nasza Filozofia
 
-## Kim jesteśmy?
-W Skidfuscatorze z zaangażowaniem wspieramy programistów Javy w ochronie ich własności intelektualnej. Jako doświadczony zespół programistów, doskonale zdajemy sobie sprawę, jak istotne jest zabezpieczenie Twojego kodu przed odwróconą inżynierią i nieuprawnionym dostępem. Dlatego też opracowaliśmy Skidfuscator, potężne narzędzie do obfuskacji kodu Java bytecode, które chroni Twoje oprogramowanie przed nieautoryzowanymi modyfikacjami i odwróconą inżynierią.
+# Konfiguracja
 
-## Nasza misja
-Naszym celem jest dostarczanie programistom Java narzędzi, które pomagają chronić ich cenne własności intelektualne. Jesteśmy świadomi, że platforma Java jest szeroko stosowana do tworzenia zaawansowanych aplikacji oprogramowania, dlatego uważamy, że ochrona Twojego kodu Java jest kluczowa dla zachowania Twojej przewagi konkurencyjnej. Dlatego stworzyliśmy Skidfuscator - niezawodny i łatwy w użyciu obfuscator Java, który pomaga chronić Twoje aplikacje przed odwróconą inżynierią i manipulacją.
+Tutaj dowiesz się wszystkiego o konfiguracji. Należy pamiętać o przeczytaniu tych szczegółów bardzo uważnie. W razie jakichkolwiek problemów prosimy o kontakt. Dla członków premium przysługuje bezpłatna usługa konfiguracji przez nasz zespół.
 
-## Dlaczego stworzyliśmy Skidfuscator?
-Jako Skidfuscator uważamy, że programiści Java powinni mieć dostęp do przystępnych cenowo i skutecznych rozwiązań służących ochronie ich własności intelektualnej. Nasz zespół jest zaangażowany w zapewnienie łatwych do użycia rozwiązań o najwyższej jakości, które są jednak wystarczająco potężne, aby wytrzymać nawet najsilniejsze ataki. Ciągle pracujemy nad ulepszeniem naszego produktu i cały czas aktualizujemy swoją wiedzę zgodnie z najnowszymi zmianami w zakresie ochrony oprogramowania i zaciemniania kodu.
+## Podstawowe konfiguracje
 
-Rozumiemy, że zaciemnianie kodu może być skomplikowanym i trudnym procesem, zwłaszcza dla programistów, którzy są nowi w tej dziedzinie. Dlatego właśnie zaprojektowaliśmy Skidfuscator tak, aby był przyjazny dla użytkownika i intuicyjny w użyciu. Z naszym obfuscatorem możesz szybko i łatwo zaciemnić swój kod Java, bez potrzeby posiadania żadnych szczególnych umiejętności lub wiedzy. Nasza kompleksowa dokumentacja i wspaniała pomoc techniczna gwarantują, że możesz zacząć zacemnianie swojego kodu bez poświęcenia wielu godzin na naukę, aby chronić swoje oprogramowanie.
+Podstawą konfiguracji jest [prostota](https://github.com/lightbend/config). Oznacza to, że domyślnie obsługujemy trzy następujące formaty: Java Properties, JSON i HOCON.
 
-W Skidfuscator wierzymy w siłę współpracy i otwartej komunikacji. Ściśle współpracujemy z naszymi klientami, aby zrozumieć ich unikalne potrzeby i wyzwania, i zawsze jesteśmy gotowi zapewnić spersonalizowane wsparcie i porady. Nasz zespół jest zaangażowany w pomoc w ochronie własności intelektualnej i osiąganiu celów, bez względu na to, jak duże lub małe mogą one być.
+Zasadniczo **zalecamy korzystanie z HOCON**, ponieważ jest prostszy, bardziej elegancki i ogólnie łatwy w użyciu. Zobacz dołączoną domyślną konfigurację:
 
-Skidfuscator to najlepsze rozwiązanie do ochrony kodu Java. Nasz potężny obfuscator został zaprojektowany w celu ochrony oprogramowania przed inżynierią wsteczną i manipulacją, zapewniając, że własność intelektualna pozostaje bezpieczna. Dokładamy wszelkich starań, aby zapewnić naszym klientom najwyższej jakości rozwiązanie do obfuskacji, doskonałe wsparcie i przyjazny dla użytkownika obfuscator, który jest łatwy w użyciu i wysoce skuteczny. Wybierz Skidfuscator już dziś i chroń swoje aplikacje Java przed kradzieżą kodu.
+```javascript
+exempt: []
 
-## Nasza metodologia
+libs: []
 
-W Skidfuscator uważamy, że długoterminowe i odporne podejście do rozwiązywania problemów ma zasadnicze znaczenie dla osiągnięcia trwałego sukcesu. Podczas gdy krótkoterminowe rozwiązania i szybkie rozwiązania mogą stanowić tymczasową pomoc, często stwarzają więcej problemów i utrudniają postępy w dłuższej perspektywie.
+stringEncryption {
+  type: STANDARD
+  enabled: true
+  exempt: []
+}
 
-### Nasze podejście
-Dążąc do odpornego i zrównoważonego podejścia, kładziemy nacisk na zrozumienie pierwotnej przyczyny problemu, a nie tylko na zajmowanie się jego objawami. Przeznaczając czas na dokładną analizę problemu, jesteśmy w stanie zidentyfikować fundamentalne czynniki przyczyniające się do jego wystąpienia i opracować skierowane rozwiązania, które bezpośrednio adresują te czynniki.
+numberEncryption {
+  enabled: true
+  exempt: []
+}
 
-Naszym priorytetem jest nie tylko identyfikowanie pierwotnej przyczyny problemu, ale także promowanie współpracy i wymiany wiedzy w celu skutecznego rozwiązywania złożonych problemów. Rozumiemy, że żadna osoba nie posiada wszystkich odpowiedzi, a prawdziwe rozwiązania często powstają dzięki wspólnym wysiłkom i spostrzeżeniom różnych grup. Przykładamy dużą wagę do współpracy między naszymi zespołami i wykorzystywania wiedzy naszych partnerów zewnętrznych, gdy jest to konieczne. Dzięki temu tworzymy kompleksowe rozwiązania, które uwzględniają wszystkie aspekty danej kwestii.
+intAnnotationEncryption {
+  enabled: true
+  exempt: []
+}
 
-### Nacisk
-Dodatkowo, priorytetem dla nas jest nieustanne doskonalenie i rozwój poprzez ciągłą naukę. Rozumiemy, że nawet najbardziej kompleksowe rozwiązania można stale udoskonalać, ponieważ świat nieustannie się zmienia i ewoluuje. W związku z tym, zachęcamy nasze zespoły do regularnego oceniania skuteczności naszych rozwiązań i identyfikowania obszarów, w których możemy dokonać ulepszeń. Przywiązujemy również dużą wagę do ciągłego rozwoju naszych zespołów, aby były zawsze na bieżąco z najnowszymi badaniami i najlepszymi praktykami w swoich dziedzinach.
+stringAnnotationEncryption {
+  enabled: true
+  exempt: []
+}
 
-### Nasze priorytety
-Poprzez koncentrację na długoterminowym i odpornym podejściu do rozwiązywania problemów, wierzymy, że możemy tworzyć trwałe rozwiązania, które będą przynosić korzyści naszej społeczności i przyczyniać się do dobra większego niż jednostkowe. Mimo że krótkoterminowe i szybkie rozwiązania mogą wydawać się kuszące, zdajemy sobie sprawę, że często prowadzą one do niezamierzonych negatywnych skutków i utrudniają osiąganie długoterminowego postępu. Zamiast tego, skupiamy się na współpracy, ciągłym doskonaleniu i stosowaniu zrównoważonych praktyk, aby zapewnić, że nasze rozwiązania są skuteczne i wydajne.
+exceptionReturn {
+  enabled: true
+  exempt: []
+}
+
+flowCondition {
+  enabled: true
+  exempt: []
+}
+
+flowException {
+  enabled: true
+  strength: AGGRESSIVE
+  exempt: []
+}
+
+flowRange {
+  enabled: true
+  exempt: []
+}
+
+flowFactoryMaker {
+  enabled: true
+  exempt: []
+}
+
+flowSwitch {
+  enabled: true
+  exempt: []
+}
+
+outliner {
+  enabled: true
+  exempt: []
+}
+
+ahegao {
+  enabled: true
+  exempt: []
+}
+
+native: {
+  enabled: false
+  exempt: []
+}
+
+driver: {
+  enabled: false
+}
+
+reference {
+  enabled: false
+}
+
+fileCrasher: {
+  enabled: false
+}
+
+classRenamer {
+  enabled: false
+  type: CUSTOM
+  prefix: "skido/"
+  chars: [
+    "K"
+    "oO",
+    "o0"
+  ]
+  depth: 3
+}
+
+methodRenamer {
+  enabled: false
+  type: CUSTOM
+  chars: [
+    "K"
+    "oO",
+    "o0"
+  ]
+  depth: 3
+}
+
+fieldRenamer {
+  enabled: false
+  type: ALPHABETICAL
+}
+```
+
+## Wykluczenia
+
+Korzystanie z wykluczeń jest identyczne jak w poprzednim systemie. Aby dowiedzieć się więcej o wykluczeniach, przejdź [tutaj](../exclusion.md)
+
+::: warning 
+Java analizuje stringi poprzez oczyszczanie ukośnika. Oznacza to, że MUSISZ podwoić wszystkie ukośniki
+:::
+
+### Wykluczanie klasy
+
+Aby wykluczyć określoną klasę, należy użyć wyjątku class regex:
+```js
+class{^my\/class}
+```
+
+Aby zmieścić to w konfiguracji, należy przekazać to jako string.
+
+
+```js
+exempt: [
+    "class{^my\\/class}"
+]
+```
+
+### Wykluczanie metody
+
+Aby wykluczyć określoną metodę, należy użyć wyjątku method regex:
+```js
+method{^myMethod}
+```
+
+Aby zmieścić to w konfiguracji, należy przekazać to jako string.
+
+```js
+exempt: [
+    "method{^myMethod}"
+]
+```
+
+### Wykluczanie metody w określonej klasie
+
+Tak jak dowiedziałeś się wcześniej, aby wykluczyć metodę i klasę, musimy wykonać następujące czynności:
+```js
+class{^my\/class}
+method{^myMethod}
+```
+
+Teraz, aby wykluczyć metodę w tej konkretnej klasie, wszystko, co należy zrobić, to połączyć te dwie metody w jednym wierszu:
+
+```js
+class{^my\/class} method{^myMethod}
+```
+
+W związku z tym w konfiguracji wyglądałoby to następująco:
+
+```js
+exempt: [
+    "class{^my\/class} method{^myMethod}"
+]
+```
+
+## Biblioteki
+
+Biblioteki są ważnym aspektem obliczania ścieżki klas i zapewniania maksymalnej ochrony oprogramowania. W tym przypadku należy podać prawidłowy argument ścieżki Java jako string
+
+Poniżej znajduje się kod implementacji:
+```java
+public File[] getLibs() {
+    return this.getStringList("libraries", Collections.emptyList())
+                .stream()
+                .map(File::new)
+                .distinct()
+                .toArray(File[]::new);
+}
+```
+
+Poniżej znajduje się przykład prawidłowych ścieżek java:
+```
+C:\test.jar
+test.jar
+./test.jar
+/Home/test.jar
+```
+
+W konfiguracji byłyby one reprezentowane w następujący sposób:
+
+```js
+libraries [
+    "C:\\test.jar",
+    "test.jar",
+    "./test.jar",
+    "/Home/test.jar"
+]
+```
+
+## Sterownik
+
+Sterownik jest częścią Skidfuscator. Ta funkcja jest tylko dla wersji Premium. W skrócie, dla każdej obfuskacji generowany i kompilowany jest nowy sterownik dla następujących architektur:
+
+| System operacyjny | Wspierane architektury |
+| ----------------- | ---------------------- |
+| Windows           | x64_86                 |
+| MacOS             | x64_86, AARCH64 (ARM)  |
+| Linux             | x64_86 (AMD64)         |
+
+Aby wyłączyć tę funkcję (:warning: znacznie zmniejsza to siłę zaciemniania), należy zmienić `false` na `true`:
+
+```js
+driver: false
+```
+
+
+## Transformers
+
+Każdy transformer można indywidualnie włączyć/wyłączyć.
+
+
+#### String Encryption
+
+Transformer szyfrowania stringów przekształca każdy string w określone wywołanie metody, w celu ukrycia go w czasie wykonywania. Może to być praktyczne w przypadku adresów URL, kluczy prywatnych itp.
+
+::: warning
+Nie ufaj tylko temu. Proszę nie polegać na szyfrowaniu stringów jako na wyłącznej ochronie twojego oprogramowania . Domyślnie należy założyć, że wystarczająco utalentowany człowiek może uzyskać do nich dostęp przy wystarczająco dużej cierpliwości.
+:::
+
+Obecnie dostępne są dwa tryby szyfrowania: `STANDARD` i `POLYMORPHIC`.
+
+#### Number Encryption
+
+Transformator szyfrowania liczb szyfruje dowolną liczbę całkowitą, która ma zostać ukryta. Jest to idealne rozwiązanie i utrudnianie osobom dekompilującym uzyskanie czystego kodu źródłowego. Ponadto wzmacnia to wszelkie warunki oparte na wartościach boolean.
