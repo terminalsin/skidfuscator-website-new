@@ -1,58 +1,19 @@
-## @Merkintä Salaus
+## Kehittyneet Järjestelmäohjaimen Kovennustekniikat
 
-Seuraavan sukupolven annotaatioiden salausmuuntaja muuttaa jokaisen annotaatioiden sisältämän merkkijonon ja kokonaisluvun tietyksi metodikutsuksi, jonka tarkoituksena on piilottaa se ajonaikana. Tämä voi olla käytännöllistä epävarmoille URL-osoitteille, yksityisille avaimille jne...
+Kuljettaja on karkaisu osa Skidfuscator. Tämä ominaisuus on varattu Premiumille. Yksinkertaista on, että tuote luo jokaista ajoa varten automaattisesti ainutlaatuisen järjestelmäajurin sovelluksesi suojaamiseksi. Ajuri tukee seuraavia:
 
-::: warning
-Asiakkaaseen ei pidä luottaa, EI KOSKAAN. Älä luota merkkijonon salaukseen ohjelmistosi ainoana suojana. Oletusarvoisesti sinun pitäisi olettaa, että käänteismuokkaajat pääsevät käsiksi näihin riittävän ajan ja kärsivällisyyden avulla.
-:::
+| Käyttöjärjestelmä | Tuetut Arkkitehtuurit |
+| ----------------- | --------------------- |
+| Ikkunat           | x64_86                |
+| MacOS             | x64_86, AARCH64 (ARM) |
+| Linux             | x64_86 (AMD64)        |
 
 
 ## Konfiguroi
+Jotta voit ottaa tämän ominaisuuden käyttöön (:warning: tämä lisää merkittävästi obfuscation vahvuutta), sinun on vaihdettava vaihtoehto:
 
 ```js
-stringAnnotationEncryption {
-    enabled: true
-    exempt: []
-}
-
-intAnnotationEncryption {
-    enabled: true
-    exempt: []
-}
-```
-
-## Esimerkkejä
-
-### Suojaamaton
-
-```java
-@SecretAnnotation(secret = "Supersalaisuus", secret2 = 1337)
-public class Fancy {
-    public String getSecret() {
-        return this.getClass().getAnnotation(SecretAnnotation.class).secret();
-    }
-
-    public int getSecre2t() {
-        return this.getClass().getAnnotation(SecretAnnotation.class).secret2();
-    }
-}
-```
-
-### Suojattu
-
-```java
-@SecretAnnotation(secret = "oifjaioejaifjea9è!efèaefFEf==", secret2 = 0x9FE7FE7F)
-public class Fancy {
-    public String getSecret() {
-        /* [...] */
-        return this.aofheoafo(this.getClass().getAnnotation(SecretAnnotation.class).secret(), n ^ 0x997AF8F);
-    }
-
-    public int getSecre2t() {
-        /* [...] */
-        return this.getClass().getAnnotation(SecretAnnotation.class).secret2() ^ n ^ 0x90AF9F7;
-    }
-
-    /* [...] */
+driver: {
+    enabled: false // Oletuksena pois päältä.
 }
 ```
