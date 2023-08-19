@@ -1,58 +1,57 @@
-## Outliner
+## Sayı Şifrelemesi
 
-Dışarı çıkarma, bir methoddan kodu çıkartarak ayrı, bağımsız bir methoda yerleştirme işlemini yapar. Bu genellikle kodun okunabilirliğini ve geliştirebilirliğini artırmak için yapılır, çünkü methodu daha küçük, daha odaklanmış kod parçalarına bölmek, methodun ne yaptığını anlamayı kolaylaştırır.
+Sayı şifreleme dönüştürücüsü integer tabanlı sayıları gizli olmaları için şifreler. Bu kodunuzu genel olarak okunamaz yapmak ve tersine mühendislerin temiz bir kaynak kodu elde etmesini zorlaştırmak için mükemmeldir. Bu ayrıca boolean tabanlı koşulluları da güçlendirir.
 
-Dışarı çıkarma, kodu tersine mühendislik yapmaya veya kodu anlamaya çalışan birinin programın genel akışını ve yapısını görmesini zorlaştırarak kod şifrelemesi olarak da kullanılabilir. Kodu daha küçük parçalara bölmek ve farklı methodlara ayırmak, birinin akışın farklı parçaları arasındaki ilişkileri anlamasını ve bu parçaların belirli bir işlevi nasıl gerçekleştirdiğini anlamasını daha zor bir hale getirebilir.
+Bu sayı şifrelemesi GEN3 flow kod gizleyicisine dayanır ve decompile edilmiş sonuç aşağıdaki gibidir
 
-![Outlining graph explanation](https://i.imgur.com/2HMq0a4.png)
+Aşağıdaki senaryoyu varsayalım:
+- $x$ bizim şifrelemek istediğimiz sayı
+- $n$ bloğun tohumu
+- $d$ şifrelenmiş sayı
 
-Dışarı çıkarma ile ilgili harika şey: *teknik olarak* geri döndürülemez olmasıdır! İyi bir dışarı çıkarmayı (outlining) şifrelemenin orijinal durumuna döndürebilmek için bir deobfuscator, *yöntem gömme (inlining)* yapmak zorundadır, ki bu sonucun her zaman orijinal kaynak koduyla aynı olucağını *garantilemez*. Ayrıca, bu şifreleme çözücünün(deobfuscator) değişkenlerle(integer) ve diğer çeşitli hassas bytecode manipülasyonlarıyla uğraşması gerektiğinden, hepsi hesaplama hatalarına sebep olabilir.
+Basit xor mekaniklerine göre: $x\oplus n\oplus n=x$
 
-Yani dışarı çıkarma(outlining) şifrelemeyi genel olarak oldukça etkilleyen ve kullanışlı yapan bir yöntemdir :)
+Yani, tanım olarak, eğer $n$ bizim tohumumuz ise, çalışma zamanında $d$ sayısını $d = x\oplus n$ olarak hesaplamalıyız. Daha sonra, bytecode talimatlarını şu şekilde düzenlemeliyiz:
 
-::: warning
-Bu dışarı çıkartma dönüştürücüsü hala geliştirme aşamasındadır. Java doğrulayıcının çalışma şeklinden dolayı, bazı senaryoların doğru bir şekilde doğrulanamaması, bazı derleme sorunlarına yol açabilir. Lütfen kendi riskinizle kullanın ve herhangi bir sorun oluşursa lütfen bunları bildirin.
+```java
+int deger = x;
+```
 
-Kendime not: Stack çerçevelerinden nefret ediyorum
-:::
+şuna dönüşür:
+```java
+int deger = d ^ n;
+```
 
-## Yapılandırma Ayarı
+Bu durumda $d$ daha önceden hesaplanmış sabit değerdir ve $n$ de opak yüklemdir (opaque predicate). Örnek:
+```java
+int deger = 5;
+```
+şuna dönüşür:
+```java
+int tahmin = 0x100;
+int deger = 105 ^ tahmin;
+```
+
+## Config
+
+Şu anda, Sayı Şifrelemesinin sadece bir modu var, `STANDARD`
 
 ```js
-outliner {
-     enabled: true
-     exempt: []
+numberEncryption {
+    enabled: true
+    exempt: []
 }
 ```
 
 ## Örnekler
-
-#### Şifrelenmemiş
-
+#### Gizlenmemiş Kod
 ```java
-public static void main(String[] args) {
-    int number = callNumber();
-    /*[...]*/
-}
-
-static int callNumber() {
-    return 1;
-}
+int dgr = 1000;
+System.out.println(dgr + 1 + 2 + 3);
 ```
 
-#### Şifrelenmiş
+#### Gizlenmiş Kod
 ```java
-public static void main(String[] args) {
-    step1_AF8FZE8EF7Z89F();
-    /*[...]*/
-}
-
-static void step1_AF8FZE8EF7Z89F() {
-    int number = callNumber();
-}
-
-
-static int callNumber() {
-    return 1;
-}
+int dgr = 0xA0290233 ^ n;
+System.out.println(dgr + 0x92083838 ^ n + 0x92083839 ^ n + 0x92083840 ^ n);
 ```
