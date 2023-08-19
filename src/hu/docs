@@ -1,58 +1,57 @@
-## Outliner
+## Number Encryption
 
-Outlining refers to the process of extracting code from a method and placing it into a separate, standalone method. This is often done as a way to improve the readability and maintainability of code, as it can make it easier to understand what a method is doing by breaking it down into smaller, more focused pieces of code.
+The number encryption transformer encrypts any integer-based numeral to be hidden. This is perfect for uglifying the code in general and making it more of a hardship for reverse-engineers to obtain a clean source code. This furthermore reinforces any boolean-based conditionals.
 
-Outlining can also be used as a form of code obfuscation, as it can make it more difficult for someone attempting to reverse engineer or understand the code to see the overall flow and structure of the program. By breaking the code into smaller pieces and separating it out into different methods, it can be a much harsher procedure for someone to understand the relationships between different parts of the flow and how they fit together to perform a particular function.
+The number encryption relies on the GEN3 flow obfuscation and may, in decompiled output, show as follows
 
-![Outlining graph explanation](https://i.imgur.com/2HMq0a4.png)
+Lets assume the following scenario:
+- $x$ is the number we wish to encrypt
+- $n$ is the "seed" of the block
+- $d$ is the encryped number
 
-The fantastic thing about outlining is: it's not *technically* reversible! To be able to return to an original state of a good outline obfuscation, a deobfuscator *has to do inlining*, which is a heuristic and *doesn't* guarantee the output to always be semantically correct with the original source code. Furthermore, this necessites the deobfuscator to mangle with variables and other various forms of sensitive bytecode manipulation which all can lead to frame and computation exceptions.
+According to simple xor mechanics: $x\oplus n\oplus n=x$
 
-Overall, outlining obfuscation is pretty neat :)
+So, by definition, if $n$ is our seed, at runtime we must compute $d$ such as $d = x\oplus n$. Then, we must modify the bytecode instruction such as:
 
-::: warning
-The outliner transformer is still very early into development. Due to how the Java verifier works, not all scenarios may be correctly verified, which may lead to some compilation issues. Please use at your own risk, and if any issue arise, please report these.
+```java
+int value = x;
+```
 
-Note to self: I hate stack frames
-:::
+becomes
+```java
+int value = d ^ n;
+```
+
+Where $d$ is the value computed ahead of time in the form of a constant and $n$ the opaque predicate. Eg:
+```java
+int value = 5;
+```
+becomes
+```java
+int predicate = 0x100;
+int value = 105 ^ predicate;
+```
 
 ## Config
 
+Currently, there is only one mode of Number Encryption, `STANDARD`
+
 ```js
-outliner {
-     enabled: true
-     exempt: []
+numberEncryption {
+    enabled: true
+    exempt: []
 }
 ```
 
 ## Examples
-
 #### Unobfuscated
-
 ```java
-public static void main(String[] args) {
-    int number = callNumber();
-    /*[...]*/
-}
-
-static int callNumber() {
-    return 1;
-}
+int var = 1000;
+System.out.println(var + 1 + 2 + 3);
 ```
 
 #### Obfuscated
 ```java
-public static void main(String[] args) {
-    step1_AF8FZE8EF7Z89F();
-    /*[...]*/
-}
-
-static void step1_AF8FZE8EF7Z89F() {
-    int number = callNumber();
-}
-
-
-static int callNumber() {
-    return 1;
-}
+int var = 0xA0290233 ^ n;
+System.out.println(var + 0x92083838 ^ n + 0x92083839 ^ n + 0x92083840 ^ n);
 ```
