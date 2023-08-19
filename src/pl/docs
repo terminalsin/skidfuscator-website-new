@@ -1,76 +1,31 @@
-# Biblioteki
+# Nasza Filozofia
 
-Choć czasem budzą pewne frustracje, są nieodzownym elementem tworzenia oprogramowania Umożliwiają uproszczenie konfiguracji i innych zadań. Mamy nadzieję, że w przyszłości wtyczki Maven automatyzują proces obsługi bibliotek. Jednak jest to tylko jeden z wielu elementów na naszej liście rzeczy do zrobienia.
+## Kim jesteśmy?
+W Skidfuscatorze z zaangażowaniem wspieramy programistów Javy w ochronie ich własności intelektualnej. Jako doświadczony zespół programistów, doskonale zdajemy sobie sprawę, jak istotne jest zabezpieczenie Twojego kodu przed odwróconą inżynierią i nieuprawnionym dostępem. Dlatego też opracowaliśmy Skidfuscator, potężne narzędzie do obfuskacji kodu Java bytecode, które chroni Twoje oprogramowanie przed nieautoryzowanymi modyfikacjami i odwróconą inżynierią.
 
-Dodawanie bibliotek jest całkiem proste:
-1. Utwórz folder o nazwie "libs"
-2. Przeciągnij wszystkie biblioteki do wspomnianego folderu
-3. Dodaj "-li=<ścieżka do folderu>" do wiersza poleceń
+## Nasza misja
+Naszym celem jest dostarczanie programistom Java narzędzi, które pomagają chronić ich cenne własności intelektualne. Jesteśmy świadomi, że platforma Java jest szeroko stosowana do tworzenia zaawansowanych aplikacji oprogramowania, dlatego uważamy, że ochrona Twojego kodu Java jest kluczowa dla zachowania Twojej przewagi konkurencyjnej. Dlatego stworzyliśmy Skidfuscator - niezawodny i łatwy w użyciu obfuscator Java, który pomaga chronić Twoje aplikacje przed odwróconą inżynierią i manipulacją.
 
-Przykład:
-```console
-java -jar obfuscator-1.0.0-SNAPSHOT.jar -li=libs obfuscate FluffyClicker.jar
-```
-![Przykładowe zdjęcie](https://i.imgur.com/AYxEoYp.png)
+## Dlaczego stworzyliśmy Skidfuscator?
+Jako Skidfuscator uważamy, że programiści Java powinni mieć dostęp do przystępnych cenowo i skutecznych rozwiązań służących ochronie ich własności intelektualnej. Nasz zespół jest zaangażowany w zapewnienie łatwych do użycia rozwiązań o najwyższej jakości, które są jednak wystarczająco potężne, aby wytrzymać nawet najsilniejsze ataki. Ciągle pracujemy nad ulepszeniem naszego produktu i cały czas aktualizujemy swoją wiedzę zgodnie z najnowszymi zmianami w zakresie ochrony oprogramowania i zaciemniania kodu.
 
-## How to get dependencies from a Gradle project ?
+Rozumiemy, że zaciemnianie kodu może być skomplikowanym i trudnym procesem, zwłaszcza dla programistów, którzy są nowi w tej dziedzinie. Dlatego właśnie zaprojektowaliśmy Skidfuscator tak, aby był przyjazny dla użytkownika i intuicyjny w użyciu. Z naszym obfuscatorem możesz szybko i łatwo zaciemnić swój kod Java, bez potrzeby posiadania żadnych szczególnych umiejętności lub wiedzy. Nasza kompleksowa dokumentacja i wspaniała pomoc techniczna gwarantują, że możesz zacząć zacemnianie swojego kodu bez poświęcenia wielu godzin na naukę, aby chronić swoje oprogramowanie.
 
-### Gradle Groovy
+W Skidfuscator wierzymy w siłę współpracy i otwartej komunikacji. Ściśle współpracujemy z naszymi klientami, aby zrozumieć ich unikalne potrzeby i wyzwania, i zawsze jesteśmy gotowi zapewnić spersonalizowane wsparcie i porady. Nasz zespół jest zaangażowany w pomoc w ochronie własności intelektualnej i osiąganiu celów, bez względu na to, jak duże lub małe mogą one być.
 
-Add this task to your build.gradle file:
-```groovy
-task copyDeps(type: Copy) {
-    from configurations.compile
-    into 'libs'
-}
-```
+Skidfuscator to najlepsze rozwiązanie do ochrony kodu Java. Nasz potężny obfuscator został zaprojektowany w celu ochrony oprogramowania przed inżynierią wsteczną i manipulacją, zapewniając, że własność intelektualna pozostaje bezpieczna. Dokładamy wszelkich starań, aby zapewnić naszym klientom najwyższej jakości rozwiązanie do obfuskacji, doskonałe wsparcie i przyjazny dla użytkownika obfuscator, który jest łatwy w użyciu i wysoce skuteczny. Wybierz Skidfuscator już dziś i chroń swoje aplikacje Java przed kradzieżą kodu.
 
-Then run the task:
-```console
-gradlew copyDeps
-```
+## Nasza metodologia
 
-### Gradle Kotlin
+W Skidfuscator uważamy, że długoterminowe i odporne podejście do rozwiązywania problemów ma zasadnicze znaczenie dla osiągnięcia trwałego sukcesu. Podczas gdy krótkoterminowe rozwiązania i szybkie rozwiązania mogą stanowić tymczasową pomoc, często stwarzają więcej problemów i utrudniają postępy w dłuższej perspektywie.
 
-Add this task to your build.gradle.kts file:
-```kotlin
-tasks.register<Copy>("copyDeps") {
-    from(configurations.compile)
-    into("libs")
-}
-```
+### Nasze podejście
+Dążąc do odpornego i zrównoważonego podejścia, kładziemy nacisk na zrozumienie pierwotnej przyczyny problemu, a nie tylko na zajmowanie się jego objawami. Przeznaczając czas na dokładną analizę problemu, jesteśmy w stanie zidentyfikować fundamentalne czynniki przyczyniające się do jego wystąpienia i opracować skierowane rozwiązania, które bezpośrednio adresują te czynniki.
 
-Then run the task:
-```console
-gradlew copyDeps
-```
+Naszym priorytetem jest nie tylko identyfikowanie pierwotnej przyczyny problemu, ale także promowanie współpracy i wymiany wiedzy w celu skutecznego rozwiązywania złożonych problemów. Rozumiemy, że żadna osoba nie posiada wszystkich odpowiedzi, a prawdziwe rozwiązania często powstają dzięki wspólnym wysiłkom i spostrzeżeniom różnych grup. Przykładamy dużą wagę do współpracy między naszymi zespołami i wykorzystywania wiedzy naszych partnerów zewnętrznych, gdy jest to konieczne. Dzięki temu tworzymy kompleksowe rozwiązania, które uwzględniają wszystkie aspekty danej kwestii.
 
-## How to get dependencies from a Maven project ?
+### Nacisk
+Dodatkowo, priorytetem dla nas jest nieustanne doskonalenie i rozwój poprzez ciągłą naukę. Rozumiemy, że nawet najbardziej kompleksowe rozwiązania można stale udoskonalać, ponieważ świat nieustannie się zmienia i ewoluuje. W związku z tym, zachęcamy nasze zespoły do regularnego oceniania skuteczności naszych rozwiązań i identyfikowania obszarów, w których możemy dokonać ulepszeń. Przywiązujemy również dużą wagę do ciągłego rozwoju naszych zespołów, aby były zawsze na bieżąco z najnowszymi badaniami i najlepszymi praktykami w swoich dziedzinach.
 
-Add this task to your pom.xml file:
-```xml
-<build>
-    <plugins>
-        <plugin>
-            <artifactId>maven-dependency-plugin</artifactId>
-            <executions>
-                <execution>
-                    <id>copy-dependencies</id>
-                    <phase>package</phase>
-                    <goals>
-                        <goal>copy-dependencies</goal>
-                    </goals>
-                    <configuration>
-                        <outputDirectory>${project.build.directory}/libs</outputDirectory>
-                    </configuration>
-                </execution>
-            </executions>
-        </plugin>
-    </plugins>
-</build>
-```
-
-Then run the task:
-```console
-mvn package
-```
+### Nasze priorytety
+Poprzez koncentrację na długoterminowym i odpornym podejściu do rozwiązywania problemów, wierzymy, że możemy tworzyć trwałe rozwiązania, które będą przynosić korzyści naszej społeczności i przyczyniać się do dobra większego niż jednostkowe. Mimo że krótkoterminowe i szybkie rozwiązania mogą wydawać się kuszące, zdajemy sobie sprawę, że często prowadzą one do niezamierzonych negatywnych skutków i utrudniają osiąganie długoterminowego postępu. Zamiast tego, skupiamy się na współpracy, ciągłym doskonaleniu i stosowaniu zrównoważonych praktyk, aby zapewnić, że nasze rozwiązania są skuteczne i wydajne.
