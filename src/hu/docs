@@ -1,51 +1,76 @@
-## Annotációk Titkosítása
+# Könyvtárak
 
-Az annotáció titkosításra alkalamas átalakító átalakít minden string- és integer értéket, melyek az annotáció tartalmaz. Ezeket egy adott metódussá alakítja, azzal a céllal hogy futtatási időben rejtve maradjanak. Ez praktikus lehet nem szenzitív URL-ek, privát kulcsok, stb... esetében.
+Ahhh we all hate 'em but for the sake of not screwing up your software, we have to make use of these. It helps simplify your configurations and so and forth. Hopefully, in the maven plugin, these will be handled automatically. However that's just another thing on our todo list for now.
 
-::: figyelem
-Alapvetően ne bízz meg a klienben. Ne támaszkodj a String titkosításra, mint egyetlen védelemre a szoftveredhez. Feltételezd, hogy egy eléggé képzett egyén, elegendő idő és türelem függvényében, visszafejtheti és hozzáférhet ezekhez az információkhoz.
-:::
+To add dependencies, it's quite simple:
+1. Create a folder called "libs"
+2. Drag all your dependencies into said folder
+3. Add "-li=\<path to folder\>" to your command line execution for skidfuscator
 
+Example:
+```console
+java -jar obfuscator-1.0.0-SNAPSHOT.jar -li=libs obfuscate FluffyClicker.jar
+```
+![Image of example](https://i.imgur.com/AYxEoYp.png)
 
-## Konfiguráció
+## How to get dependencies from a Gradle project ?
 
-```js
-stringAnnotationEncryption {
-    enabled: true
-    exempt: []
-}
+### Gradle Groovy
 
-intAnnotationEncryption {
-    enabled: true
-    exempt: []
+Add this task to your build.gradle file:
+```groovy
+task copyDeps(type: Copy) {
+    from configurations.compile
+    into 'libs'
 }
 ```
 
-## Példák
+Then run the task:
+```console
+gradlew copyDeps
+```
 
-### Nem Titkosított
+### Gradle Kotlin
 
-```java
-@SecretAnnotation(secret = "Super secret", secret2 = 1337)
-public class Fancy {
-    public String getSecret() {
-        return this.getClass().getAnnotation(SecretAnnotation.class).secret();
-    }
-
-    public int getSecre2t() {
-        return this.getClass().getAnnotation(SecretAnnotation.class).secret2();
-    }
+Add this task to your build.gradle.kts file:
+```kotlin
+tasks.register<Copy>("copyDeps") {
+    from(configurations.compile)
+    into("libs")
 }
 ```
 
-### Titkosított
+Then run the task:
+```console
+gradlew copyDeps
+```
 
-```java @SecretAnnotation(secret = "oifjaioejaifjea9è!efèaefFEf==", secret2 = 0x9FE7FE7F) public class Fancy { public String getSecret() { /* [...] */ return this.aofheoafo(this.getClass().getAnnotation(SecretAnnotation.class).secret(), n ^ 0x997AF8F); }
+## How to get dependencies from a Maven project ?
 
-    public int getSecre2t() {
-        /* [...] */
-        return this.getClass().getAnnotation(SecretAnnotation.class).secret2() ^ n ^ 0x90AF9F7;
-    }
-    
-    /* [...] */
-}```
+Add this task to your pom.xml file:
+```xml
+<build>
+    <plugins>
+        <plugin>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <executions>
+                <execution>
+                    <id>copy-dependencies</id>
+                    <phase>package</phase>
+                    <goals>
+                        <goal>copy-dependencies</goal>
+                    </goals>
+                    <configuration>
+                        <outputDirectory>${project.build.directory}/libs</outputDirectory>
+                    </configuration>
+                </execution>
+            </executions>
+        </plugin>
+    </plugins>
+</build>
+```
+
+Then run the task:
+```console
+mvn package
+```
