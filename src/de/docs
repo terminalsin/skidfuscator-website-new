@@ -1,60 +1,25 @@
-# Erste Schritte
+# Installation
 
-Skidfuscator ist erfolgreich heruntergeladen, aber was nun?
+Skidfuscator wird über unsere Website, GitHub oder unseren Discord Server vertrieben.
 
-Skidfuscator läuft über die Kommandozeile, über das Java CLI. Wir empfehlen Ihnen dringend, dies zu kennen, um ein nahtloses Skidfuscator Erfahrung zu genießen.
+## Unsere Plattformen
+- [Website](https://skidfuscator.dev)
+- [Discord](https://discord.gg/7pVgsRweeh)
+- [GitHub](https://github.com/terminalsin/skidfuscator-java-obfuscator)
 
-## CLI Optionen für Skidfuscator
+Bitte beachte, dass auf GitHub nur unsere kostenlose Community Version von Skidfuscator ist.
 
-Simply run `java -jar <yourSkidfuscatorFile.jar>` and you will be presented with various options:
+## Community Edition
 
-![Skidfuscator options](https://i.imgur.com/Yu70Pcq.png)
+Du kannst den Download Link für die Community Edition [hier](https://github.com/skidfuscatordev/skidfuscator-java-obfuscator/releases/) finden, für die Premium Edition besuche bitte unsere Website oder trete unseren Discord bei.
 
+Beachte, dass Skidfuscator Java 8 (JDK 1.8 oder neuer) benötigt, um korrekt zu funktionieren.
 
-#### Your input jar
-The input jar you want to obfuscate with Skidfuscator.
-```cli
-<input>
-```
+Der sauberste Weg, Skidfuscator zu starten ist, die `-jar` Parameter in der Kommandozeile zu benutzen, dir werden verschiedene Optionen angezeigt, wie du mit der Obfuscation der Datei beginnen kannst.
 
-#### Your exclusions
-The path to the file which contains your exclusions.
-```cli
---exempt=<exempt>
-```
+## Mehr Speicher zuweisen
+Es ist wichtig zu beachten, dass man der JVM meist mehr als die Standardmenge an Arbeitsspeicher geben sollte. Wenn du die Parameter -Xmx512m verwendest, gibst du der JVM einen maximalen Arbeitsspeicher von 512MB, der für die meisten Zwecke reichen sollte. Achte aber darauf, dass die JVM nicht mehr Speicher zugewiesen bekommt als physisch verfügbar ist. Sonst wird sich die Leistung dramatisch verschlechtern, sobald die JVM beginnt, virtuellen Speicher zu nutzen.
 
-#### Skip computation
-**USE THIS AT YOUR OWN RISK** Completely skips critical forms of computation such as libraries. Support may be limited if you choose to use this option.
-```cli
---fuckit
-```
+Sehen Sie unten, wie man Skidfuscator mehr Speicher zu Verfügung stellt:
 
-#### Your libraries
-The path to the folder which contains libraries / dependencies required to obfuscate your jar file.
-```cli
---libs=<libs>
-```
-
-#### Opt out of analytics
-This option will not provide us any analytics such as errors you may encounter, or obfuscator usage statistics.
-```cli
---notrack
-```
-
-#### Your output
-The path to where you would like your obfuscated jar to be output, if this option is left empty it will be output in the directory that Skidfuscator was executed in.
-```cli
---output=<output>
-```
-
-#### Phantom computation
-Allows you to enable phantom computation for classes, again, if this option is used, supported may be limited. We strongly advise you provide the necessary libraries required and obfuscate your jar file.
-```cli
---phantom
-```
-
-#### Specifying runtime
-The path to your java runtime.
-```cli
---runtime=<runtime>
-```
+`java -Xmx4G -jar skidfuscator.jar` in your command line interface tool.
