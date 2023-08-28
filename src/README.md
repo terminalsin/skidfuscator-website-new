@@ -46,8 +46,8 @@ features:
     icon: code-merge
     details: Translate your Java code into native JNI, adding a layer of protection.
 
-copyright: true
-footer: Skidfuscator.dev | Copyright © 2023
+copyright: © 2023 Skidfuscator.dev. All rights reserved.
+footer: <a href="https://discord.gg/xH7URPReQA" target="_blank">Discord</a>
 ---
 # 
 # Why Skidfuscator?
