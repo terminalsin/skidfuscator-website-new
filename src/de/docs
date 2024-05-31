@@ -1,25 +1,15 @@
-# Installation
+# Hallo, unbekannter
 
-Skidfuscator wird über unsere Website, GitHub oder unseren Discord Server vertrieben.
+Willkommen zu dem skidfuscator-java-obfuscator Wiki!
 
-## Unsere Plattformen
-- [Website](https://skidfuscator.dev)
-- [Discord](https://discord.gg/7pVgsRweeh)
-- [GitHub](https://github.com/terminalsin/skidfuscator-java-obfuscator)
+Du dachtest vorher, wir hätten nicht viel zu besprechen, oder? Hier haben wir die ganzen Leckereien, ha.
 
-Bitte beachte, dass auf GitHub nur unsere kostenlose Community Version von Skidfuscator ist.
-
-## Community Edition
-
-Du kannst den Download Link für die Community Edition [hier](https://github.com/skidfuscatordev/skidfuscator-java-obfuscator/releases/) finden, für die Premium Edition besuche bitte unsere Website oder trete unseren Discord bei.
-
-Beachte, dass Skidfuscator Java 8 (JDK 1.8 oder neuer) benötigt, um korrekt zu funktionieren.
-
-Der sauberste Weg, Skidfuscator zu starten ist, die `-jar` Parameter in der Kommandozeile zu benutzen, dir werden verschiedene Optionen angezeigt, wie du mit der Obfuscation der Datei beginnen kannst.
-
-## Mehr Speicher zuweisen
-Es ist wichtig zu beachten, dass man der JVM meist mehr als die Standardmenge an Arbeitsspeicher geben sollte. Wenn du die Parameter -Xmx512m verwendest, gibst du der JVM einen maximalen Arbeitsspeicher von 512MB, der für die meisten Zwecke reichen sollte. Achte aber darauf, dass die JVM nicht mehr Speicher zugewiesen bekommt als physisch verfügbar ist. Sonst wird sich die Leistung dramatisch verschlechtern, sobald die JVM beginnt, virtuellen Speicher zu nutzen.
-
-Sehen Sie unten, wie man Skidfuscator mehr Speicher zu Verfügung stellt:
-
-`java -Xmx4G -jar skidfuscator.jar` in your command line interface tool.
+# Inhaltsverzeichnis
+1. [Installation](/docs/installation.html)
+2. [Einstieg](/docs/gettingstarted.html)
+3. [Ausnahmen](/docs/exclusion.html)
+4. [Bibliotheken](/docs/libraries.html)
+5. [Über uns](/docs/about.html)
+6. [Einführung in die Java Obfuscation](/docs/javaobf.html)
+7. [Fehler melden](/docs/bugreporting.html)
+8. [Transformatoren](/docs/transformers.html)
