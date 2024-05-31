@@ -1,25 +1,15 @@
-# Asennus
+# Hei muukalainen
 
-Skidfuscatoria jaetaan verkkosivustomme, GitHubin tai Discord-palvelimemme omistajan suorien viestien kautta.
+Tervetuloa skidfuscator-java-obfuscator wikiin!
 
-## Meidän alustamme
-- [Verkkosivu](https://skidfuscator.dev)
-- [Discordi](https://discord.gg/7pVgsRweeh)
-- [GitHub](https://github.com/terminalsin/skidfuscator-java-obfuscator)
+Luulitko, että meillä ei ollut paljon puhuttavaa aiemmin, vai mitä? Nyt meillä on kaikki herkut, ha.
 
-Huomaa, että GitHub on vain meidän ilmaiseksi, yhteisön painos versio Skidfuscator.
-
-## Yhteisön Versio
-
-Löydät ladattavan linkin yhteisö painos [täällä](https://github.com/skidfuscatordev/skidfuscator-java-obfuscator/releases/), premium-painos käy sivuillamme tai liity meidän Discordiin.
-
-Huomaa, että Skidfuscator vaatii Java 8 (eli JDK 1.8 tai parempi) toimimaan oikein.
-
-Skidfuscatorin puhtain tapa on käyttää `-jar` -parametria komentorivin käyttöliittymätyökalussa, sinulle esitellään erilaisia vaihtoehtoja siitä, miten aloittaa hämärtymisen tiedoston.
-
-## Jaetaan enemmän muistia
-On tärkeää huomata, että tyypillisesti sinun pitäisi antaa JVM enemmän kuin oletuksena määrä muistia työskennellä. Jos käytät parametria "-Xmx512m", annat JVM: lle maksimissaan 512 Mt muistia, jonka pitäisi riittää useimpiin tarkoituksiin. Sinun pitäisi kuitenkin olla varma, ettet anna JVM: lle enemmän muistia kuin on fyysisesti saatavilla. Muuten suorituskyky heikkenee dramaattisesti, kun JVM alkaa käyttää virtuaalista muistia.
-
-Katso alla olevasta miten lisätä muistia Skidfuscatoriin:
-
-`java -Xmx4G -jar skidfuscator.jar` in your command line interface tool.
+# Sisällysluettelo
+1. [Asennus](/docs/installation.html)
+2. [Aloittaminen](/docs/gettingstarted.html)
+3. [Poissulkemiset](/docs/exclusion.html)
+4. [Kirjastot](/docs/libraries.html)
+5. [Tietoja Meistä](/docs/about.html)
+6. [Johdanto Java-suojeluun](/docs/javaobf.html)
+7. [Ongelmien raportointi](/docs/bugreporting.html)
+8. [Muuntajat](/docs/transformers.html)
