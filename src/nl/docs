@@ -1,254 +1,60 @@
+# Getting Started
 
-# Configuratie
+So, you've now succsessfully downloaded Skidfuscator onto your computer and are wondering how to run it?
 
-Hier leer je alles over wat de configuratie te bieden heeft. Zorg ervoor dat je deze details leest met een erg enthousiast oog. Als je problemen tegenkomt, neem dan contact op met de support. For premium members, you are entitled to a free configuration service by our team.
+Skidfuscator runs via the command line, using the Java CLI. We strongly advise you are familiar with this in order to enjoy a seamless Skidfuscator experience.
 
-## Basic of the configuration
+## CLI options for Skidfuscator
 
-The basis of the configuration is based on [lightbend config](https://github.com/lightbend/config). This means by default, we support the three following formats: Java Properties, JSON, and HOCON.
+Simply run `java -jar <yourSkidfuscatorFile.jar>` and you will be presented with various options:
 
-By principle, we **highly recommend using HOCON** as it is simpler, more elegant and all-round easy to use. See attached the default config:
+![Skidfuscator options](https://i.imgur.com/Yu70Pcq.png)
 
-```javascript
-exempt: []
 
-libs: []
-
-stringEncryption {
-  type: STANDARD
-  enabled: true
-  exempt: []
-}
-
-numberEncryption {
-  enabled: true
-  exempt: []
-}
-
-intAnnotationEncryption {
-  enabled: true
-  exempt: []
-}
-
-stringAnnotationEncryption {
-  enabled: true
-  exempt: []
-}
-
-exceptionReturn {
-  enabled: true
-  exempt: []
-}
-
-flowCondition {
-  enabled: true
-  exempt: []
-}
-
-flowException {
-  enabled: true
-  strength: AGGRESSIVE
-  exempt: []
-}
-
-flowRange {
-  enabled: true
-  exempt: []
-}
-
-flowFactoryMaker {
-  enabled: true
-  exempt: []
-}
-
-flowSwitch {
-  enabled: true
-  exempt: []
-}
-
-outliner {
-  enabled: true
-  exempt: []
-}
-
-ahegao {
-  enabled: true
-  exempt: []
-}
-
-native: {
-  enabled: false
-  exempt: []
-}
-
-driver: {
-  enabled: false
-}
-
-reference {
-  enabled: false
-}
-
-fileCrasher: {
-  enabled: false
-}
-
-classRenamer {
-  enabled: false
-  type: CUSTOM
-  prefix: "skido/"
-  chars: [
-    "K"
-    "oO",
-    "o0"
-  ]
-  depth: 3
-}
-
-methodRenamer {
-  enabled: false
-  type: CUSTOM
-  chars: [
-    "K"
-    "oO",
-    "o0"
-  ]
-  depth: 3
-}
-
-fieldRenamer {
-  enabled: false
-  type: ALPHABETICAL
-}
+#### Your input jar
+The input jar you want to obfuscate with Skidfuscator.
+```cli
+<input>
 ```
 
-## Exemptions
-
-Using exemptions is identical to how these were previously done in the old system. To learn more about exemptions, navigate to [the page](../exclusion.md)
-
-::: warning 
-Java parses string by sanitizing the backwards slash. This means you MUST double all backward slashes
-:::
-
-### Excluding a class
-
-As a starting basis, to exclude a specific class, you must use the class regex exemption:
-```js
-class{^my\/class}
+#### Your exclusions
+The path to the file which contains your exclusions.
+```cli
+--exempt=<exempt>
 ```
 
-To fit this in the config, you need to pass it as a string.
-
-
-```js
-exempt: [
-    "class{^my\\/class}"
-]
+#### Skip computation
+**USE THIS AT YOUR OWN RISK** Completely skips critical forms of computation such as libraries. Support may be limited if you choose to use this option.
+```cli
+--fuckit
 ```
 
-### Excluding a method
-
-As a starting basis, to exclude a specific method, you must use the class method exemption:
-```js
-method{^myMethod}
+#### Uw bibliotheken
+Het pad naar de map die bibliotheken / afhankelijkheden bevat die nodig zijn om uw jar-bestand te verbergen.
+```cli
+--libs=<libs>
 ```
 
-To fit this in the config, you need to pass it as a string.
-
-```js
-exempt: [
-    "method{^myMethod}"
-]
+#### Opt uit analytics
+Deze optie biedt ons geen analytics zoals fouten die u kunt tegenkomen of accustatistieken van uw gebruik.
+```cli
+--notrack
 ```
 
-### Excluding a method in a specific class
-
-Zoals we eerder hebben geleerd, moeten we een methode en een klasse uitsluiten en het volgende doen:
-```js
-class{^my\/class}
-method{^myMethod}
+#### Jouw uitvoer
+The path to where you would like your obfuscated jar to be output, if this option is left empty it will be output in the directory that Skidfuscator was executed in.
+```cli
+--output=<output>
 ```
 
-Dus, om een methode uit te sluiten die in een specifieke klasse zit moet je de twee aan elkaar vastzetten in een lijn, als volgt:
-
-```js
-class{^my\/class} method{^myMethod}
+#### Phantom computation
+Allows you to enable phantom computation for classes, again, if this option is used, support may be limited. We strongly advise you provide the necessary libraries required and obfuscate your jar file.
+```cli
+--phantom
 ```
 
-Vandaar dat het als volgt zou zijn in het config:
-
-```js
-exempt: [
-    "class{^my\/class} method{^myMethod}"
-]
+#### Specifying runtime
+The path to your java runtime.
+```cli
+--runtime=<runtime>
 ```
-
-## Bibliotheken
-
-Bibliotheken zijn een belangrijk aspect van het berekenen van de classpath en het zorgen voor maximale bescherming voor uw software. In deze instantie moet u een geldig Java path argument opgeven als een string
-
-Hier is de code voor de implementatie:
-```java
-public File[] getLibs() {
-    return this.getStringList("libraries", Collections.emptyList())
-                .stream()
-                .map(File::new)
-                .distinct()
-                .toArray(File[]::new);
-}
-```
-
-Hieronder vind je voorbeelden van geldige java paden:
-```
-C:\test.jar
-test.jar
-./test.jar
-/Home/test.jar
-```
-
-In de configuratie zouden deze als volgt worden vertegenwoordigd:
-
-```js
-libraries [
-    "C:\\test.jar",
-    "test.jar",
-    "./test.jar",
-    "/Home/test.jar"
-]
-```
-
-## Driver
-
-De Driver is het harde deel van Skidfuscator. Deze functie is voorbehouden aan Premium. In een notendop: per obfuscation, word een nieuwe Driver wordt gegenereerd en gecompileerd voor de volgende architectonen:
-
-| Operating systeem | Ondersteunde Architecturen |
-| ----------------- | -------------------------- |
-| Windows           | x64_86                     |
-| MacOS             | x64_86, AARCH64 (ARM)      |
-| Linux             | x64_86 (AMD64)             |
-
-Om deze functie uit te schakelen (:warning: dit vermindert aanzienlijk de obfuscatie kracht) moet je de boolean aanzetten:
-
-```js
-driver: false
-```
-
-
-## Transformers
-
-U kunt elke transformator individueel inschakelen/uitschakelen.
-
-
-#### String encryptie
-
-De stringversleuteling transformatreert elke tekenreeks in een specifieke methode oproep, met als doel om te verbergen tijdens de runtime. Dit kan praktisch zijn voor niet-gevoelige URL's, privésleutels enz...
-
-::: waarschuwing
-Je moet de klant niet vertrouwen als basis. Gelieve geen gebruik te maken van String encryptie als de enige bescherming voor uw software. Standaard moet je aannemen dat een getalenteerde reverse-engineer hier toegang toe kan krijgen met genoeg tijd en geduld.
-:::
-
-Er zijn momenteel 2 modussen voor String encryptie: `STANDARD` en `POLYMORPHIC`
-
-#### Nummer encryptie
-
-Het aantal encryptie transformators versleutelt elk integer-gebaseerd getal dat verborgen moet worden. Dit is in het algemeen perfect voor het uitlenen van de code en het nog moeilijker te maken voor reverse-engineers om een schone broncode te verkrijgen. Deze versterkt bovendien alle op Boolean gebaseerde voorwaarden.
