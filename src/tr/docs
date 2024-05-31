@@ -1,25 +1,15 @@
-# Kurulum
+# Selam Yabancı
 
-Skidfuscator websitemiz, GitHub, veya Discord sunucumuzun duyurular kanalı üzerinden dağıtılır.
+skidfuscator-java-obfuscator wikisine hoş geldin!
 
-## Platformlarımız
-- [Website](https://skidfuscator.dev)
-- [Discord](https://discord.gg/7pVgsRweeh)
-- [GitHub](https://github.com/terminalsin/skidfuscator-java-obfuscator)
+Önceden konuşacağımız pek bir şey olmadığını sanmıştın, değil mi? Şimdi tüm maller bizde, ha.
 
-GitHub'un sadece Skidfuscator'un bedava topluluk versiyonu için olduğunu unutmayın.
-
-## Topluluk Versiyonu
-
-Topluluk versiyonu için indirme linkini [buraya](https://github.com/skidfuscatordev/skidfuscator-java-obfuscator/releases/) tıklayarak bulabilirsiniz, premium versiyon için lütfen websitemizi ziyaret edin veya Discord'umuza katılın.
-
-Skidfuscator'ın düzgün çalışması için Java 8 (yani JDK 1.8 veya daha üstü) gerektirdiğini unutmayın.
-
-Skidfuscator'ı çalıştırmak için en temiz yol komut satırında `-jar` parametresini kullanmaktır, dosyanızın kodunu gizleme işlemine nasıl başlanacağı hakkında seçenekler sunulacaktır.
-
-## Daha fazla bellek ayırmak
-Genellikle JVM'ye çalışması için varsayılan bellek miktarından daha fazlasını ayırmanız gerektiğini unutmayın. Eğer -Xmx512m parametresini kullanırsanız JVM'ye kullanması için maksimum 512MB bellek ayırmış olursunuz ki bu çoğu durumda uygun olmalıdır. Ancak, JVM'ye fiziksel olarak kullanılabilir bellekten daha fazla bellek ayırmadığınıza emin olun. Aksi takdirde JVM sanal belleği kullanmaya başlayacağı için performans büyük ölçüde düşecektir.
-
-Aşağıda Skidfuscator'a nasıl daha fazla bellek ayıracağınızı inceleyin:
-
-`java -Xmx4G -jar skidfuscator.jar` in your command line interface tool.
+# İçindekiler
+1. [İndirme](/docs/installation.html)
+2. [Başlangıç](/docs/gettingstarted.html)
+3. [Ayrıştırmalar](/docs/exclusion.html)
+4. [Kütüphaneler](/docs/libraries.html)
+5. [Hakkında](/docs/about.html)
+6. [Java Kod Gizlemesine Giriş](/docs/javaobf.html)
+7. [Hata Bildirme](/docs/bugreporting.html)
+8. [Dönüştürücüler](/docs/transformers.html)
