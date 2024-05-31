@@ -49,7 +49,7 @@ The path to where you would like your obfuscated jar to be output, if this optio
 ```
 
 #### Phantom computation
-Allows you to enable phantom computation for classes, again, if this option is used, supported may be limited. We strongly advise you provide the necessary libraries required and obfuscate your jar file.
+Allows you to enable phantom computation for classes, again, if this option is used, support may be limited. We strongly advise you provide the necessary libraries required and obfuscate your jar file.
 ```cli
 --phantom
 ```
