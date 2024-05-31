@@ -1,254 +1,60 @@
+# Aloittaminen
 
-# Konfiguroi
+Joten, olet nyt onnistuneesti ladattu Skidfuscator tietokoneeseen ja ihmettelevät, miten ajaa se?
 
-Täällä opit kaiken siitä mitä konfiguraatiolla on tarjottavana. Varmista, että lukea nämä tiedot erittäin innokas silmä. Jos sinulla on ongelmia, lähetä sähköpostia tukeen. Maksullisilla käyttäjillä on oikeus tiimimme ilmaiseen konfigurointipalveluun.
+Skidfuscator kulkee komentorivin kautta käyttäen Java-CLItä. Suosittelemme vahvasti, että olet perehtynyt tähän, jotta voit nauttia saumaton Skidfuscator kokemus.
 
-## Konfiguraation peruste
+## CLI vaihtoehdot Skidfuscatorille
 
-Perusteena kokoonpano perustuu [lightbend konfiguroi](https://github.com/lightbend/config). Tämä tarkoittaa oletuksena, tuemme kolmea seuraavaa muotoa: Java Properties, JSON, ja HOCON.
+Yksinkertaisesti ajaa `java -jar <yourSkidfuscatorFile.jar>` ja sinulle esitetään erilaisia vaihtoehtoja:
 
-Periaatteessa me **erittäin suositeltavaa käyttää HOCON**, koska se on yksinkertaisempi, tyylikkäämpi ja kaiken kaikkiaan helppokäyttöisempi. Katso oheinen oletuskonfiguraatio:
+![Skidfuscator asetukset](https://i.imgur.com/Yu70Pcq.png)
 
-```javascript
-exempt: []
 
-libs: []
-
-stringEncryption {
-  type: STANDARD
-  enabled: true
-  exempt: []
-}
-
-numberEncryption {
-  enabled: true
-  exempt: []
-}
-
-intAnnotationEncryption {
-  enabled: true
-  exempt: []
-}
-
-stringAnnotationEncryption {
-  enabled: true
-  exempt: []
-}
-
-exceptionReturn {
-  enabled: true
-  exempt: []
-}
-
-flowCondition {
-  enabled: true
-  exempt: []
-}
-
-flowException {
-  enabled: true
-  strength: AGGRESSIVE
-  exempt: []
-}
-
-flowRange {
-  enabled: true
-  exempt: []
-}
-
-flowFactoryMaker {
-  enabled: true
-  exempt: []
-}
-
-flowSwitch {
-  enabled: true
-  exempt: []
-}
-
-outliner {
-  enabled: true
-  exempt: []
-}
-
-ahegao {
-  enabled: true
-  exempt: []
-}
-
-native: {
-  enabled: false
-  exempt: []
-}
-
-driver: {
-  enabled: false
-}
-
-reference {
-  enabled: false
-}
-
-fileCrasher: {
-  enabled: false
-}
-
-classRenamer {
-  enabled: false
-  type: CUSTOM
-  prefix: "skido/"
-  chars: [
-    "K"
-    "oO",
-    "o0"
-  ]
-  depth: 3
-}
-
-methodRenamer {
-  enabled: false
-  type: CUSTOM
-  chars: [
-    "K"
-    "oO",
-    "o0"
-  ]
-  depth: 3
-}
-
-fieldRenamer {
-  enabled: false
-  type: ALPHABETICAL
-}
+#### Syöttö purkki
+Syöttöpurkki, jonka haluat suojata Skidfuscatorilla.
+```cli
+<input>
 ```
 
-## Poikkeukset
-
-Vapautusten käyttö on samanlaista kuin vanhassa järjestelmässä. Lisätietoja vapautuksista, siirry osoitteeseen [sivu](../exclusion.md)
-
-::: warning 
-Java parses merkkijono puhdistaa taaksepäin kauttaviivaa. Tämä tarkoittaa, että sinun PITÄÄ kaksinkertaistaa kaikki taaksepäin menevät vinoviivat.
-:::
-
-### Luokan poissulkeminen
-
-Koska lähtökohtana sulkea tietyn luokan, sinun on käytettävä luokan regex poikkeus:
-```js
-class{^my\/class}
+#### Sinun poissulkemisesi
+Polku tiedostoon, joka sisältää sinun poissulkemisesi.
+```cli
+--exempt=<exempt>
 ```
 
-Jotta tämä sopii asetuksiin, sinun on välitettävä se merkkijonona.
-
-
-```js
-exempt: [
-    "class{^my\\/class}"
-]
+#### Ohita laskenta
+**KÄYTÄ TÄMÄ OMA RISKI** täysin ohittaa kriittiset laskentamuodot, kuten kirjastot. Tuki voi olla rajoitettua, jos päätät käyttää tätä vaihtoehtoa.
+```cli
+--fuckit
 ```
 
-### Menetelmän pois jättäminen
-
-Koska lähtökohtana sulkea tietty menetelmä, sinun on käytettävä luokan menetelmä poikkeus:
-```js
-method{^myMethod}
+#### Sinun kirjastot
+Polku kansioon, joka sisältää kirjastot/riippuvuudet, joita tarvitaan jar-tiedoston häivyttämiseen.
+```cli
+--libs=<libs>
 ```
 
-Jotta tämä sopii asetuksiin, sinun on välitettävä se merkkijonona.
-
-```js
-exempt: [
-    "method{^myMethod}"
-]
+#### Kieltäydy seurannasta
+Tämä vaihtoehto ei vakoile sinua eikä raportoi tietoja, kuten kohtaamiasi virheitä tai käyttötilastoja.
+```cli
+--notrack
 ```
 
-### Tietyn java-luokan menetelmän sulkeminen ulkopuolelle
-
-Aivan kuten olemme aiemmin oppineet sulkemaan pois menetelmän ja luokan meidän on tehtävä seuraavat:
-```js
-class{^my\/class}
-method{^myMethod}
+#### Suojattu lähtö
+Polku sinne, minne haluat obfuskuroidun purkin tulostettavan, jos tämä vaihtoehto jätetään tyhjäksi, se tulostetaan siihen hakemistoon, jossa koodisuojaus suoritettiin.
+```cli
+--output=<output>
 ```
 
-Nyt sulkea pois menetelmä, joka on tietyssä luokassa, kaikki tämä on tehtävä on se, että kaksi on ketjutetaan yhteen riviin, sellaisenaan:
-
-```js
-class{^my\/class} method{^myMethod}
+#### Automaattinen riippuvuuslaskenta
+Allows you to enable phantom computation for classes, again, if this option is used, support may be limited. Kehotamme sinua tarjoamaan tarvittavat kirjastot ja hämärtää purkki tiedosto.
+```cli
+--phantom
 ```
 
-Näin ollen config, se olisi seuraava:
-
-```js
-exempt: [
-    "class{^my\/class} method{^myMethod}"
-]
+#### Määritellään ajoaikaa
+Polku java ajon aikana.
+```cli
+--runtime=<runtime>
 ```
-
-## Kirjastot
-
-Kirjastot ovat tärkeä osa luokkapolun laskemista ja parhaan mahdollisen suojan varmistamista ohjelmistollesi. Tässä tapauksessa sinun on annettava kelvollinen Java-polun argumentti merkkijonona
-
-Tässä alla on täytäntöönpanokoodi:
-```java
-public File[] getLibs() {
-    return this.getStringList("libraries", Collections.emptyList())
-                .stream()
-                .map(File::new)
-                .distinct()
-                .toArray(File[]::new);
-}
-```
-
-Tässä alla on esimerkki kelvollisista java-poluista:
-```
-C:\test.jar
-test.jar
-./test.jar
-/Home/test.jar
-```
-
-Asetusehdoissa ne olisivat edustettuina seuraavasti:
-
-```js
-libraries [
-    "C:\\test.jar",
-    "test.jar",
-    "./test.jar",
-    "/Home/test.jar"
-]
-```
-
-## Ajuri
-
-Kuljettaja on karkaisu osa Skidfuscator. Tämä ominaisuus on varattu Premiumille. Yksinkertaista on, että tuote luo jokaista ajoa varten automaattisesti ainutlaatuisen järjestelmäajurin sovelluksesi suojaamiseksi. Ajuri tukee seuraavia:
-
-| Käyttöjärjestelmä | Tuetut Arkkitehtuurit |
-| ----------------- | --------------------- |
-| Ikkunat           | x64_86                |
-| MacOS             | x64_86, AARCH64 (ARM) |
-| Linux             | x64_86 (AMD64)        |
-
-Poistaaksesi tämän ominaisuuden (:warning: tämä vähentää merkittävästi obfuscation vahvuutta), sinun on vaihdettava totuus:
-
-```js
-driver: false
-```
-
-
-## Muuntajat
-
-Voit yksilöllisesti ottaa käyttöön/poistaa käytöstä jokaisen muuntajan.
-
-
-#### Merkkijonon Salaus
-
-Merkkijonon salaus muuntaa jokaisen merkkijonon tietyksi kutsuksi, jonka tarkoituksena on piilottaa se ajallaan. Tämä voi olla käytännöllistä ei-arkaluonteisille verkko-osoitteille, yksityisille avaimille jne...
-
-::: warning
-Asiakkaaseen ei pidä luottaa, Ei Koskaan. Älä luota merkkijonosalaukseemme ohjelmistosi ainoana suojana. Oletusarvoisesti sinun pitäisi olettaa, että käänteismuokkaajat pääsevät käsiksi näihin riittävän ajan ja kärsivällisyyden avulla.
-:::
-
-Tällä hetkellä on kaksi tilaa Merkkijono salaus: `STANDARD` ja `POLYMORPHIC`
-
-#### Numeron Salaus
-
-Numeron salausmuuntaja salaa minkä tahansa piilotettavan kokonaislukupohjaisen numeron. Tämä sopii täydellisesti kauhistuttamiseen koodia yleensä ja mikä tekee käänteissuunnittelijoille enemmän vaikeuksia saada puhdasta lähdekoodia. Tämä vahvistaa lisäksi kaikkia yksinkertaisesti boolean-pohjaisia virtausehtoja.
