@@ -1,254 +1,60 @@
+# Getting Started
 
-# Настройка
+So, you've now succsessfully downloaded Skidfuscator onto your computer and are wondering how to run it?
 
-Здесь вы узнаете что из себя представляет конфигурация. Будьте уверены, что сможете уловить все детали своим зорким глазом. Если у вас возникнут некоторые проблемы, пожалуйста, свяжитесь с поддержкой. Премиум пользователи могут получить бесплатную услугу по настройке от нашей команды.
+Skidfuscator runs via the command line, using the Java CLI. We strongly advise you are familiar with this in order to enjoy a seamless Skidfuscator experience.
 
-## Основная часть конфигурации
+## CLI options for Skidfuscator
 
-Конфигурация основана на [lightbend конфиге](https://github.com/lightbend/config). Это означает, что мы поддерживаем 3 формата: Java Properties, JSON и HOCON.
+Simply run `java -jar <yourSkidfuscatorFile.jar>` and you will be presented with various options:
 
-Мы **настоятельно рекомендуем использовать HOCON** как наиболее простой, элегантный и многосторонний способ, лёгкий в использовании. Посмотрите приложенный конфиг по умолчанию:
+![Skidfuscator options](https://i.imgur.com/Yu70Pcq.png)
 
-```javascript
-exempt: []
 
-libs: []
-
-stringEncryption {
-  type: STANDARD
-  enabled: true
-  exempt: []
-}
-
-numberEncryption {
-  enabled: true
-  exempt: []
-}
-
-intAnnotationEncryption {
-  enabled: true
-  exempt: []
-}
-
-stringAnnotationEncryption {
-  enabled: true
-  exempt: []
-}
-
-exceptionReturn {
-  enabled: true
-  exempt: []
-}
-
-flowCondition {
-  enabled: true
-  exempt: []
-}
-
-flowException {
-  enabled: true
-  strength: AGGRESSIVE
-  exempt: []
-}
-
-flowRange {
-  enabled: true
-  exempt: []
-}
-
-flowFactoryMaker {
-  enabled: true
-  exempt: []
-}
-
-flowSwitch {
-  enabled: true
-  exempt: []
-}
-
-outliner {
-  enabled: true
-  exempt: []
-}
-
-ahegao {
-  enabled: true
-  exempt: []
-}
-
-native: {
-  enabled: false
-  exempt: []
-}
-
-driver: {
-  enabled: false
-}
-
-reference {
-  enabled: false
-}
-
-fileCrasher: {
-  enabled: false
-}
-
-classRenamer {
-  enabled: false
-  type: CUSTOM
-  prefix: "skido/"
-  chars: [
-    "K"
-    "oO",
-    "o0"
-  ]
-  depth: 3
-}
-
-methodRenamer {
-  enabled: false
-  type: CUSTOM
-  chars: [
-    "K"
-    "oO",
-    "o0"
-  ]
-  depth: 3
-}
-
-fieldRenamer {
-  enabled: false
-  type: ALPHABETICAL
-}
+#### Your input jar
+The input jar you want to obfuscate with Skidfuscator.
+```cli
+<input>
 ```
 
-## Исключения
-
-Использование исключений идентично тому, как это было реализовано в старой системе. Чтобы узнать больше об исключениях, следуйте на [эту страницу](../exclusion.md)
-
-::: предупреждение 
-Java считывает строку, удаляя обратный слэш. Это означает, что вы ОБЯЗАНЫ писать дважды обратный слэш
-:::
-
-### Исключение класса
-
-Сначала, чтобы исключить какой-то класс, вам необходимо использовать исключение класса по регулярному выражению (regex):
-```js
-class{^my\/class}
+#### Your exclusions
+The path to the file which contains your exclusions.
+```cli
+--exempt=<exempt>
 ```
 
-Чтобы установить это в конфигурации, вы должны передать его как строку.
-
-
-```js
-exempt: [
-    "class{^my\\/class}"
-]
+#### Skip computation
+**USE THIS AT YOUR OWN RISK** Completely skips critical forms of computation such as libraries. Support may be limited if you choose to use this option.
+```cli
+--fuckit
 ```
 
-### Исключение метода
-
-Сначала, чтобы исключить какой-то метод, вам необходимо использовать исключение метода класса:
-```js
-method{^myMethod}
+#### Your libraries
+The path to the folder which contains libraries / dependencies required to obfuscate your jar file.
+```cli
+--libs=<libs>
 ```
 
-Чтобы установить это в конфигурации, вы должны передать его как строку.
-
-```js
-exempt: [
-    "method{^myMethod}"
-]
+#### Opt out of analytics
+This option will not provide us any analytics such as errors you may encounter, or obfuscator usage statistics.
+```cli
+--notrack
 ```
 
-### Исключение метода в определённом классе
-
-Просто закрепим выше сказанное, чтобы исключить метод и класс мы должны сделать следующее:
-```js
-class{^my\/class}
-method{^myMethod}
+#### Your output
+The path to where you would like your obfuscated jar to be output, if this option is left empty it will be output in the directory that Skidfuscator was executed in.
+```cli
+--output=<output>
 ```
 
-Теперь, чтобы исключить метод ВНУТРИ какого-то класса, всё что нам нужно, это объединить всё в одну строчку:
-
-```js
-class{^my\/class} method{^myMethod}
+#### Phantom computation
+Allows you to enable phantom computation for classes, again, if this option is used, support may be limited. We strongly advise you provide the necessary libraries required and obfuscate your jar file.
+```cli
+--phantom
 ```
 
-В конфиге это будет выглядеть так:
-
-```js
-exempt: [
-    "class{^my\/class} method{^myMethod}"
-]
+#### Specifying runtime
+The path to your java runtime.
+```cli
+--runtime=<runtime>
 ```
-
-## Библиотеки
-
-Библиотеки - это важный аспект вычисления classpath'а и обеспечения полной безопасности вашего приложения. Здесь вы должны предоставить корректный Java аргумент пути как строку
-
-Ниже можно увидеть код реализации:
-```java
-public File[] getLibs() {
-    return this.getStringList("libraries", Collections.emptyList())
-                .stream()
-                .map(File::new)
-                .distinct()
-                .toArray(File[]::new);
-}
-```
-
-Ниже можно увидеть несколько правильных java путей:
-```
-C:\test.jar
-test.jar
-./test.jar
-/Home/test.jar
-```
-
-В конфиге это будет выглядеть так:
-
-```js
-libraries [
-    "C:\\test.jar",
-    "test.jar",
-    "./test.jar",
-    "/Home/test.jar"
-]
-```
-
-## Драйвер
-
-Драйвер - это упрочняющая часто Skidfuscator. Эта особенность зарезервирована для премиума. В двух словах, для обфускации создается и компилируется новый драйвер для следующих архитектур:
-
-| Операционная система | Поддерживаемые архитектуры |
-| -------------------- | -------------------------- |
-| Windows              | x64_86                     |
-| MacOS                | x64_86, AARCH64 (ARM)      |
-| Linux                | x64_86 (AMD64)             |
-
-Чтобы отключить эту функцию (:warning: это сильно снижает силу обфускации), вы должны переключить это значение:
-
-```js
-driver: false
-```
-
-
-## Преобразователи
-
-Вы можете индивидуально включать/отключать каждый преобразователь.
-
-
-#### Шифрование строк
-
-Шифрователь строк преобразует каждую строку в вызов специального метода с целью скрытия их во время работы программы. Это может быть практично для нечувствительных URL, приватных ключей и т. д...
-
-::: warning
-Вы не должны в основном доверять клиенту. Пожалуйста, не полагайтесь на шифрование строк как на единственную защиту для вашего ПО. По умолчанию, вы должны понимать, что талантливый специалист по reverse-engineering'гу может получить доступ к ним, если у него будет достаточно времени и терпения.
-:::
-
-В настоящее время существует два режима для шифрования строк: `STANDARD` и `POLYMORPHIC`
-
-#### Шифрование чисел
-
-Шифрователь чисел шифрует кажое число с целью его сокрытия. Это идеально подходит для полного искажения кода и делает крайне сложной задачу reverse-engineering специалистов воссоздать исходный код. Это также защищает любые основанные на boolean операции.
