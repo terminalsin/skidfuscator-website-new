@@ -1,60 +1,60 @@
-# Getting Started
+## Flow Exceptions
 
-So, you've now succsessfully downloaded Skidfuscator onto your computer and are wondering how to run it?
+Flow Exception is an obfuscation transformation that adds additional layers of security to your Java code to make it harder for decompilers to output valid Java code. It does this by altering the control flow and introducing exception fall-though code in a way that complicates the logic without changing the program's functionality.
 
-Skidfuscator runs via the command line, using the Java CLI. We strongly advise you are familiar with this in order to enjoy a seamless Skidfuscator experience.
+At a high-level, the transformer works in the following way:
+- First, the transformer examines methods in your code and skips abstract methods, init methods, and those with no code to avoid compatibility issues.
+- Then, the transformer then determines the appropriate obfuscation strategy (Weak, Good, or Aggressive) based on the configuration settings. Each strategy offers a different level of obfuscation and impacts how often exception-related code is inserted.
+- Once such is done, for each block in the control flow graph, the transformer checks whether it should be exempt from obfuscation. It skips empty blocks, proxy blocks, and exception-sensitive blocks. If a block is eligible for obfuscation, the transformer decides whether to apply the obfuscation based on the chosen strategy.
+- When applied, the transformer generates a unique seed and uses hashing to secure the opaque predicate. It then inserts a bogus conditional jump to a throw statement, causing the flow to fall-through.
+- In some cases, the transformer may add an additional layer of obfuscation by inserting a secondary conditional jump statement at both the beginning and random locations in the block.
 
-## CLI options for Skidfuscator
+## Config
 
-Simply run `java -jar <yourSkidfuscatorFile.jar>` and you will be presented with various options:
+There are three modes available for this specific transformer:
+- `WEAK`: If was previously executed, run a random boolean, if last wasn't, run (75% average insertion rate)
+- `GOOD`: Always run once (100% average insertion rate)
+- `AGGRESSIVE`: Always run twice (200% average insertion rate)
 
-![Skidfuscator options](https://i.imgur.com/Yu70Pcq.png)
-
-
-#### Your input jar
-The input jar you want to obfuscate with Skidfuscator.
-```cli
-<input>
+```js
+flowException {
+    enabled: true
+    strength: AGGRESSIVE // Can be 'WEAK', 'GOOD' or 'AGGRESSIVE'
+    exempt: []
+}
 ```
 
-#### Your exclusions
-The path to the file which contains your exclusions.
-```cli
---exempt=<exempt>
+## Examples
+
+#### Unobfuscated
+```java
+public static void main(String[] args) {
+    int number = callNumber();
+    /*[...]*/
+}
+/*[...]*/
 ```
 
-#### Skip computation
-**USE THIS AT YOUR OWN RISK** Completely skips critical forms of computation such as libraries. Support may be limited if you choose to use this option.
-```cli
---fuckit
-```
+#### Obfuscated
+```java
+public static void main(String[] args) {
+    /*[...]*/
+    while (true) {
+        if (n ^ 0x8AF8EF8F == 0xA88FFA) {
+            break;
+        }
 
-#### Your libraries
-The path to the folder which contains libraries / dependencies required to obfuscate your jar file.
-```cli
---libs=<libs>
-```
+        n = n ^ 0x28847D;
+        int number = callNumber();
 
-#### Opt out of analytics
-This option will not provide us any analytics such as errors you may encounter, or obfuscator usage statistics.
-```cli
---notrack
-```
+        if (n ^ 0xAA9F8FFD == 0x989F7AF) {
+            break;
+        }
 
-#### Your output
-The path to where you would like your obfuscated jar to be output, if this option is left empty it will be output in the directory that Skidfuscator was executed in.
-```cli
---output=<output>
-```
+        throw new IllegalStateException();
+    }
 
-#### Phantom computation
-Allows you to enable phantom computation for classes, again, if this option is used, support may be limited. We strongly advise you provide the necessary libraries required and obfuscate your jar file.
-```cli
---phantom
-```
-
-#### Specifying runtime
-The path to your java runtime.
-```cli
---runtime=<runtime>
+    /*[...]*/
+}
+/*[...]*/
 ```
