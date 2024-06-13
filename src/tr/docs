@@ -1,60 +1,60 @@
-# Başlarken
+## Flow Exceptions
 
-Demek Skidfuscator'ı bilgisayarına başarıyla indirdin ve nasıl çalıştıracağını merak ediyorsun?
+Flow Exception, kod çözücülerin geçerli Java kodu çıktısı almasını zorlaştırmak için Java kodunuza ek güvenlik katmanları ekleyen bir gizleme dönüşümüdür. Bunu, kontrol akışını değiştirerek ve programın işlevselliğini değiştirmeden mantığı karmaşıklaştıracak şekilde istisna düşme kodu ekleyerek yapar.
 
-Skidfuscator Java CLI'sini kullanarak komut satırı ile çalışır. Sorunsuz bir Skidfuscator deneyimi yaşamanız için buna alışık olmanızı tavsiye ederiz.
+Yüksek seviyede, transformatör aşağıdaki şekilde çalışır:
+- İlk olarak, dönüştürücü kodunuzdaki yöntemleri inceler ve uyumluluk sorunlarını önlemek için soyut yöntemleri, init yöntemlerini ve kod içermeyenleri atlar.
+- Daha sonra dönüştürücü, yapılandırma ayarlarına göre uygun gizleme stratejisini (Zayıf, İyi veya Agresif) belirler. Her strateji farklı bir gizleme düzeyi sunar ve exceptionlarla ilgili kodun ne sıklıkta eklendiğini etkiler.
+- Once such is done, for each block in the control flow graph, the transformer checks whether it should be exempt from obfuscation. Boş blokları, proxy bloklarını ve istisnaya duyarlı blokları atlar. Bir blok gizleme için uygunsa, dönüştürücü seçilen stratejiye göre gizlemenin uygulanıp uygulanmayacağına karar verir.
+- Uygulandığında, dönüştürücü benzersiz bir tohum üretir ve opak yüklemi güvence altına almak için hashing kullanır. Daha sonra throw deyimine sahte bir koşullu atlama ekleyerek akışın düşmesine neden olur.
+- Bazı durumlarda dönüştürücü, bloğun hem başlangıcına hem de rastgele konumlarına ikincil bir koşullu atlama ifadesi ekleyerek ek bir gizleme katmanı ekleyebilir.
 
-## Skidfuscator için CLI seçenekleri
+## Yapılandırma Ayarı
 
-Basitçe `java -jar <yourSkidfuscatorFile.jar>` komutunu çalıştırın, sizi çeşitli seçenekler karşılayacak:
+Bu özel transformatör için üç mod mevcuttur:
+- `ZAYIF`: Daha önce çalıştırıldıysa, rastgele bir boolean değeri çalıştırır; daha önce çalıştırılmadıysa (ortalama %75 ekleme oranıyla) çalıştırır
+- `İYİ`: Her zaman bir kez çalıştır (ortalama %100 ekleme oranı)
+- `AGRESİF`: Her zaman iki kere çalıştır (ortalama 200% ekleme oranı)
 
-![Skidfuscator seçenekleri](https://i.imgur.com/Yu70Pcq.png)
-
-
-#### Jar dosyanız
-Skidfuscator kullanarak kodunu gizlemek istediğiniz jar dosyası.
-```cli
-<input>
+```js
+flowException {
+    enabled: true
+    strength: AGGRESSIVE // Can be 'WEAK', 'GOOD' or 'AGGRESSIVE'
+    exempt: []
+}
 ```
 
-#### Ayrıştırmalarınız
-Ayrıştırmalarınızı içeren dosyaya giden yol.
-```cli
---exempt=<exempt>
+## Örnekler
+
+#### Gizlenmemiş Kod
+```java
+public static void main(String[] args) {
+    int number = callNumber();
+    /*[...]*/
+}
+/*[...]*/
 ```
 
-#### Hesaplamayı atla
-**ÇIKABİLECEK RİSKLERİ GÖZE ALARAK KULLANIN** Hesaplamanın kütüphaneler gibi kritik formlarını atlar. Eğer bu seçeneği kullanmak isterseniz destek limitli olabilir.
-```cli
---fuckit
-```
+#### Gizlenmiş Kod
+```java
+public static void main(String[] args) {
+    /*[...]*/
+    while (true) {
+        if (n ^ 0x8AF8EF8F == 0xA88FFA) {
+            break;
+        }
 
-#### Kütüphaneleriniz
-Jar dosyanızın kodunu gizlemek için gerekli olan kütüphaneleri / bağımlılıkları içeren klasöre giden yol.
-```cli
---libs=<libs>
-```
+        n = n ^ 0x28847D;
+        int number = callNumber();
 
-#### Analitikleri devre dışı bırakma
-Bu seçenek bize karşılaşabileceğiniz sorunlar, veya kod gizleyicisi kullanım istatistikleri gibi herhangi bir analitiği sağlamayacak.
-```cli
---notrack
-```
+        if (n ^ 0xAA9F8FFD == 0x989F7AF) {
+            break;
+        }
 
-#### Çıktınız
-Kodu gizlenen jar dosyasının çıktısına giden yol, eğer bu seçenek boş bırakılırsa çıktı dosya Skidfuscator'ın kullanıldığı klasörde olacaktır.
-```cli
---output=<output>
-```
+        throw new IllegalStateException();
+    }
 
-#### Hayalet hesaplama
-Allows you to enable phantom computation for classes, again, if this option is used, support may be limited. Gerekli kütüphaneleri sağlayın ve jar dosyanızı şifrelemeye tabi tutmanızı şiddetle tavsiye ediyoruz.
-```cli
---phantom
-```
-
-#### Çalışma zamanını belirtme
-Java çalıştırma zamanınızın (Jre) yolu.
-```cli
---runtime=<runtime>
+    /*[...]*/
+}
+/*[...]*/
 ```
