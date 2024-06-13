@@ -1,60 +1,60 @@
-# Démarrage
+## Exceptions de flux
 
-Vous avez donc réussi à télécharger Skidfuscator sur votre ordinateur et vous vous demandez comment le faire fonctionner?
+Les exceptions de flux sont une transformation d'obfuscation qui ajoute des couches de sécurité supplémentaires à votre code Java pour rendre plus difficile la génération de code Java valide par les décompileurs. Elle le fait en modifiant le flux de contrôle et en introduisant du code de dérivation des exceptions de manière à complexifier la logique sans modifier la fonctionnalité du programme.
 
-Skidfuscator s'exécute en ligne de commande, en utilisant le CLI. Nous vous conseillons fortement de le connaître afin de profiter d'une expérience de Skidfuscator fluide.
+De manière générale, le transformateur fonctionne de la manière suivante :
+- Tout d'abord, le transformateur examine les méthodes de votre code et saute les méthodes abstraites, les méthodes d'initialisation et celles sans code pour éviter les problèmes de compatibilité.
+- Ensuite, le transformateur détermine la stratégie d'obfuscation appropriée (Faible, Bonne ou Aggressive) en fonction des paramètres de configuration. Chaque stratégie offre un niveau d'obfuscation différent et impacte la fréquence à laquelle le code lié aux exceptions est inséré.
+- Once such is done, for each block in the control flow graph, the transformer checks whether it should be exempt from obfuscation. Il saute les blocs vides, les blocs proxy et les blocs sensibles aux exceptions. Si un bloc est éligible à l'obfuscation, le transformateur décide d'appliquer ou non l'obfuscation en fonction de la stratégie choisie.
+- Lorsqu'elle est appliquée, le transformateur génère une graine (seed) unique et utilise le hachage pour sécuriser le prédicat opaque. Il insère ensuite un saut conditionnel bidon vers une instruction "throw", provoquant une dérivation du flux.
+- Dans certains cas, le transformateur peut ajouter une couche supplémentaire d'obfuscation en insérant une deuxième instruction de saut conditionnel à la fois au début et à des emplacements aléatoires dans le bloc.
 
-## Options du CLI pour Skidfuscator
+## Configuration
 
-Lancez simplement `java -jar <yourSkidfuscatorFile.jar>` et vous obtiendrez diverses options :
+Il existe trois modes disponibles pour ce transformateur spécifique :
+- `WEAK` : Si elle a été exécutée précédemment, exécute un booléen aléatoire. Sinon, exécute (taux d'insertion moyen de 75%)
+- `GOOD` : Exécute toujours une fois (taux d'insertion moyen de 100%)
+- `AGGRESSIVE` : Exécute toujours deux fois (taux d'insertion moyen de 200%)
 
-![Options Skidfuscator](https://i.imgur.com/Yu70Pcq.png)
-
-
-#### Votre jar d'entrée
-Le jar d'entrée que vous voulez obfusquer avec Skidfuscator.
-```cli
-<input>
+```js
+flowException {
+    enabled: true
+    strength: AGGRESSIVE // Peut être 'WEAK', 'GOOD' ou 'AGGRESSIVE'
+    exempt: []
+}
 ```
 
-#### Vos exclusions
-Le chemin vers le fichier qui contient vos exclusions.
-```cli
---exempt=<exempt>
+## Examples
+
+#### Non obfusqué
+```java
+public static void main(String[] args) {
+    int number = callNumber();
+    /*[...]*/
+}
+/*[...]*/
 ```
 
-#### Ignorer le calcul
-**UTILISEZ CECI À VOTRE PROPRES RISQUES** Saute complètement les formes critiques de calcul telles que les bibliothèques. Le support peut être limité si vous choisissez d'utiliser cette option.
-```cli
---fuckit
-```
+#### Obfusqué
+```java
+public static void main(String[] args) {
+    /*[...]*/
+    while (true) {
+        if (n ^ 0x8AF8EF8F == 0xA88FFA) {
+            break;
+        }
 
-#### Vos bibliothèques
-Le chemin vers le dossier qui contient les bibliothèques / dépendances nécessaires pour obfusquer votre fichier jar.
-```cli
---libs=<libs>
-```
+        n = n ^ 0x28847D;
+        int number = callNumber();
 
-#### Désactiver les statistiques
-Cette option ne nous fournira aucune analyse telle que les erreurs que vous pourriez rencontrer, ou des statistiques d'utilisation.
-```cli
---notrack
-```
+        if (n ^ 0xAA9F8FFD == 0x989F7AF) {
+            break;
+        }
 
-#### Votre sortie
-Le chemin vers lequel vous voulez que votre jar obfusqué soit généré, si cette option est laissée vide, il sera généré dans le répertoire dans lequel Skidfuscator a été exécuté.
-```cli
---output=<output>
-```
+        throw new IllegalStateException();
+    }
 
-#### Calcul fantôme
-Allows you to enable phantom computation for classes, again, if this option is used, support may be limited. Nous vous conseillons fortement de fournir les bibliothèques nécessaires et d'obfusquer votre fichier jar.
-```cli
---phantom
-```
-
-#### Spécification de l'exécutable
-Le chemin vers votre executable java.
-```cli
---runtime=<runtime>
+    /*[...]*/
+}
+/*[...]*/
 ```
