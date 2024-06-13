@@ -5,7 +5,7 @@ Flow Exception is an obfuscation transformation that adds additional layers of s
 At a high-level, the transformer works in the following way:
 - First, the transformer examines methods in your code and skips abstract methods, init methods, and those with no code to avoid compatibility issues. 
 - Then, the transformer then determines the appropriate obfuscation strategy (Weak, Good, or Aggressive) based on the configuration settings. Each strategy offers a different level of obfuscation and impacts how often exception-related code is inserted. 
-- Once such is done, dor each block in the control flow graph, the transformer checks whether it should be exempt from obfuscation. It skips empty blocks, proxy blocks, and exception-sensitive blocks. If a block is eligible for obfuscation, the transformer decides whether to apply the obfuscation based on the chosen strategy. 
+- Once such is done, for each block in the control flow graph, the transformer checks whether it should be exempt from obfuscation. It skips empty blocks, proxy blocks, and exception-sensitive blocks. If a block is eligible for obfuscation, the transformer decides whether to apply the obfuscation based on the chosen strategy. 
 - When applied, the transformer generates a unique seed and uses hashing to secure the opaque predicate. It then inserts a bogus conditional jump to a throw statement, causing the flow to fall-through.
 - In some cases, the transformer may add an additional layer of obfuscation by inserting a secondary conditional jump statement at both the beginning and random locations in the block.
 
