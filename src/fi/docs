@@ -1,60 +1,60 @@
-# Aloittaminen
+## Väärennettyihin virheisiin Perustuva Suojaus
 
-Joten, olet nyt onnistuneesti ladattu Skidfuscator tietokoneeseen ja ihmettelevät, miten ajaa se?
+Väärennettyihin virheisiin perustuva suojaus on hämärtymismuunnos, joka lisää Java-koodiisi lisäsuojauskerroksia, mikä vaikeuttaa kelvollisen Java-koodin tulostamista decompilereille. Se tekee tämän muuttamalla ohjaus virtausta ja ottamalla käyttöön poikkeus putoavat kuitenkin koodi tavalla, joka vaikeuttaa logiikkaa muuttamatta ohjelman toiminnallisuutta.
 
-Skidfuscator kulkee komentorivin kautta käyttäen Java-CLItä. Suosittelemme vahvasti, että olet perehtynyt tähän, jotta voit nauttia saumaton Skidfuscator kokemus.
+Korkealla tasolla muuntaja toimii seuraavalla tavalla:
+- Ensin muuntaja tutkii koodisi menetelmät ja ohittaa abstraktit menetelmät, init-menetelmät ja ne, joissa ei ole koodia yhteensopivuusongelmien välttämiseksi.
+- Sitten muuntaja sitten määrittää asianmukaisen obfuscation strategia (Heikko, Hyvä, tai Aggressiivinen) perustuu kokoonpano asetukset. Jokaisella strategialla on erilainen hämärtymisen taso ja se vaikuttaa siihen, kuinka usein siihen lisätään poikkeukseseen liittyvä koodi.
+- Once such is done, for each block in the control flow graph, the transformer checks whether it should be exempt from obfuscation. Se ohittaa tyhjät lohkot, välityspalvelinlohkot ja poikkeusherkät lohkot. Jos lohko voidaan hämärtää, muuntaja päättää, sovelletaanko valittuun strategiaan perustuvaa hämärtymistä vai ei.
+- Sovellettaessa muuntaja tuottaa ainutlaatuisen siemenen ja käyttää hashing turvata läpinäkymätön ennustaa. Se sitten lisää valheellinen ehdollinen hypätä heittää lausunto, aiheuttaa virtaus pudota läpi.
+- Joissakin tapauksissa muuntaja voi lisätä ylimääräisen obfuskaation kerroksen lisäämällä toissijaisen ehdollisen hyppyilmoituksen sekä alku- että satunnaisia sijainteja lohkoon.
 
-## CLI vaihtoehdot Skidfuscatorille
+## Konfiguroi
 
-Yksinkertaisesti ajaa `java -jar <yourSkidfuscatorFile.jar>` ja sinulle esitetään erilaisia vaihtoehtoja:
+Tälle muuntajalle on tarjolla kolme tilaa:
+- `WEAK`: Jos aiemmin on suoritettu, suorita satunnainen totuus, jos viimeinen ei ole suoritettu, suorita (75 %: n keskimääräinen lisäysaste)
+- `HYVÄ`: Aina suorita kerran (100% Luokitus)
+- `AGGRESSIIVINEN` Suoritetaan aina kahdesti (200 keskimääräinen lisäysprosentti)
 
-![Skidfuscator asetukset](https://i.imgur.com/Yu70Pcq.png)
-
-
-#### Syöttö purkki
-Syöttöpurkki, jonka haluat suojata Skidfuscatorilla.
-```cli
-<input>
+```js
+flowException {
+    enabled: true
+    strength: AGGRESSIVE // Voi olla 'WEAK', 'GOOD' tai 'AGGRESSIVE'
+    exempt: []
+}
 ```
 
-#### Sinun poissulkemisesi
-Polku tiedostoon, joka sisältää sinun poissulkemisesi.
-```cli
---exempt=<exempt>
+## Esimerkkejä
+
+#### Suojaamaton
+```java
+public static void main(String[] args) {
+    int number = callNumber();
+    /*[...]*/
+}
+/*[...]*/
 ```
 
-#### Ohita laskenta
-**KÄYTÄ TÄMÄ OMA RISKI** täysin ohittaa kriittiset laskentamuodot, kuten kirjastot. Tuki voi olla rajoitettua, jos päätät käyttää tätä vaihtoehtoa.
-```cli
---fuckit
-```
+#### Suojattu
+```java
+public static void main(String[] args) {
+    /*[...]*/
+    while (true) {
+        if (n ^ 0x8AF8EF8F == 0xA88FFA) {
+            break;
+        }
 
-#### Sinun kirjastot
-Polku kansioon, joka sisältää kirjastot/riippuvuudet, joita tarvitaan jar-tiedoston häivyttämiseen.
-```cli
---libs=<libs>
-```
+        n = n ^ 0x28847D;
+        int number = callNumber();
 
-#### Kieltäydy seurannasta
-Tämä vaihtoehto ei vakoile sinua eikä raportoi tietoja, kuten kohtaamiasi virheitä tai käyttötilastoja.
-```cli
---notrack
-```
+        if (n ^ 0xAA9F8FFD == 0x989F7AF) {
+            break;
+        }
 
-#### Suojattu lähtö
-Polku sinne, minne haluat obfuskuroidun purkin tulostettavan, jos tämä vaihtoehto jätetään tyhjäksi, se tulostetaan siihen hakemistoon, jossa koodisuojaus suoritettiin.
-```cli
---output=<output>
-```
+        throw new IllegalStateException();
+    }
 
-#### Automaattinen riippuvuuslaskenta
-Allows you to enable phantom computation for classes, again, if this option is used, support may be limited. Kehotamme sinua tarjoamaan tarvittavat kirjastot ja hämärtää purkki tiedosto.
-```cli
---phantom
-```
-
-#### Määritellään ajoaikaa
-Polku java ajon aikana.
-```cli
---runtime=<runtime>
+    /*[...]*/
+}
+/*[...]*/
 ```
