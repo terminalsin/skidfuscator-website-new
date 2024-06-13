@@ -1,60 +1,60 @@
-# Pierwsze kroki
+## Flow Exceptions
 
-Jeśli już pobrałeś Skidfuscator na swój komputer i chcesz wiedzieć, jak go uruchomić, to oto kilka wskazówek dotyczących uruchamiania programu.
+Flow Exception to zaciemnienie, które dodaje dodatkowe warstwy zabezpieczeń do kodu Java, aby utrudnić dekompilatorom odczytanie prawidłowego kodu. Robi to poprzez zmianę przepływu sterowania i wprowadzenie kodu obsługi wyjątków w sposób, który komplikuje logikę bez zmiany funkcjonalności programu.
 
-Skidfuscator jest uruchamiany za pomocą wiersza poleceń i korzysta z interfejsu wiersza poleceń Java CLI. Zdecydowanie zalecamy zapoznanie się z tym, aby móc cieszyć się płynnym działaniem i optymalnym korzystaniem z programu.
+Opis działania:
+- Po pierwsze, transformator sprawdza metody w kodzie i pomija metody abstrakcyjne, metody inicjujące i te bez kodu, aby uniknąć problemów z kompatybilnością.
+- Następnie transformator określa odpowiednią strategię zaciemniania (słaba, dobra lub agresywna) na podstawie ustawień konfiguracji. Każda strategia oferuje inny poziom zaciemniania.
+- Once such is done, for each block in the control flow graph, the transformer checks whether it should be exempt from obfuscation. Pomija puste bloki, bloki proxy i bloki wrażliwe na wyjątki. Jeśli blok kwalifikuje się do zaciemnienia, transformer decyduje, czy zastosować zaciemnienie w oparciu o wybraną strategię.
+- Po zastosowaniu, transformator generuje unikalny seed i używa hashowania. Następnie wstawia fałszywy skok warunkowy do instrukcji throw, powodując przerwanie przepływu.
+- W niektórych przypadkach transformator może dodać dodatkową warstwę zaciemniającą, wstawiając dodatkową instrukcję skoku warunkowego zarówno na początku, jak i w losowych miejscach bloku.
 
-## Dostępne opcje
+## Konfiguracja
 
-Wystarczy uruchomić `java -jar <yourSkidfuscatorFile.jar>` i zostaną wyświetlone różne opcje:
+Dla tego konkretnego transformatora dostępne są trzy tryby:
+- `ŚREDNI`: Jeśli był wcześniej wykonywany, uruchamia losową wartość boolean, jeśli nie był ostatnio wykonywany, uruchamia (średni współczynnik wstawiania - 75%).
+- `DOBRY`: Zawsze uruchamiaj raz (średni współczynnik wstawiania - 100%)
+- `AGRESYWNY`: Zawsze uruchamiaj dwa razy (średni współczynnik wstawiania - 200%)
 
-![Opcje Skidfuscator](https://i.imgur.com/Yu70Pcq.png)
-
-
-#### Twój wybrany plik
-Plik, który chcesz zaciemnić za pomocą Skidfuscator.
-```cli
-<input>
+```js
+flowException {
+    enabled: true
+    strength: AGGRESSIVE // Can be 'WEAK', 'GOOD' or 'AGGRESSIVE'
+    exempt: []
+}
 ```
 
-#### Twoje wykluczenia
-Ścieżka do pliku zawierającego wykluczenia.
-```cli
---exempt=<exempt>
+## Przykłady
+
+#### Brak zaciemnienia
+```java
+public static void main(String[] args) {
+    int number = callNumber();
+    /*[...]*/
+}
+/*[...]*/
 ```
 
-#### Pomiń obliczenie
-**UŻYWAJ TEGO NA WŁASNE RYZYKO** Całkowicie pomija krytyczne formy obliczeń, takie jak biblioteki. Wsparcie może być ograniczone, jeśli zdecydujesz się skorzystać z tej opcji.
-```cli
---fuckit
-```
+#### Zaciemniony kod
+```java
+public static void main(String[] args) {
+    /*[...]*/
+    while (true) {
+        if (n ^ 0x8AF8EF8F == 0xA88FFA) {
+            break;
+        }
 
-#### Twoje biblioteki
-Ścieżka do folderu zawierającego biblioteki / zależności wymagane do zaciemnienia pliku jar.
-```cli
---libs=<libs>
-```
+        n = n ^ 0x28847D;
+        int number = callNumber();
 
-#### Rezygnacja z analizy
-Ta opcja nie zapewni nam żadnych analiz, takich jak napotkane błędy lub statystyki użytkowania obfuscatora.
-```cli
---notrack
-```
+        if (n ^ 0xAA9F8FFD == 0x989F7AF) {
+            break;
+        }
 
-#### Zaciemniony plik
-Ścieżka do miejsca, w którym ma zostać stworzony zaciemniony plik, jeśli ta opcja pozostanie pusta, zostanie stworzony w katalogu, w którym został uruchomiony Skidfuscator.
-```cli
---output=<output>
-```
+        throw new IllegalStateException();
+    }
 
-#### Phantom computation
-Allows you to enable phantom computation for classes, again, if this option is used, support may be limited. Zdecydowanie zalecamy dostarczenie wymaganych bibliotek.
-```cli
---phantom
-```
-
-#### Specifying runtime
-Ścieżka do java runtime.
-```cli
---runtime=<runtime>
+    /*[...]*/
+}
+/*[...]*/
 ```
