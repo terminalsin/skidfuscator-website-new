@@ -1,135 +1,25 @@
-# Kirjoitetaan Poissulkemisia (Skidfuscator >= 2.0.0)
+# Asennus
 
-Regex (säännöllinen lauseke) on eräänlainen hakukuvio jota käytetään tunnistamaan merkkijonot. Regexiä käytetään yleensä tekstin etsimiseen, korvaamiseen ja vahvistamiseen. Regex on kirjoitettu virallisella kielellä, ja niitä käytetään ohjelmoinnissa, datatieteessä ja muissa sovelluksissa.
+Skidfuscatoria jaetaan verkkosivustomme, GitHubin tai Discord-palvelimemme omistajan suorien viestien kautta.
 
-Skidfuscator käyttää regex käsitellä sisällyttämistä ja poissulkemista osa sen kokoonpano.
+## Meidän alustamme
+- [Verkkosivu](https://skidfuscator.dev)
+- [Discordi](https://discord.gg/7pVgsRweeh)
+- [GitHub](https://github.com/terminalsin/skidfuscator-java-obfuscator)
 
-Poissulkemisten ymmärtäminen voi olla aluksi hankalaa, mutta usko pois, se on melko helppoa, kunhan ymmärrät sen.
+Huomaa, että GitHub on vain meidän ilmaiseksi, yhteisön painos versio Skidfuscator.
 
-Ennen kaikkea on tärkeää ymmärtää perusregex.
+## Yhteisön Versio
 
-## Regexin perusteet (säännölliset lausekkeet)
+Löydät ladattavan linkin yhteisö painos [täällä](https://github.com/skidfuscatordev/skidfuscator-java-obfuscator/releases/), premium-painos käy sivuillamme tai liity meidän Discordiin.
 
-- Tässä on perusmerkkijono, joka vastaa kaikkea:
-```java
-(.*?)
-```
+Huomaa, että Skidfuscator vaatii Java 8 (eli JDK 1.8 tai parempi) toimimaan oikein.
 
-Joten seuraavat tapahtuisi:
-```java
-abozeofez // Ottelu!
-zeigzoegze // Ottelu!
-```
+Skidfuscatorin puhtain tapa on käyttää `-jar` -parametria komentorivin käyttöliittymätyökalussa, sinulle esitellään erilaisia vaihtoehtoja siitä, miten aloittaa hämärtymisen tiedoston.
 
-***
+## Jaetaan enemmän muistia
+On tärkeää huomata, että tyypillisesti sinun pitäisi antaa JVM enemmän kuin oletuksena määrä muistia työskennellä. Jos käytät parametria "-Xmx512m", annat JVM: lle maksimissaan 512 Mt muistia, jonka pitäisi riittää useimpiin tarkoituksiin. Sinun pitäisi kuitenkin olla varma, ettet anna JVM: lle enemmän muistia kuin on fyysisesti saatavilla. Muuten suorituskyky heikkenee dramaattisesti, kun JVM alkaa käyttää virtuaalista muistia.
 
-- Jos haluat löytää minkä tahansa merkkijonon, joka sisältää "roar", voit käyttää komentoa
-```java
-roar
-````
+Katso alla olevasta miten lisätä muistia Skidfuscatoriin:
 
-Joten seuraavat tapahtuisi:
-```java
-roar // Ottelut!
-asdafroar // Ottelu!
-grrr // Ei täsmää!
-```
-
-***
-
-Jos haluat yhdistää minkä tahansa merkkijonon, joka alkaa __ "uwu", sinulla olisi:
-```java
-^uwu
-```
-
-Tapahtuisi siis seuraavaa:
-```java
-kitty-uwu // Ei täsmää!
-uwu-kitty // Ottelu!
-```
-
-- `kitty-uwu` ei täsmää, koska uwu on loppuliite tässä skenaariossa, eikä siksi aloita vaatimuksella `uwu`.
-- `uwu-kitty` *olisi* täsmää tässä skenaariossa, koska oikea etuliite on annettu.
-
-***
-
-Jos haluat lukea lisää Regexistä, lue täältä: [Regex opetusohjelma](https://medium.com/factory-mind/regex-tutorial-a-simple-cheatsheet-by-examples-649dc1c3f285)
-
-## Kirjoitetaan poissulkemista
-Tämä on hyvin yksinkertaista ja helppoa.
-
-- Luo tiedosto, johon kirjoitat poissulkemisesi. Suosittelemme käyttämään txt-tiedostoa.
-
-Skidfuscator lukee sisällytykset ja poissulkemiset samalla tavalla: jos se vastaa säännöllistä lauseketta, __**se ei lue tai suojata****.
-
-### Poissulkemiset
-Käyttämällä regex-etsintää eteenpäin, kuten alla näkyy, voit etsiä mitä tahansa luokkatyyppiä. Muista välttää "/"-merkkiä "\\", jotta Regex ei katkea ja et viettäisi tuntikausia selvittääksesi, mikä on vialla.
-
-Alla on useita esimerkkejä vastaavuusluokista & poissulkemismenetelmät:
-
-```java
-// Tämä vastaa mitä tahansa metodia, jonka nimi on "main"
-method{main} 
-// Tämä vastaa kaikkia metodeja, jotka alkavat kirjaimella "com.apache"
-// (Korvata "." "/" Java-luokan nimessä) 
-class{^com\/apache} 
-// Tämä vastaa kaikkia menetelmiä, jotka alkavat sanalla "com.google"
-// ((Korvata "." "/" Java-luokan nimessä)
-class{^com\/google} 
-// Tämä vastaa mitä tahansa luokan "Controller" metodia
-class{Controller$} 
-// Tämä vastaa mitä tahansa luokan "com.example.MyClass" metodia
-class{^com\/example\/MyClass$}
-```
-
-#### Useita poikkeuksia
-
-Esimerkiksi useiden menetelmien tai pakettien poissulkeminen on todella yksinkertaista! Kaikki mitä sinun tarvitsee tehdä, on luoda uusi linja ja lisätä uusi poikkeus :)
-
-```java
-class{^com\/apache} // Matches apache
-class{^com\/google} // Matches google
-```
-
-
-### Sisällyttäminen
-Toisin kuin poissulkemiset, voit haluta **sisältää vain tietyn joukon luokkia tai paketin** hämäräperäisessä purkissa. Fret ei, tämä on mahdollista, vaikka hieman monimutkaisempi.
-
-```java
-// Tämä vastaa kaikkia paketin "com.example" luokkia
-class{^(?!(com\/example)).*$} 
-
-// Tämä vastaa kaikkia luokkia paketista "com.example" ja 
-// kaikki paketin "com.eclipse" luokat. 
-// Voit lisätä niin monta pakettia kuin haluat '|' merkin avulla, ja yleisessä käytössä se toimii tai-vertailumerkkinä.
-class{^(?!(com\/example)|(com\/eclipse)).*$} 
-```
-
-## Virheenkorjauksen Poissulkemiset
-
-Suosittelen käyttämään regex debugger, kuten [Regex101](https://regex101.com/), jotta voidaan selvittää, mitä ottelut ja mitä ei.
-
-Kaikki luokan nimet, oletuksena seuraa muotoa "package1/package2/class1". Vaikka saatat nähdä JVM se on muotoiltu eri tavalla, tapauksessa Skidfuscator, edellä mainittu muoto päätettiin olla tehokkain ja heijastavin Jar/Zip-tiedoston hierarkiassa.
-
-## Selitä Poissulkemat Tiedosto
-
-Monet asiakkaamme kehittävät Minecraft muutoksia tai laajennuksia, katso alla malli / exemplar kokoonpano tiedosto yleisimmin vaaditut poissulkemiset:
-
-```java
-// Pakettien poissulkemiset alla
-class{^net\/minecraftforge} // Matches Minecraft Forge
-class{^net\/minecraft\/client} // Matches Minecraft Client
-class{^net\/minecraft\/server} // Matches Minecraft Server
-class{^org\/bukkit} // Matches Bukkit
-class{^com\/mojang} // Matches Mojang
-class{^me\/johnymuffin} // Matches JohnyMuffin
-class{^com\/sk89q} // Matches Sk89q
-class{^org\/spigotmc} // Matches SpigotMC
-class{^org\/apache\/commons} // Matches Apache Commons
-class{^org\/jline} // Matches JLine
-
-// Menetelmän poikkeukset alla 
-method{^net\.minecraft\.client} // Excludes all methods from net.minecraft.client package 
-method{^net\.minecraft\.util} // Excludes all methods from net.minecraft.util package 
-method{^net\.minecraft\.client\.Minecraft} // Excludes all methods from the Minecraft class
-```
+`java -Xmx4G -jar skidfuscator.jar` in your command line interface tool.
