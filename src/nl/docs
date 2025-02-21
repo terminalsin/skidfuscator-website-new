@@ -1,61 +1,58 @@
-## Flow conditie
+## Omlijning
 
-Deze transformator dient als een eerste schild om een ondoorzichtige analyse te voorspellen. To prevent static analysis from detecting which integer is an opaque predicate, we use this specific integer to add extra conditions to already existing if statements. Not only does this add extra security to your software, but it hinders the deobfuscation and decompilation process of many tools.
+Omlijning verwijst naar het proces om code uit een methode te halen en het in een afzonderlijke, zelfstandige methode te plaatsen. Dit wordt vaak gedaan als een manier om de leesbaarheid en de duurzaamheid van code te verbeteren omdat het makkelijker kan maken om te begrijpen wat een methode doet door het op te splitsen in kleinere, meer gerichte stukken code.
 
-Compared to the Flow Exception transformer, this is a much more simplified version which only handles one edge case.
+Omlijning kan ook worden gebruikt als een soort code obfuscation, omdat het het moeilijker kan maken voor iemand die probeert de ingenieur om te draaien of de code te begrijpen om de algehele stroom en structuur van het programma te zien. Door de code in kleinere stukjes te slopen en te scheiden in verschillende methodes, kan het een veel hardere procedure zijn voor iemand om de verhoudingen tussen de verschillende delen van de stroom te begrijpen en om samen een bepaalde functie uit te voeren.
+
+![Uitlijning grafiek uitleg](https://i.imgur.com/2HMq0a4.png)
+
+Het fantastische aan outlining is: Het is *technisch* niet omkeerbaar! Om terug te kunnen keren naar een originele staat van een goede omlijning obfuscator *moet een deobfuscator*uitvoeren die een heuristisch en *niet* garandeert dat de uitvoer altijd semantisch correct is met de originele broncode. Verder vereist dit de deobfuscator om te mangle met variabelen en andere verschillende vormen van gevoelige bytecode manipulatie die allemaal kan leiden tot frame- en rekening-uitzonderingen.
+
+Over het geheel genomen is de obfuscatie best netjes :)
+
+::: waarschuwing
+De outliner transformator is nog erg vroeg in ontwikkeling. Als gevolg van hoe de verificateur Java werkt, kunnen niet alle scenario's correct worden geverifieerd, wat tot compilatieproblemen kan leiden. Gebruik alstublieft op eigen risico en als zich een probleem voordoet, rapporteer deze alstublieft.
+
+Let op zelf: Ik haat de stack frames
+:::
 
 ## Configuratie
 
 ```js
-flowCondition {
-    enabled: true
-    exempt: []
+outliner {
+     enabled: true
+     exempt: []
 }
 ```
 
 ## Voorbeelden
 
 #### Unobfuscated
+
 ```java
 public static void main(String[] args) {
     int number = callNumber();
-
-    if (number == 1) {
-        System.out.println("Hello world");
-    }
     /*[...]*/
 }
-/*[...]*/
+
+static int callNumber() {
+    return 1;
+}
 ```
 
 #### Obfuscated
 ```java
 public static void main(String[] args) {
-    /*[...]*/
-    label1: {
-        while (true) {
-            if (n ^ 0x8AF8EF8F == 0xA88FFA) {
-                break;
-            }
-
-            n = n ^ 0x28847D;
-            int number = callNumber();
-
-            label2: {
-                if (number != 1)
-                    break label1;
-
-                if (n ^ 0xAA9F8FFD != 0x989F7AF)
-                    break label2;
-
-                System.out.println("Hello world");
-                break label1;
-            }
-
-            throw new IllegalStateException();
-        }
-    }
+    step1_AF8FZE8EF7Z89F();
     /*[...]*/
 }
-/*[...]*/
+
+static void step1_AF8FZE8EF7Z89F() {
+    int number = callNumber();
+}
+
+
+static int callNumber() {
+    return 1;
+}
 ```
