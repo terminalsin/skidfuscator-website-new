@@ -22,32 +22,15 @@ category:
 
 Skidfuscator sells on a major version basis which follows the JDK standard versioning. As of right now, Skidfuscator is of the version 2.19.0 (JDK 19). When purchasing a license, you are entitled between 6-12 months (depending on the license type) of free updates. You may renew your updates for a discounted price (see [Updates](#updates)) When purchasing an update, you are once again granted that same period as an extension. 
 
-##   Personal License
+##   All License
 
-Personal licenses are exclusively for individual personal use, also known as "small developer". This pricing scheme
-is designated towards smaller individual developers looking to publish their products independently or under a same
-group which is:
-1. Not incorporated
-2. An association moreso than a company
+Personal licenses come with offline support, PDF invoice, registered key and direct 1:1 support. These are targetted towards enterprises, commercial entities, and any registered business which seeks to provide software
 
 See below the attached pricing:
 
 | Chairs  |  Price |  Duration | Link to purchase |
 |---|---|---|---|
-| 1 | $200  | 6 months of free updates  | [Purchase here](https://buy.stripe.com/5kA6qF7GCg131Xy3cc) |
-| 2-5 | $150/per  | 6 months of free updates  |   |
-| 5+ |  $120/per | 6 months of free updates  |   |
-
-##   Commercial License
-
-Commercial licenses come with offline support, PDF invoice, registered key and direct 1:1 support. These are targetted towards enterprises, commercial entities, and any registered business which seeks to provide software
-under a company name.
-
-| Chairs  |  Price |  Duration | Link to purchase |
-|---|---|---|---|
-| 1-10 | $600/per  | 12 months of free updates  |   |
-| 10-25 | $500/per  | 12 months of free updates  |   |
-| 25+ |  $400/per | 12 months of free updates  |   |
+| 1 | $1248  | 12 months of free updates  | [Purchase here](https://buy.stripe.com/14k5mBgd86qt1Xy4gh) |
 
 ## Updates
 
