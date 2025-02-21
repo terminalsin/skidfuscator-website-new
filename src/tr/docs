@@ -1,61 +1,58 @@
-## Akış Koşulu (Flow Condition)
+## Outliner
 
-Bu dönüştürücü, opak yüklem analizine karşı bir ilk kalkan görevi görür. Statik analizin hangi tamsayının opak bir yüklem olduğunu tespit etmesini önlemek için, bu özel tamsayıyı zaten var olan if ifadelerine ekstra koşullar eklemek için kullanırız. Bu sadece yazılımınıza ekstra güvenlik katmakla kalmaz, aynı zamanda birçok aracın deobfuscation ve decompilation sürecini de engeller.
+Dışarı çıkarma, bir methoddan kodu çıkartarak ayrı, bağımsız bir methoda yerleştirme işlemini yapar. Bu genellikle kodun okunabilirliğini ve geliştirebilirliğini artırmak için yapılır, çünkü methodu daha küçük, daha odaklanmış kod parçalarına bölmek, methodun ne yaptığını anlamayı kolaylaştırır.
 
-Flow Exception dönüştürücüsüne kıyasla bu, yalnızca bir uç durumu işleyen çok daha basitleştirilmiş bir sürümdür.
+Dışarı çıkarma, kodu tersine mühendislik yapmaya veya kodu anlamaya çalışan birinin programın genel akışını ve yapısını görmesini zorlaştırarak kod şifrelemesi olarak da kullanılabilir. Kodu daha küçük parçalara bölmek ve farklı methodlara ayırmak, birinin akışın farklı parçaları arasındaki ilişkileri anlamasını ve bu parçaların belirli bir işlevi nasıl gerçekleştirdiğini anlamasını daha zor bir hale getirebilir.
+
+![Outlining graph explanation](https://i.imgur.com/2HMq0a4.png)
+
+Dışarı çıkarma ile ilgili harika şey: *teknik olarak* geri döndürülemez olmasıdır! İyi bir dışarı çıkarmayı (outlining) şifrelemenin orijinal durumuna döndürebilmek için bir deobfuscator, *yöntem gömme (inlining)* yapmak zorundadır, ki bu sonucun her zaman orijinal kaynak koduyla aynı olucağını *garantilemez*. Ayrıca, bu şifreleme çözücünün(deobfuscator) değişkenlerle(integer) ve diğer çeşitli hassas bytecode manipülasyonlarıyla uğraşması gerektiğinden, hepsi hesaplama hatalarına sebep olabilir.
+
+Yani dışarı çıkarma(outlining) şifrelemeyi genel olarak oldukça etkilleyen ve kullanışlı yapan bir yöntemdir :)
+
+::: warning
+Bu dışarı çıkartma dönüştürücüsü hala geliştirme aşamasındadır. Java doğrulayıcının çalışma şeklinden dolayı, bazı senaryoların doğru bir şekilde doğrulanamaması, bazı derleme sorunlarına yol açabilir. Lütfen kendi riskinizle kullanın ve herhangi bir sorun oluşursa lütfen bunları bildirin.
+
+Kendime not: Stack çerçevelerinden nefret ediyorum
+:::
 
 ## Yapılandırma Ayarı
 
 ```js
-flowCondition {
-    enabled: true
-    exempt: []
+outliner {
+     enabled: true
+     exempt: []
 }
 ```
 
 ## Örnekler
 
-#### Gizlenmemiş Kod
+#### Şifrelenmemiş
+
 ```java
 public static void main(String[] args) {
     int number = callNumber();
-
-    if (number == 1) {
-        System.out.println("Hello world");
-    }
     /*[...]*/
 }
-/*[...]*/
+
+static int callNumber() {
+    return 1;
+}
 ```
 
-#### Gizlenmiş Kod
+#### Şifrelenmiş
 ```java
 public static void main(String[] args) {
-    /*[...]*/
-    label1: {
-        while (true) {
-            if (n ^ 0x8AF8EF8F == 0xA88FFA) {
-                break;
-            }
-
-            n = n ^ 0x28847D;
-            int number = callNumber();
-
-            label2: {
-                if (number != 1)
-                    break label1;
-
-                if (n ^ 0xAA9F8FFD != 0x989F7AF)
-                    break label2;
-
-                System.out.println("Hello world");
-                break label1;
-            }
-
-            throw new IllegalStateException();
-        }
-    }
+    step1_AF8FZE8EF7Z89F();
     /*[...]*/
 }
-/*[...]*/
+
+static void step1_AF8FZE8EF7Z89F() {
+    int number = callNumber();
+}
+
+
+static int callNumber() {
+    return 1;
+}
 ```
