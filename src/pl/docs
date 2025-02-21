@@ -1,37 +1,76 @@
-# Wprowadzenie do obfuskacji w Java
+# Biblioteki
 
-Dla tych, którzy są nowicjuszami w obfuskacji java, aby uzyskać podstawowy wgląd w to, jak może działać obfuskacja java, zalecamy przeczytanie poniższego prostego przewodnika. Bardziej skomplikowane dyskusje można znaleźć na naszym blogu tutaj https://blog.skidfuscator.dev.
+Choć czasem budzą pewne frustracje, są nieodzownym elementem tworzenia oprogramowania Umożliwiają uproszczenie konfiguracji i innych zadań. Mamy nadzieję, że w przyszłości wtyczki Maven automatyzują proces obsługi bibliotek. Jednak jest to tylko jeden z wielu elementów na naszej liście rzeczy do zrobienia.
 
-## Czym jest zaciemnianie Java?
-Zaciemnienie jest procesem utrudniającym zrozumienie czegoś. Jest on często stosowany w celu zabezpieczenia przed nieuprawnionym dostępem i nieautoryzowanym użyciem. Zaciemnianie może być wykorzystywane do ukrywania poufnych informacji, takich jak hasła, przed łatwym pozyskaniem przez hakerów lub inne złośliwe podmioty. Służy również do ochrony oprogramowania przed inżynierią wsteczną, która może być wykorzystywana do odkrywania sposobu działania zastrzeżonego oprogramowania i tworzenia konkurencyjnych produktów.
+Dodawanie bibliotek jest całkiem proste:
+1. Utwórz folder o nazwie "libs"
+2. Przeciągnij wszystkie biblioteki do wspomnianego folderu
+3. Dodaj "-li=<ścieżka do folderu>" do wiersza poleceń
 
-### Ostrożność
-W kontekście zaciemniania Java, zaciemnianie służy do ochrony bazy kodu aplikacji Java przed ujawnieniem, skopiowaniem lub modyfikacją. Jest on używany w celu utrudnienia osobom dekompilującym zrozumienia kodu, co pomaga chronić kod źródłowy przed kradzieżą. Zaciemnianie odbywa się poprzez zmianę nazw klas, zmiennych i metod, a także poprzez usuwanie niepotrzebnego lub niechcianego kodu i różnych innych technik exploitów, aby utrudnić uzyskanie oryginalnego kodu Java. Sprawia to, że kod jest trudniejszy do zrozumienia, co utrudnia hakerom identyfikację luk w zabezpieczeniach lub zrozumienie sposobu działania kodu.
+Przykład:
+```console
+java -jar obfuscator-1.0.0-SNAPSHOT.jar -li=libs obfuscate FluffyClicker.jar
+```
+![Przykładowe zdjęcie](https://i.imgur.com/AYxEoYp.png)
 
-### Nadmiarowość
-Zaciemnianie Java może być również wykorzystane do zmniejszenia rozmiaru aplikacji. Usuwając niepotrzebny kod i zmieniając nazwy klas, metod i zmiennych, można znacznie zmniejszyć rozmiar aplikacji. Może to być korzystne dla aplikacji, które muszą być dystrybuowane w sieci, ponieważ może skrócić czas pobierania i poprawić wydajność aplikacji.
+## How to get dependencies from a Gradle project ?
 
-## Rodzaje znanych technik zaciemniania
+### Gradle Groovy
 
-### Control flow obfuscation
-Zaciemnianie przepływu sterowania w Javie to technika wykorzystywana do ukrywania struktury kodu programu i utrudniania jego zrozumienia. Jego działanie polega na zmianie przepływu sterowania programu, czyli kolejności wykonywania instrukcji. Odbywa się to poprzez zmianę kolejności instrukcji, dodanie nadmiarowych instrukcji i wprowadzenie dodatkowych poziomów przepływu sterowania. Na przykład pętla może zostać zastąpiona instrukcją rozgałęzienia, która przeskakuje do innej części kodu, lub funkcja może zostać zastąpiona zagnieżdżonym zestawem funkcji, które muszą być wykonywane w kolejności. Co więcej, zaciemnianie przepływu sterowania może utrudnić zrozumienie sposobu działania kodu, a także może utrudnić inżynierię wsteczną. Pomaga to również chronić przed ingerencją w kod, ponieważ utrudnia wstrzyknięcie złośliwego kodu do programu.
+Add this task to your build.gradle file:
+```groovy
+task copyDeps(type: Copy) {
+    from configurations.compile
+    into 'libs'
+}
+```
 
-### Szyfrowanie Ciągów i Liczb
-Szyfrowanie liczb i stringów jest rodzajem zaciemniania używanym w programowaniu w języku Java. Szyfrowanie liczb odnosi się do procesu kodowania liczb w taki sposób, że nie można ich zobaczyć w postaci zwykłego tekstu. Odbywa się to poprzez przekształcenie liczb w inną formę, taką jak binarna lub szesnastkowa, lub poprzez użycie klucza do zaszyfrowania liczb. Utrudnia to komuś odszyfrowanie liczb i uzyskanie dostępu do kodu. Szyfrowanie stringów jest podobne do szyfrowania liczb, ale służy do ochrony tekstu. Odbywa się to poprzez przekształcenie znaków w inną formę, taką jak kodowanie base64, lub poprzez użycie klucza do zaszyfrowania znaku. Utrudnia to komuś odszyfrowanie ciągu znaków i zrozumienie jego zawartości.
+Then run the task:
+```console
+gradlew copyDeps
+```
 
-## Ocena jakości
+### Gradle Kotlin
 
-Ważne jest, aby obfuscator generował wysokiej jakości dane wyjściowe po zastosowaniu obfuskacji, aby zapewnić skuteczność ochrony. W Skidfuscatorze dokładnie oceniamy różne czynniki, które mogą wpływać na jakość obfuskowanego kodu Java.
+Add this task to your build.gradle.kts file:
+```kotlin
+tasks.register<Copy>("copyDeps") {
+    from(configurations.compile)
+    into("libs")
+}
+```
 
-### Rozmiar i złożoność kodu
-Rozmiar i złożoność zaciemnionego kodu są istotnymi czynnikami, które należy wziąć pod uwagę przy ocenie jakości zaciemnionego kodu. Zaciemnianie nie powinno znacząco zwiększać rozmiaru kodu, ponieważ może to prowadzić do problemów z wydajnością i potencjalnych błędów. W Skidfuscator dążymy do tego, aby twój kod był tak niejasny, jak to tylko możliwe, bez znacznego powiększania go, przy jednoczesnym zachowaniu maksymalnego bezpieczeństwa.
+Then run the task:
+```console
+gradlew copyDeps
+```
 
-### Bezpieczeństwo
-Bezpieczeństwo jest krytycznym czynnikiem w ocenie jakości zaciemnionego kodu Java. Omawiana technika zaciemniania powinna skutecznie chronić kod przed próbami dekompilacji. Można to ocenić, analizując odporność kodu na narzędzia takie jak dekompilatory.
+## How to get dependencies from a Maven project ?
 
-### Wydajność
-Wydajność zaciemnionego kodu jest kolejnym kluczowym czynnikiem w ocenie jego jakości. Obfuskacja nie powinna znacząco wpływać na czas wykonania kodu lub wykorzystanie pamięci. Ważne jest również, aby pamiętać, że zaciemniony kod nie powinien wprowadzać żadnych nowych błędów lub błędów, które mogłyby wpłynąć na ogólną wydajność kodu. Wszelkie kwestie związane z wydajnością wprowadzone przez zaciemnianie powinny zostać zidentyfikowane i rozwiązane.
+Add this task to your pom.xml file:
+```xml
+<build>
+    <plugins>
+        <plugin>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <executions>
+                <execution>
+                    <id>copy-dependencies</id>
+                    <phase>package</phase>
+                    <goals>
+                        <goal>copy-dependencies</goal>
+                    </goals>
+                    <configuration>
+                        <outputDirectory>${project.build.directory}/libs</outputDirectory>
+                    </configuration>
+                </execution>
+            </executions>
+        </plugin>
+    </plugins>
+</build>
+```
 
-### Podsumowanie
-
-Ogólnie rzecz biorąc, jakość zaciemnionego kodu można ocenić na podstawie kilku czynników, w tym rozmiaru i złożoności kodu, bezpieczeństwa i wydajności. Zaciemnianie nie powinno znacząco wpływać na żaden z tych czynników, a wszelkie kwestie wprowadzone przez technikę zaciemniania powinny być szybko identyfikowane i rozwiązywane.
+Then run the task:
+```console
+mvn package
+```
