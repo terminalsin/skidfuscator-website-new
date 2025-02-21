@@ -1,53 +1,51 @@
-## Toiminto Metodin Uudelleennimeäjä
+## Merkkijonon Salaus
 
-Menetelmän uudelleennimeäjä pyrkii täsmällisesti nimeämään kokonaisuuden menetelmäksi, joka estää menetelmän nimien säilyttämisen. Tämän saavuttamiseksi Skidfuscator luo "metodiryhmiä" säilyttämään tehokkaasti menetelmähierarkian. For example, if `class B` extends `class A`, and `class A` implements `methodA()`, all calls to `methodA()` for both `class A` and `class B` will need to be renamed.
-
-## Konfiguroi
-Menetelmä uudelleennimeäjä tukee tällä hetkellä yksi sanakirja, `ALPHABETICAL`, rinnalla perinteisen mukautetun sanakirjan, `CUSTOM`, perustuu syötteeseen. Tässä skenaariossa on käytettävissä seuraavat vaihtoehdot:
-- Syvyys: Kuinka monta kirjainta käytetään oletusarvoisesti (esim: 3 syvyys johtaa o0o0o0 ensimmäiselle kohteelle, tai 1 syvyys johtaa o0 ensimmäisen kohteen)
-- Merkki: Muuntajan käyttämät merkit.
+Merkkijonon salaus muuntaa jokaisen merkkijonon tietyksi kutsuksi, jonka tarkoituksena on piilottaa se ajallaan. Tämä voi olla käytännöllistä ei-arkaluonteisille verkko-osoitteille, yksityisille avaimille jne...
 
 ::: warning
-Tällä hetkellä muuntaja ei käsittele päällekkäisiä merkkejä ja luo virheellisesti identtisiä metodien nimiä. Älä esimerkiksi käytä "o", "0" ja "o0", sillä jälkimmäinen on kahden edellisen merkin yhdistelmä.
+Asiakkaaseen ei pidä luottaa, EI KOSKAAN. Älä luota merkkijonosalaukseemme ohjelmistosi ainoana suojana. Oletusarvoisesti sinun pitäisi olettaa, että käänteismuokkaajat pääsevät käsiksi näihin riittävän ajan ja kärsivällisyyden avulla.
 :::
 
+
+## Konfiguroi
+
+Tällä hetkellä on kaksi tilaa Merkkijono salaus: `STANDARD` ja `POLYMORPHIC`
+
 ```js
-methodRenamer {
-    enabled: false
-    type: CUSTOM // or 'ALPHABETICAL'
-    chars: [
-        "K"
-        "oO",
-        "o0"
-    ]
-    depth: 3
+stringEncryption {
+    enabled: true
+    type: POLYMORPHIC
+    exempt: []
 }
 ```
 
 ## Esimerkkejä
 
-#### Suojaamaton
+### Suojaamaton
 
 ```java
-public static void main(String[] args) {
-    int number = callNumber();
-    /*[...]*/
-}
-
-static int callNumber() {
-    return 1;
-}
+System.out.println ("Hei world");
 ```
 
-#### Suojattu
+### Standard
+
 ```java
-public static void main(String[] args) {
-    int number = o0k0k0Kk();
-    /*[...]*/
-}
+System.out.println(superDuperMethod("\u2be6\uabec\uebfe\uebfe\uabe0\uabf7\ue7f1", n ^ 0x9F878R));
+```
 
-
-static int o0k0k0Kk() {
-    return 1;
+### Polymorphic
+```java
+StringBuilder string = new StringBuilder("\u2be6\uabec\uebfe\uebfe\uabe0\uabf7\ue7f1\uabe0\u6bfa\uebfe\uabee\uabf5");
+for (int a=0, b, c; a < string.length(); a++) {
+    b = string.charAt(a);
+    b = (((b & 0xffff) << 0x6) | (b >> 0xa)) & 0xffff;
+    c = ((b >> 0x0) ^ (b >> 0x7)) & ((1 << 0x4) - 1);
+    b ^= (c << 0x0) | (c << 0x7);
+    b ^= 0x600f ^ n;
+    b -= 0x2aa2 ^ n;
+    b += 0x25b0 ^ n;
+    b ^= 0x9852 ^ n;
+    string.setCharAt(a, (char) b);
 }
+System.out.println(string)
 ```
