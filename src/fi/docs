@@ -1,60 +1,15 @@
-## Väärennettyihin virheisiin Perustuva Suojaus
+# Hei muukalainen
 
-Väärennettyihin virheisiin perustuva suojaus on hämärtymismuunnos, joka lisää Java-koodiisi lisäsuojauskerroksia, mikä vaikeuttaa kelvollisen Java-koodin tulostamista decompilereille. Se tekee tämän muuttamalla ohjaus virtausta ja ottamalla käyttöön poikkeus putoavat kuitenkin koodi tavalla, joka vaikeuttaa logiikkaa muuttamatta ohjelman toiminnallisuutta.
+Tervetuloa skidfuscator-java-obfuscator wikiin!
 
-Korkealla tasolla muuntaja toimii seuraavalla tavalla:
-- Ensin muuntaja tutkii koodisi menetelmät ja ohittaa abstraktit menetelmät, init-menetelmät ja ne, joissa ei ole koodia yhteensopivuusongelmien välttämiseksi.
-- Sitten muuntaja sitten määrittää asianmukaisen obfuscation strategia (Heikko, Hyvä, tai Aggressiivinen) perustuu kokoonpano asetukset. Jokaisella strategialla on erilainen hämärtymisen taso ja se vaikuttaa siihen, kuinka usein siihen lisätään poikkeukseseen liittyvä koodi.
-- Once such is done, for each block in the control flow graph, the transformer checks whether it should be exempt from obfuscation. Se ohittaa tyhjät lohkot, välityspalvelinlohkot ja poikkeusherkät lohkot. Jos lohko voidaan hämärtää, muuntaja päättää, sovelletaanko valittuun strategiaan perustuvaa hämärtymistä vai ei.
-- Sovellettaessa muuntaja tuottaa ainutlaatuisen siemenen ja käyttää hashing turvata läpinäkymätön ennustaa. Se sitten lisää valheellinen ehdollinen hypätä heittää lausunto, aiheuttaa virtaus pudota läpi.
-- Joissakin tapauksissa muuntaja voi lisätä ylimääräisen obfuskaation kerroksen lisäämällä toissijaisen ehdollisen hyppyilmoituksen sekä alku- että satunnaisia sijainteja lohkoon.
+Luulitko, että meillä ei ollut paljon puhuttavaa aiemmin, vai mitä? Nyt meillä on kaikki herkut, ha.
 
-## Konfiguroi
-
-Tälle muuntajalle on tarjolla kolme tilaa:
-- `WEAK`: Jos aiemmin on suoritettu, suorita satunnainen totuus, jos viimeinen ei ole suoritettu, suorita (75 %: n keskimääräinen lisäysaste)
-- `HYVÄ`: Aina suorita kerran (100% Luokitus)
-- `AGGRESSIIVINEN` Suoritetaan aina kahdesti (200 keskimääräinen lisäysprosentti)
-
-```js
-flowException {
-    enabled: true
-    strength: AGGRESSIVE // Voi olla 'WEAK', 'GOOD' tai 'AGGRESSIVE'
-    exempt: []
-}
-```
-
-## Esimerkkejä
-
-#### Suojaamaton
-```java
-public static void main(String[] args) {
-    int number = callNumber();
-    /*[...]*/
-}
-/*[...]*/
-```
-
-#### Suojattu
-```java
-public static void main(String[] args) {
-    /*[...]*/
-    while (true) {
-        if (n ^ 0x8AF8EF8F == 0xA88FFA) {
-            break;
-        }
-
-        n = n ^ 0x28847D;
-        int number = callNumber();
-
-        if (n ^ 0xAA9F8FFD == 0x989F7AF) {
-            break;
-        }
-
-        throw new IllegalStateException();
-    }
-
-    /*[...]*/
-}
-/*[...]*/
-```
+# Sisällysluettelo
+1. [Asennus](/docs/installation.html)
+2. [Aloittaminen](/docs/gettingstarted.html)
+3. [Poissulkemiset](/docs/exclusion.html)
+4. [Kirjastot](/docs/libraries.html)
+5. [Tietoja Meistä](/docs/about.html)
+6. [Johdanto Java-suojeluun](/docs/javaobf.html)
+7. [Ongelmien raportointi](/docs/bugreporting.html)
+8. [Muuntajat](/docs/transformers.html)
