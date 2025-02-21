@@ -1,25 +1,37 @@
-# Asennus
+# Johdatus Javan hämärtymiseen
 
-Skidfuscatoria jaetaan verkkosivustomme, GitHubin tai Discord-palvelimemme omistajan suorien viestien kautta.
+Niille, joille java-suojaus on uutta, suosittelemme tämän yksinkertaisen oppaan lukemista, jotta he saavat perusymmärryksen siitä, miten java-suojaus voi toimia. Monimutkaisempia keskusteluja, suosittelemme tutustu meidän blogi osoitteessa https://blog.skidfuscator.dev
 
-## Meidän alustamme
-- [Verkkosivu](https://skidfuscator.dev)
-- [Discordi](https://discord.gg/7pVgsRweeh)
-- [GitHub](https://github.com/terminalsin/skidfuscator-java-obfuscator)
+## Mikä on Java-suojaus?
+Suojaaminen on prosessi, jossa jokin asia tehdään vaikeasti ymmärrettäväksi. Sitä käytetään usein suojaamaan teollis- ja tekijänoikeuksia luvattomalta käytöltä ja käyttöoikeudelta. Suojausta voidaan käyttää arkaluonteisten tietojen, kuten salasanojen, piilottamiseen, jotta hakkerit, ranskalaiset tai muut pahantahtoiset toimijat eivät saisi niitä helposti haltuunsa. Sitä käytetään myös suojaamaan ohjelmistoja käänteismuunnokselta, jonka avulla voidaan selvittää, miten omat ohjelmistot toimivat ja luoda kilpailevia tuotteita.
 
-Huomaa, että GitHub on vain meidän ilmaiseksi, yhteisön painos versio Skidfuscator.
+### Karkeus
+Java-suojauksen yhteydessä suojausta käytetään suojaamaan Java-sovelluksen koodipohjaa paljastumiselta, kopioinnilta tai muokkaamiselta. Sitä käytetään tekemään siitä vaikeampi hakkereiden ymmärtää koodia, joka auttaa suojaamaan lähdekoodia varastetulta tai käänteismuunnetulta. Suojaus tehdään muuttamalla luokkien, muuttujien ja menetelmien nimiä sekä poistamalla tarpeetonta tai ei-toivottua koodia ja erilaisia muita hyväksikäyttötekniikoita, joiden avulla alkuperäisen java-koodin saaminen on vaikeampaa. Tämä tekee koodista vaikeammin ymmärrettävää, mikä vaikeuttaa hakkereita tunnistamaan haavoittuvuuksia tai ymmärtämään, miten koodi toimii.
 
-## Yhteisön Versio
+### Räjäyttävyys
+Java-suojausta voidaan käyttää myös sovelluksen koon pienentämiseen. Poistamalla tarpeetonta koodia ja nimeämällä luokkia, metodeja ja muuttujia uudelleen voidaan sovelluksen kokoa pienentää merkittävästi. Tästä voi olla hyötyä sovelluksissa, jotka on jaettava verkostojen kautta, koska se voi lyhentää latausaikaa ja parantaa sovelluksen suorituskykyä.
 
-Löydät ladattavan linkin yhteisö painos [täällä](https://github.com/skidfuscatordev/skidfuscator-java-obfuscator/releases/), premium-painos käy sivuillamme tai liity meidän Discordiin.
+## Tunnettujen suojaustekniikoiden tyypit
 
-Huomaa, että Skidfuscator vaatii Java 8 (eli JDK 1.8 tai parempi) toimimaan oikein.
+### Ohjaussuunnan sekoitussuojaus
+Ohjausvirtasuojaus Javassa on tekniikka, jota käytetään piilottamaan ohjelman koodirakenne ja vaikeuttamaan sen ymmärtämistä tai käänteismuokkausta. Se toimii muuttamalla ohjelman ohjausvirtaa, tai järjestystä, jossa ohjeet suoritetaan. Tämä tehdään järjestämällä ohjeet uudelleen, lisäämällä tarpeettomia ohjeita ja ottamalla käyttöön ohjausvirtauksen suunnan lisätasoja. Esimerkiksi silmukka voidaan korvata haarakäskyllä, joka hyppää koodin toiseen osaan, tai funktio voidaan korvata sisäkkäisellä joukolla funktioita, jotka kaikki on suoritettava järjestyksessä. Ohjausvirtojen peittely voi lisäksi vaikeuttaa koodin toiminnan ymmärtämistä ja vaikeuttaa myös käänteiskehittämistä. Se myös auttaa suojaamaan koodia peukaloinnilta, koska se vaikeuttaa pahansuopien koodien pistämistä ohjelmaan.
 
-Skidfuscatorin puhtain tapa on käyttää `-jar` -parametria komentorivin käyttöliittymätyökalussa, sinulle esitellään erilaisia vaihtoehtoja siitä, miten aloittaa hämärtymisen tiedoston.
+### Merkkijonon ja numeron salaus
+Numero ja merkkijono salaus on eräänlainen obfuscation käytetään Java-ohjelmoinnissa. Numeron salaus viittaa numeroiden koodausprosessiin, jotta niitä ei voi nähdä pelkässä tekstissä. Tämä tehdään muuttamalla numerot eri muodossa, kuten binääri tai hexadecimal, tai käyttämällä avainta salata numerot. Tämä vaikeuttaa sitä, että joku purkaa numeroiden salauksen ja saa pääsyn koodiin. Merkkijonon salaus on samanlainen kuin numeron salauksen, mutta sitä käytetään suojaamaan merkkijonoja. Tämä tehdään muuttamalla merkkijonossa olevat merkit eri muotoon, kuten base64-enkoodaus, tai käyttämällä näppäintä merkkijonon salaamiseksi. Tämän vuoksi jonkun on vaikea purkaa merkkijonon salaus ja ymmärtää sen sisältöä.
 
-## Jaetaan enemmän muistia
-On tärkeää huomata, että tyypillisesti sinun pitäisi antaa JVM enemmän kuin oletuksena määrä muistia työskennellä. Jos käytät parametria "-Xmx512m", annat JVM: lle maksimissaan 512 Mt muistia, jonka pitäisi riittää useimpiin tarkoituksiin. Sinun pitäisi kuitenkin olla varma, ettet anna JVM: lle enemmän muistia kuin on fyysisesti saatavilla. Muuten suorituskyky heikkenee dramaattisesti, kun JVM alkaa käyttää virtuaalista muistia.
+## Laadun Arviointi
 
-Katso alla olevasta miten lisätä muistia Skidfuscatoriin:
+On tärkeää varmistaa, että java-koodisuoja tuottaa laadukkaan ulostulon suojamuuntajien käytön jälkeen. Me Skidfuscatorilla arvioimme eri tekijöitä, jotka voivat vaikuttaa suojatun java-koodin laatuun.
 
-`java -Xmx4G -jar skidfuscator.jar` in your command line interface tool.
+### Koodin koko ja monimutkaisuus
+Salatun koodin koko ja monimutkaisuus ovat olennaisia tekijöitä, jotka on otettava huomioon arvioitaessa suojatun Java-koodin laatua. Suojaus ei saisi kasvattaa koodin kokoa merkittävästi, sillä se voi johtaa suorituskykyongelmiin ja mahdollisiin virheisiin. Skidfuscatorilla pyrimme tekemään koodisi mahdollisimman hämäräksi ilman, että sitä laajennetaan merkittävästi samalla kun ylläpidetään maksimaalista turvallisuutta.
+
+### Turvallisuus
+Tietoturva on kriittinen tekijä arvioitaessa suojatun Java-koodin laatua. Kyseisen suojaustekniikan tulisi olla tehokas suojaamaan koodia takaisinmallinnusyrityksiltä. Tämä voidaan arvioida analysoimalla koodin vastustuskykyä kääntöteknisiä työkaluja, kuten kääntölaitteiden ja purkulaitteiden.
+
+### Suorituskyky
+Suojatun koodin nopeus on toinen ratkaiseva tekijä sen laadun arvioinnissa. Suojauksen ei pitäisi vaikuttaa merkittävästi koodin suoritusaikaan tai muistin käyttöön. On myös tärkeää huomata, että suojatussa koodissa ei saa olla uusia virheitä tai virheitä, jotka voisivat vaikuttaa koodin yleiseen suorituskykyyn. Suojaustekniikan aiheuttamat suorituskykyongelmat olisi tunnistettava ja niihin olisi puututtava.
+
+### Yhteenveto
+
+Kaiken kaikkiaan suojatun Java-koodin laatua voidaan arvioida useiden tekijöiden perusteella, kuten koodin koon ja monimutkaisuuden, turvallisuuden, ylläpidettävyyden ja suorituskyvyn perusteella. Suojauksen ei pitäisi vaikuttaa merkittävästi mihinkään näistä tekijöistä, ja kaikki hämärtämistekniikan aiheuttamat ongelmat olisi tunnistettava ja niihin olisi puututtava viipymättä.
