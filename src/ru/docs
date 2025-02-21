@@ -1,45 +1,61 @@
-## Возвращение исключения
+## Flow Condition
 
-Обфускация возврата исключений - это технология, используемая для того, чтобы сделать понимание процесса управления программой гораздо более сложным путём обфускации результата функций и стандартизирования каждого метода на возврат void.
+This transfomer serves as a first shield to opaque predicate analysis. To prevent static analysis from detecting which integer is an opaque predicate, we use this specific integer to add extra conditions to already existing if statements. Not only does this add extra security to your software, but it hinders the deobfuscation and decompilation process of many tools.
 
-В общем, эта техника заменяет обычные операторы возврата на блоки обработки исключений, которые делают управляющий поток программы менее предсказуемым. При выбросе исключения, программа перепрыгивает к указанному обработчику исключений, который возвращает желаемое значение или выполняет заданное действие. Это делает код трудным к чтению, анализированию и reverse-engineering'у, обеспечивая таким образом уровень защиты от подделки или пиратства.
+Compared to the Flow Exception transformer, this is a much more simplified version which only handles one edge case.
 
-""warning Эта техника обфускации ещё экспериментальная и может не компилироваться успешно в больших программах. По этой причине, она отключена по умолчанию. '''
-
-## Настройки
+## Config
 
 ```js
-exceptionReturn {
-    enabled: false
+flowCondition {
+    enabled: true
     exempt: []
 }
 ```
 
-## Примеры
+## Examples
 
-### Необфусцированный
-
+#### Unobfuscated
 ```java
-int number = callNumber();
- [...]
-}
+public static void main(String[] args) {
+    int number = callNumber();
 
-int callNumber() {
-    return 1;
+    if (number == 1) {
+        System.out.println("Hello world");
+    }
+    /*[...]*/
 }
+/*[...]*/
 ```
 
-### Обфусцированный
+#### Obfuscated
 ```java
-try {
-    callNumber();
-} catch (IntNumberException ex) {
-    int number = ex.getValue();
-}
+public static void main(String[] args) {
+    /*[...]*/
+    label1: {
+        while (true) {
+            if (n ^ 0x8AF8EF8F == 0xA88FFA) {
+                break;
+            }
 
-[...]
+            n = n ^ 0x28847D;
+            int number = callNumber();
 
-void callNumber() {
-    throw new IntNumberException(1);
+            label2: {
+                if (number != 1)
+                    break label1;
+
+                if (n ^ 0xAA9F8FFD != 0x989F7AF)
+                    break label2;
+
+                System.out.println("Hello world");
+                break label1;
+            }
+
+            throw new IllegalStateException();
+        }
+    }
+    /*[...]*/
 }
+/*[...]*/
 ```
