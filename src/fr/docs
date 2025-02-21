@@ -1,45 +1,61 @@
-## Retour d'exception
+## Condition de flux
 
-L'obfuscation du retour d'exception est une technique de programmation utilisée pour rendre le flux de contrôle d'un programme plus difficile à comprendre et à analyser en obfusquant les résultats de retour et en normalisant chaque méthode pour qu'elle ait une valeur de retour vide (void).
+Ce transformateur sert de première protection contre l'analyse de prédicat opaque. Pour empêcher l'analyse statique de détecter quel entier est un prédicat opaque, nous utilisons cet entier spécifique pour ajouter des conditions supplémentaires aux instructions "if" déjà existantes. Cela ajoute non seulement une sécurité supplémentaire à votre logiciel, mais cela entrave également le processus de désobfuscation et de décompilation de nombreux outils.
 
-En résumé, cette technique remplace les instructions de retour normales par des blocs de gestion des exceptions qui rendent le flux de contrôle du programme moins prévisible.  Lorsqu'une exception est levée, le programme passe à un gestionnaire d'exception désigné, qui renvoie ensuite la valeur souhaitée ou effectue l'action prévue. Cela rend le code plus difficile à lire, analyser et inverser, offrant ainsi une certaine protection contre la falsification ou le piratage.
-
-'''warning Cette technique d'obfuscation est encore expérimentale et peut ne pas compiler avec succès sur des programmes plus importants. Pour cette raison même, elle est désactivée par défaut. '''
+Comparé au transformateur d'exception de flux, ceci est une version beaucoup plus simplifiée qui ne gère qu'un seul cas particulier.
 
 ## Configuration
 
 ```js
-exceptionReturn {
-    enabled: false
+flowCondition {
+    enabled: true
     exempt: []
 }
 ```
 
 ## Examples
 
-### Non obfusqué
-
+#### Non obfusqué
 ```java
-int number = callNumber();
- [...]
-}
+public static void main(String[] args) {
+    int number = callNumber();
 
-int callNumber() {
-    return 1;
+    if (number == 1) {
+        System.out.println("Hello world");
+    }
+    /*[...]*/
 }
+/*[...]*/
 ```
 
-### Obfusqué
+#### Obfusqué
 ```java
-try {
-    callNumber();
-} catch (IntNumberException ex) {
-    int number = ex.getValue();
-}
+public static void main(String[] args) {
+    /*[...]*/
+    label1: {
+        while (true) {
+            if (n ^ 0x8AF8EF8F == 0xA88FFA) {
+                break;
+            }
 
-[...]
+            n = n ^ 0x28847D;
+            int number = callNumber();
 
-void callNumber() {
-    throw new IntNumberException(1);
+            label2: {
+                if (number != 1)
+                    break label1;
+
+                if (n ^ 0xAA9F8FFD != 0x989F7AF)
+                    break label2;
+
+                System.out.println("Hello world");
+                break label1;
+            }
+
+            throw new IllegalStateException();
+        }
+    }
+    /*[...]*/
 }
+/*[...]*/
 ```
