@@ -1,0 +1,73 @@
+# Transformers
+
+In diesem Index wird jeder Transformer beschrieben. Das sollte helfen zu verstehen, was hinter den Kulissen passiert und inwiefern diese Transformationen effektiv gegen reverse engineering sind.
+
+Wir werden über folgende Punkte gehen:
+- Zahlen Verschleierung
+- String Verschlüsselung
+
+## Zahlen Verschleierung
+
+Gehen wir von der folgenden Szenario aus:
+- $x$ ist die Nummer die wir verschlüsseln wollen
+- $n$ ist der "seed" des Blocks
+- $d$ ist die verschlüsselte Nummer
+
+Nach simplen xor Mechaniken: $x\oplus n\oplus n=x$
+
+Also per Definition: solange $n$ unser seed ist müssen wir $d$ nach $d = x\oplus n$ berechnen. Dann müssen wir die bytecode Anweisungen beispielsweise so verändern:
+
+```java
+int value = x;
+```
+
+wird zu
+```java
+int value = d ^ n;
+```
+
+Dabei ist $d$ der Wert der vorab berechnet wurde in Form einer Konstante und $n$ ein opaque predicate. z.B.:
+```java
+int value = 5;
+```
+wird zu
+```java
+int predicate = 0x100;
+int value = 105 ^ predicate;
+```
+
+## String Verschlüsselung
+
+Die String Verschlüsselung braucht drei Basisbedingungen um angewendet zu werden:
+1. Die String Konstante muss im constant pool verfügbar sein
+2. Die String Konstante muss nach UTF-8 formatiert sein
+3. Der String darf nicht leer sein
+
+Sind diese erfüllt sind wir in der Lage ein symmetrisches Verschlüsselungssystem in den Code einzufügen, um die Zeichenfolge vor Dekompilierern/Disassemblern zu verbergen.
+
+### Xor Algorithmus
+
+Derzeit verwenden wir einen einfachen xor Algorithmus welcher recht robust ist, um den verschlüsselten String zu berechnen. Während dieser Algorithmus mathematisch gesehen von der schlechtesten Qualität ist und höchstwahrscheinlich in polynomialer, wenn nicht linearer Zeit geknackt werden könnte, besteht unser Ziel hier darin, eine einfache und konzeptionelle beispielts Implementation zu zeigen, wie ein opaque predicatet die String Verschlüsselung härten kann. In zukünftigen Versionen von Skidfuscator werden wir eine polymorphic engine verwenden.
+
+Der Algorithmus funktioniert momentan so:
+
+Let $f_y(x)=x\oplus y\oplus n$ represent the encryption and decryption method for a character in a String for a given $n$ and $m_{max}$ of 255
+
+$y=i\mod m$
+
+where $i$ represents the index of the character in the String, $m$ represents the size of the random integer array with random "keys", $n$ represents the integer opaque predicate, $x$ the character at the index $i$ of the String.
+
+By definition: $$ \begin{align} f_y(f_y(x))&=x\oplus y\oplus n\oplus y\oplus n\\
+&=x\oplus y\oplus y\oplus n\oplus n\\ f_y(f_y(x))&=x \end{align} $$
+
+Hence we obtain a usable encryption/decryption algorithm which is hardened by an opaque predicate and a suite of integer keys stored locally. The implementation may be seen [here](https://github.com/terminalsin/skidfuscator-java-obfuscator/blob/master/dev.skidfuscator.obfuscator/obfuscator/src/main/java/dev/skidfuscator/obfuscator/transform/impl/string/BasicEncryptionGenerator.java)
+
+Outlining refers to the process of extracting code from a method and placing it into a separate, standalone method. This is often done as a way to improve the readability and maintainability of code, as it can make it easier to understand what a method is doing by breaking it down into smaller, more focused pieces of code.
+
+Outlining can also be used as a form of code obfuscation, as it can make it more difficult for someone attempting to reverse engineer or understand the code to see the overall flow and structure of the program. By breaking the code into smaller pieces and separating it out into different methods, it can be a much harsher procedure for someone to understand the relationships between different parts of the flow and how they fit together to perform a particular function.
+
+![Outlining graph explanation](https://i.imgur.com/2HMq0a4.png)
+
+The fantastic thing about outlining is: it's not *technically* reversible! To be able to return to an original state of a good outline obfuscation, a deobfuscator *has to do inlining*, which is a heuristic and *doesn't* guarantee the output to always be semantically correct with the original source code. Furthermore, this necessites the deobfuscator to mangle with variables and other various forms of sensitive bytecode manipulation which all can lead to frame and computation exceptions.
+
+Overall, outlining obfuscation is pretty neat :)

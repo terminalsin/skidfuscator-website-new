@@ -1,0 +1,73 @@
+# Muuntajat
+
+Tässä on hakemisto, jossa kerron yksityiskohtaisesti jokaisen muuntajan yksitellen. Tämän pitäisi auttaa sinua ymmärtämään hieman, mitä kulissien takana tapahtuu ja miten tällaiset muutokset ovat tehokkaita käänteistä suunnittelua vastaan.
+
+Käymme läpi seuraavan indeksin:
+- Numeroiden salaus
+- Merkkijonon Salaus
+
+## Numeroiden salaus
+
+Oletetaan seuraava skenaario:
+- $x$ on numero, jonka haluat salata
+- $n$ on lohkon "siemen"
+- $d$ on salattu numero
+
+Yksinkertaisten xor mekaniikan mukaan: $x\oplus n\oplus n=x$
+
+Määritelmän mukaan, jos $n$ on siemen, meidän on suorituksen aikana laskettava $d$ siten, että $d = x\oplus n$. Sitten meidän on muutettava tavukoodiohjetta, kuten:
+
+```java
+int value = x;
+```
+
+tulee
+```java
+int value = d ^ n;
+```
+
+Jossa $d$ on arvo, joka on laskettu etukäteen vakion muodossa, ja $n$ läpinäkymätön predikaatti. Esimerkki:
+```java
+int value = 5;
+```
+tulee
+```java
+int predicate = 0x100;
+int value = 105 ^ predicate;
+```
+
+## Merkkijonon Salaus
+
+Merkkijonosalaus perustuu kolmeen perusehtoon ennen kuin sitä voidaan käsitellä:
+1. Merkkijonovakion on oltava käytettävissä vakioaltaassa
+2. Merkkijonovakio on muotoiltava UTF-8-muodossa
+3. Merkkijono ei saa olla tyhjä
+
+Tällaisen avulla pystymme ruiskuttamaan koodin sisään symmetrisen salausjärjestelmän, jotta voimme peittää merkkijonon tyypillisiltä purkajilta / purkajilta.
+
+### Xor-algoritmi
+
+Tällä hetkellä käytämme yksinkertaista xor-algoritmia, joka on melko joustava voidakseen laskea salatun merkkijonomme. Vaikka tämä algoritmi on matemaattisesti huonolaatuisin, ja se voidaan murtaa todennäköisimmin polynomiajassa, ellei lineaarisessa ajassa, tavoitteemme on ehdottaa helppoa ja konseptitodistusta siitä, miten läpinäkymätön predikaatti voi kovettaa merkkijonosalausta. Skidfuscatorin tulevissa versioissa käytämme polymorfista moottoria.
+
+Algoritmi toimii tällä hetkellä näin:
+
+Olkoon $f_y(x)=x\oplus y\oplus n$ merkkijonon merkin salaus- ja purkumenetelmä tietylle $n$: lle ja $m_{max}$ 255: lle
+
+$y=i\mod m$
+
+jossa $i$ edustaa merkkijonon merkin indeksiä, $m$ edustaa satunnaisen kokonaislukumassan kokoa, jossa on satunnaisia "avaimia", $n$ edustaa kokonaislukupredikaattia, $x$ merkkijonon indeksissä $i$ olevaa merkkiä.
+
+By definition: $$ \begin{align} f_y(f_y(x))&=x\oplus y\oplus n\oplus y\oplus n\\
+&=x\oplus y\oplus y\oplus n\oplus n\\ f_y(f_y(x))&=x \end{align} $$
+
+Siksi saamme käyttökelpoisen salaus- / salauksenpurkualgoritmin, joka on karkaistu läpinäkymättömällä predikaatilla ja paikallisesti tallennetuilla kokonaislukuavaimilla. Toteutus on nähtävissä [täällä](https://github.com/terminalsin/skidfuscator-java-obfuscator/blob/master/dev.skidfuscator.obfuscator/obfuscator/src/main/java/dev/skidfuscator/obfuscator/transform/impl/string/BasicEncryptionGenerator.java)
+
+Outlining tarkoittaa prosessia, jossa koodia irrotetaan metodista ja sijoitetaan erilliseen, itsenäiseen metodiin. Tämä tehdään usein keinona parantaa koodin luettavuutta ja ylläpidettävyyttä, koska se voi helpottaa menetelmän toiminnan ymmärtämistä jakamalla se pienempiin, parempiin ja kohdistetumpiin koodin osiin.
+
+Outlining voidaan käyttää myös eräänlaisena koodin hämärtämisen muotona, sillä se voi vaikeuttaa sitä, että joku, joka yrittää jäljittää tai ymmärtää koodia, näkee ohjelman yleisen virtauksen ja rakenteen. Jakamalla koodi pienemmiksi paloiksi ja erottamalla se eri menetelmiin, se voi olla paljon vaikeampi menettely, että joku ymmärtää suhteita virtaus eri osien välillä ja miten he sopivat yhteen suorittaa tietyn toiminnon.
+
+![Kaavio Viipalointijärjestelmän selitys](https://i.imgur.com/2HMq0a4.png)
+
+Fantastinen asia siinä on: se ei Ole *Teknisesti* Käännettävä! Voidakseen palata alkuperäiseen tilaan hyvä ääriviivat hämärtyminen, suojan poisto *täytyy tehdä inlining*, joka on heuristinen ja *ei* takaa, että ulostulo on aina semanttisesti oikein alkuperäisellä lähdekoodilla. Lisäksi tämä necessites deobfuscator mangle kanssa muuttujat ja muut eri muotoja herkkä bytecode manipulointi joka kaikki voi johtaa runko ja laskenta poikkeuksia.
+
+Kaiken kaikkiaan obfuscation hahmottaminen on melko siisti :)
