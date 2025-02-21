@@ -1,19 +1,45 @@
-## Driver Hardening
+## Exception Return
 
-Sterownik jest częścią Skidfuscator. Ta funkcja jest tylko dla Premium. W skrócie, dla każdej obfuskacji tworzony jest i kompilowany nowy sterownik dla różnych architektur:
+Zaciemnianie zwracanych wartości wyjątków to technika, która ma na celu utrudnienie zrozumienia i analizy działania programu. Polega ona na manipulowaniu wynikami zwracanymi przez różne części kodu w taki sposób, żeby były trudne do zinterpretowania. Jednym z jej aspektów jest standaryzacja, czyli ustawianie pustej wartości zwracanej dla każdej metody. Dzięki temu, analiza kodu staje się trudniejsza, ponieważ nie jesteśmy w stanie jednoznacznie stwierdzić, czy dana metoda faktycznie nie zwraca żadnej wartości, czy też została specjalnie zaciemniona w celu utrudnienia zrozumienia działania programu.
 
-| System operacyjny | Wspierane architektury |
-| ----------------- | ---------------------- |
-| Windows           | x64_86                 |
-| MacOS             | x64_86, AARCH64 (ARM)  |
-| Linux             | x64_86 (AMD64)         |
+W skrócie, zaciemnianie zwracanych wartości wyjątków polega na zastępowaniu standardowych instrukcji kodu blokami obsługi wyjątków. Te bloki wyjątków mają na celu zmienić przewidywalność przepływu sterowania w programie. Gdy występuje wyjątek w programie, następuje skok do odpowiedniego bloku obsługi wyjątków. W tym bloku obsługi można zdefiniować, co ma się stać dalej - czy zwrócić określoną wartość lub wykonać określoną akcję. Innymi słowy, program przechodzi do specjalnie przygotowanego miejsca, które ma na celu obsłużenie danego wyjątku i podejmowanie odpowiednich działań, takich jak zwrócenie wartości lub wykonanie określonych instrukcji. Ta technika sprawia, że kod staje się bardziej nieczytelny i trudniejszy do analizy, co przyczynia się do zwiększenia poziomu ochrony przed nieuprawnionym dostępem, manipulacją lub piractwem. Dzięki zastosowaniu zaciemniania, trudniej jest zrozumieć działanie programu i odnaleźć konkretne fragmenty kodu, co utrudnia potencjalnym atakującym odczytanie, zmodyfikowanie lub wykorzystanie go w niepożądany sposób. W rezultacie, program z zaciemnionym kodem staje się bardziej odporny na próby nieautoryzowanego dostępu i manipulacji.
 
+'''warning Ta technika zaciemniania jest nadal w fazie eksperymentalnej i może nie działać poprawnie na większych programach podczas procesu kompilacji. W praktyce oznacza to, że zastosowanie tej techniki na dużych projektach może prowadzić do problemów i błędów kompilacji, które mogą uniemożliwić poprawne uruchomienie programu. Z tego powodu jest ona domyślnie wyłączona. '''
 
 ## Konfiguracja
-Aby włączyć tę funkcję (:warning: znacznie zwiększa to siłę zaciemniania), należy zmienić wartość `false` na `true`:
 
 ```js
-driver: {
-    enabled: false // Disabled by default
+exceptionReturn {
+    enabled: false
+    exempt: []
+}
+```
+
+## Przykłady
+
+### Brak zaciemnienia
+
+```java
+int number = callNumber();
+ [...]
+}
+
+int callNumber() {
+    return 1;
+}
+```
+
+### Zaciemniony kod
+```java
+try {
+    callNumber();
+} catch (IntNumberException ex) {
+    int number = ex.getValue();
+}
+
+[...]
+
+void callNumber() {
+    throw new IntNumberException(1);
 }
 ```
