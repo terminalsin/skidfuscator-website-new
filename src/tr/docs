@@ -1,135 +1,25 @@
-# Skidfuscator 2.0.0 veya sonraki sürümlerde Hariç Tutma (Exclusions) Yazma
+# Kurulum
 
-Bu düzenli ifade (regex), karakter dizilerini tanımlamak için kullanılan bir tür aramadır. Genellikle metin arama, değiştirme ve doğrulama işlemleri için kullanılır. Düzenli ifadeler programlama, veri bilimi ve diğer uygulamalarda kullanılır.
+Skidfuscator websitemiz, GitHub, veya Discord sunucumuzun duyurular kanalı üzerinden dağıtılır.
 
-Skidfuscator, yapılandırmasının dahil etme ve hariç tutma yönleri için düzenli ifadeleri kullanır.
+## Platformlarımız
+- [Website](https://skidfuscator.dev)
+- [Discord](https://discord.gg/7pVgsRweeh)
+- [GitHub](https://github.com/terminalsin/skidfuscator-java-obfuscator)
 
-Hariç tutmaları anlamak başlangıçta zor olabilir, ancak bir kez alıştıktan sonra oldukça kolay olacaktır.
+GitHub'un sadece Skidfuscator'un bedava topluluk versiyonu için olduğunu unutmayın.
 
-Öncelikle, temel düzenli ifadeleri anlamak önemlidir.
+## Topluluk Versiyonu
 
-## Düzenli ifadelerin (Regex) temelleri
+Topluluk versiyonu için indirme linkini [buraya](https://github.com/skidfuscatordev/skidfuscator-java-obfuscator/releases/) tıklayarak bulabilirsiniz, premium versiyon için lütfen websitemizi ziyaret edin veya Discord'umuza katılın.
 
-- İşte her şeyi eşleştirmek için temel bir dize:
-```java
-(.*?)
-```
+Skidfuscator'ın düzgün çalışması için Java 8 (yani JDK 1.8 veya daha üstü) gerektirdiğini unutmayın.
 
-Bu durumda aşşağıdakiler gerçekleşir:
-```java
-abozeofez // Matches!
-zeigzoegze // Matches!
-```
+Skidfuscator'ı çalıştırmak için en temiz yol komut satırında `-jar` parametresini kullanmaktır, dosyanızın kodunu gizleme işlemine nasıl başlanacağı hakkında seçenekler sunulacaktır.
 
-***
+## Daha fazla bellek ayırmak
+Genellikle JVM'ye çalışması için varsayılan bellek miktarından daha fazlasını ayırmanız gerektiğini unutmayın. Eğer -Xmx512m parametresini kullanırsanız JVM'ye kullanması için maksimum 512MB bellek ayırmış olursunuz ki bu çoğu durumda uygun olmalıdır. Ancak, JVM'ye fiziksel olarak kullanılabilir bellekten daha fazla bellek ayırmadığınıza emin olun. Aksi takdirde JVM sanal belleği kullanmaya başlayacağı için performans büyük ölçüde düşecektir.
 
-- "roar" içeren herhangi bir dizeyi eşleştirmek için şu düzenli ifadeyi kullanabilirsiniz
-```java
-roar
-````
+Aşağıda Skidfuscator'a nasıl daha fazla bellek ayıracağınızı inceleyin:
 
-So the following would happen:
-```java
-roar // Matches!
-asdafroar // Matches!
-grrr // No match!
-```
-
-***
-
-"uwu" ile _başlayan<0> herhangi bir dizeyi eşleştirmek için şu düzenli ifadeyi kullanabilirsiniz:</p>
-```java
-^uwu
-```
-
-Bu durumda aşşağıdakiler gerçekleşir:
-```java
-kitty-uwu // No match!
-uwu-kitty // Match!
-```
-
-- `kitty-uwu` eşleşmez çünkü bu senaryoda "uwu" bir sonektir ve bu nedenle `uwu` gereksinimine uymaz.
-- `uwu-kitty` bu senaryoda eşleşir çünkü belirtilen ön ek var.
-
-***
-
-Daha fazla Regex hakkında bilgi edinmek isterseniz, buradan öğrenebilirsiniz: [Regex rehberi](https://medium.com/factory-mind/regex-tutorial-a-simple-cheatsheet-by-examples-649dc1c3f285)
-
-## Hariç tutmaları yazma
-Bunu yapmak çok basit ve kolay.
-
-- Hariç tutmalarınızı yazmak için bir dosya oluşturabilirsiniz, txt dosyası kullanmanızı öneririz.
-
-Skidfuscator dahil etmeleri ve hariç tutmaları aynı şekilde okur: Eğer bir regex ile eşleşiyorsa, __**okunmayacak veya şifreleme işlemi yapılmayacaktır****.
-
-### Hariç tutmalar
-Aşağıda gördüğünüz gibi regex eşleme kullanarak, her türlü sınıfı eşleştirmek mümkündür. Unutmayın, Regex'in seppuku yapmasını önlemek için herhangi bir "/" karakterine "\\" işaretini eklemeniz gerekmektedir; aksi takdirde hata ayıklama sürecinde saatler harcamanız gerekebilir.
-
-Aşağıda, hariç tutma için sınıfları & ve yöntemleri eşleştirmek için çeşitli örnekler bulunmaktadır:
-
-```java
-// This will match any method with the name "main"
-method{main} 
-// This will match any method which starts with "com.apache" 
-// (any class name replaces the "." with "/"
-class{^com\/apache} 
-// This will match any method which starts with "com.google" 
-// (any class name replaces the "." with "/"
-class{^com\/google} 
-// This will match any method in the class "Controller"
-class{Controller$} 
-// This will match any method in the class "com.example.MyClass"
-class{^com\/example\/MyClass$}
-```
-
-#### Birden fazla hariç tutma
-
-Örneğin, birden fazla yöntemi veya paketi hariç tutmak oldukça basit! Yapmanız gereken tek şey yeni bir satır oluşturmak ve yeni hariç tutma öğesini eklemek :)
-
-```java
-class{^com\/apache} // Matches apache
-class{^com\/google} // Matches google
-```
-
-
-### Dahil etmeler
-Hariç tutmalardan farklı olarak, şifreleme işlemine **sadece belirli bir sınıfı veya paketi dahil etmek isteyebilirsiniz.<0>. Endişelenmeyin, bu mümkündür, ancak biraz daha karmaşıktır.</p>
-
-```java
-// This will match all classes of the package "com.example"
-class{^(?!(com\/example)).*$} 
-
-// This will match all classes of the package "com.example" and 
-// all of the classes of the package "com.eclipse". 
-// You may add as many packages as you wish with the "|" argument.
-class{^(?!(com\/example)|(com\/eclipse)).*$} 
-```
-
-## Hariç tutmalarda hata ayıklama
-
-Regex kullanırken, eşleşen ve eşleşmeyen örüntüleri belirlemek için [Regex101](https://regex101.com/) gibi bir regex hata ayıklayıcısı kullanmanızı şiddetle öneririm.
-
-Varsayılan olarak, tüm sınıf isimleri "package1/package2/class1" formatını takip eder. Skidfuscator için yukarıdaki format, Jar/Zip dosyalarınun en etkili ve yansıtıcı şekli olarak belirlendiği için JVM'de farklı bir şekilde biçimlendirilmiş olabilir. Bu şekilde düzenlenen sınıf isimleri, Skidfuscator'un işlemesi ve şifreleme işlemlerinin daha verimli ve etkili olmasını sağlar.
-
-## Örnek hariç tutma dosyası
-
-Minecraft modifikasyonları veya eklentileri geliştiren müşteriler için en yaygın olarak gereken hariç tutmaları içeren şablon/exemplar konfigürasyon dosyası aşağıdaki gibidir:
-
-```java
-// Package exclusions below
-class{^net\/minecraftforge} // Matches Minecraft Forge
-class{^net\/minecraft\/client} // Matches Minecraft Client
-class{^net\/minecraft\/server} // Matches Minecraft Server
-class{^org\/bukkit} // Matches Bukkit
-class{^com\/mojang} // Matches Mojang
-class{^me\/johnymuffin} // Matches JohnyMuffin
-class{^com\/sk89q} // Matches Sk89q
-class{^org\/spigotmc} // Matches SpigotMC
-class{^org\/apache\/commons} // Matches Apache Commons
-class{^org\/jline} // Matches JLine
-
-// Method exclusions below 
-method{^net\.minecraft\.client} // Excludes all methods from net.minecraft.client package 
-method{^net\.minecraft\.util} // Excludes all methods from net.minecraft.util package 
-method{^net\.minecraft\.client\.Minecraft} // Excludes all methods from the Minecraft class
-```
+`java -Xmx4G -jar skidfuscator.jar` in your command line interface tool.
