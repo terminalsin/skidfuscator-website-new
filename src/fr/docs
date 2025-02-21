@@ -1,31 +1,20 @@
-# Notre philosophie
+# Signalement de bugs
 
-## Qui sommes-nous ?
-Chez Skidfuscator, nous sommes passionnés par l'aide aux développeurs Java pour protéger leur propriété intellectuelle. En tant qu'équipe de développeurs de logiciels expérimentés, nous comprenons l'importance de protéger votre code contre la rétro-ingénierie et l'accès non autorisé. C'est pourquoi nous avons développé Skidfuscator, un puissant obfuscateur de bytecode Java qui protège votre logiciel contre la falsification et la rétro-ingénierie.
+Si vous estimez avoir rencontré un problème ou découvert un bogue avec Skidfuscator, nous encourageons nos utilisateurs à signaler le problème à notre équipe afin de vous assurer une expérience fluide.
 
-## Notre mission
-Notre mission est de fournir aux développeurs Java l'outil dont ils ont besoin pour protéger leur précieuse propriété intellectuelle. Nous comprenons que la plateforme Java est largement utilisée pour développer des applications logicielles de haute qualité, et nous croyons que la protection de votre code Java est essentielle pour maintenir votre avantage concurrentiel. C'est pourquoi nous avons développé Skidfuscator, un obfuscateur Java fiable et convivial qui vous aide à protéger vos applications Java contre la rétro-ingénierie et la falsification.
+**Veuillez signaler tout problème ou bogue sur notre Github en cliquant [ici](https://github.com/skidfuscatordev/skidfuscator-java-obfuscator).**
 
-## Pourquoi avons-nous créé Skidfuscator ?
-Chez Skidfuscator, nous croyons que les développeurs Java devraient avoir accès à des solutions d'obfuscation abordables et efficaces pour protéger leur propriété intellectuelle. Notre équipe s'engage à fournir des solutions d'obfuscation de haute qualité, faciles à utiliser, mais suffisamment puissantes pour résister aux attaques les plus déterminées. Nous travaillons constamment à améliorer notre produit et à rester à jour avec les derniers développements en matière de protection de logiciels et d'obfuscation.
+Vous pouvez signaler le bogue en rejoignant notre serveur Discord et en ouvrant un ticket.
 
-Nous comprenons que l'obfuscation peut être un processus complexe et difficile, surtout pour les développeurs novices dans ce domaine. C'est pourquoi nous avons conçu Skidfuscator pour qu'il soit le plus convivial et intuitif possible. Avec notre obfuscateur, vous pouvez rapidement et facilement obfusquer votre bytecode Java, sans avoir besoin de compétences ou de connaissances particulières. Notre documentation complète et nos excellents services de support vous permettent de commencer l'obfuscation en un rien de temps et protéger votre logiciel.
+Veuillez vous assurer de formater votre rapport de bogue de la manière suivante :
+1. Le bogue que vous rencontrez.
+2. Capture d'écran du message complet de la trace de la pile (stacktrace).
+3. Le fichier JAR d'origine que vous essayez d'obfusquer.
+4. Le fichier JAR obfusqué (si applicable).
+5. Tous fichiers de configuration que vous utilisez.
 
-Chez Skidfuscator, nous croyons en la puissance de la collaboration et de la communication ouverte. Nous travaillons en étroite collaboration avec nos clients pour comprendre leurs besoins et défis uniques, et nous sommes toujours prêts à fournir une assistance et des conseils personnalisés. Notre équipe est dévouée à vous aider à protéger votre propriété intellectuelle et à atteindre vos objectifs, quelle que soit leur envergure.
+Également, si vous estimez avoir besoin d'une assistance supplémentaire, veuillez rejoindre notre Discord et ouvrir un ticket.
 
-Skidfuscator est la solution ultime pour protéger votre code Java. Notre puissant obfuscateur est conçu pour protéger votre logiciel contre le rétro-ingénierie et la falsification, garantissant ainsi que votre propriété intellectuelle reste sûre et sécurisée. Nous nous engageons à fournir à nos clients une solution d'obfuscation de haute qualité, un excellent support et un obfuscateur convivial qui est facile à utiliser et très efficace. Choisissez Skidfuscator dès aujourd'hui et protégez vos applications Java contre l'accès non autorisé et le vol.
+<iframe src="https://discord.com/widget?id=904888546609987674&theme=dark" width="350" height="500" allowtransparency="true" frameborder="0" sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"></iframe>
 
-## Notre méthodologie
-
-Chez Skidfuscator, nous croyons qu'une approche à long terme et résiliente pour résoudre les problèmes est essentielle pour un succès durable. Bien que les solutions temporaires et les solutions rapides puissent offrir un soulagement temporaire, elles créent souvent plus de problèmes à l'avenir et entravent le progrès à long terme.
-
-### Notre approche
-Pour nous assurer d'aborder les problèmes de manière résiliente et durable, nous accordons la priorité à la compréhension de la cause profonde d'un problème plutôt que de simplement traiter ses symptômes. En prenant le temps d'analyser minutieusement un problème, nous pouvons identifier les facteurs sous-jacents qui contribuent à son occurrence et développer des solutions ciblées qui traitent directement ces facteurs.
-
-En plus d'identifier la cause profonde d'un problème, nous accordons également la priorité à la collaboration et au partage des connaissances lors de l'approche de problèmes complexes. Nous reconnaissons qu'aucune personne ou équipe n'a toutes les réponses, et que les solutions émergent souvent grâce aux efforts collectifs et aux idées de groupes diversifiés. Nous encourageons nos équipes à collaborer dans différents domaines et à tirer parti de l'expertise de partenaires externes lorsque cela est nécessaire pour parvenir à des solutions globales qui abordent tous les aspects d'un problème.
-
-### Notre pertinence
-De plus, nous mettons un fort accent sur l'amélioration continue et l'apprentissage. Nous reconnaissons que même les solutions les plus complètes peuvent être améliorées avec le temps, et que le monde est en constante évolution. C'est pourquoi nous encourageons nos équipes à évaluer régulièrement l'efficacité de nos solutions et à identifier les opportunités d'amélioration. Nous accordons également la priorité à l'éducation et au développement continu pour nous assurer que nos équipes restent à jour avec les dernières recherches et les meilleures pratiques dans leurs domaines respectifs.
-
-### Notre priorité
-En privilégiant une approche à long terme et résiliente pour résoudre les problèmes, nous croyons que nous pouvons créer des solutions durables qui profitent à notre communauté et contribuent au bien commun. Bien qu'il puisse être tentant de rechercher des solutions rapides et des heuristiques à court terme, nous reconnaissons que ces approches conduisent souvent à des conséquences négatives non intentionnelles et entravent le progrès à long terme. Au lieu de cela, nous accordons la priorité à la collaboration, à l'amélioration continue et aux pratiques durables pour nous assurer que nos solutions sont efficaces et efficientes.
+Notre équipe vous répondra et nous ferons de notre mieux pour résoudre votre problème !
