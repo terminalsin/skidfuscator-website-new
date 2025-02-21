@@ -1,55 +1,57 @@
-## Akış Anahtarı (Flow Switch)
+## Sayı Şifrelemesi
 
-Bu özel dönüştürücü, sadece anahtar değiştirme ifadelerinize odaklanır ve değişkenleri gizleyerek numaraları, sabitleri ve string hedeflerini etkili bir şekilde obfuskasyon yapar. Bu, opak yüklem ve özel bir karma mekanizması kullanılarak yapılır ve herhangi bir tersine mühendislik tekniğini önlemeye yöneliktir.
+Sayı şifreleme dönüştürücüsü integer tabanlı sayıları gizli olmaları için şifreler. Bu kodunuzu genel olarak okunamaz yapmak ve tersine mühendislerin temiz bir kaynak kodu elde etmesini zorlaştırmak için mükemmeldir. Bu ayrıca boolean tabanlı koşulluları da güçlendirir.
 
-## Yapılandırma Ayarı
+Bu sayı şifrelemesi GEN3 flow kod gizleyicisine dayanır ve decompile edilmiş sonuç aşağıdaki gibidir
+
+Aşağıdaki senaryoyu varsayalım:
+- $x$ bizim şifrelemek istediğimiz sayı
+- $n$ bloğun tohumu
+- $d$ şifrelenmiş sayı
+
+Basit xor mekaniklerine göre: $x\oplus n\oplus n=x$
+
+Yani, tanım olarak, eğer $n$ bizim tohumumuz ise, çalışma zamanında $d$ sayısını $d = x\oplus n$ olarak hesaplamalıyız. Daha sonra, bytecode talimatlarını şu şekilde düzenlemeliyiz:
+
+```java
+int deger = x;
+```
+
+şuna dönüşür:
+```java
+int deger = d ^ n;
+```
+
+Bu durumda $d$ daha önceden hesaplanmış sabit değerdir ve $n$ de opak yüklemdir (opaque predicate). Örnek:
+```java
+int deger = 5;
+```
+şuna dönüşür:
+```java
+int tahmin = 0x100;
+int deger = 105 ^ tahmin;
+```
+
+## Config
+
+Şu anda, Sayı Şifrelemesinin sadece bir modu var, `STANDARD`
 
 ```js
-flowSwitch {
+numberEncryption {
     enabled: true
     exempt: []
 }
 ```
 
 ## Örnekler
-
-#### Şifrelenmemiş
+#### Gizlenmemiş Kod
 ```java
-public static void main(String[] args) {
-    int number = callNumber();
-
-    switch (number) {
-        case 1: 
-            System.out.println("Oh no!");
-            break;
-        case 2: 
-            System.out.println("Hello world!");
-            break
-        default: 
-            throw new IllegalStateException("Something went wrong!");
-    }
-    /*[...]*/
-}
-/*[...]*/
+int dgr = 1000;
+System.out.println(dgr + 1 + 2 + 3);
 ```
 
-#### Gizlenmiş kod
+#### Gizlenmiş Kod
 ```java
-public static void main(String[] args) {
-    /*[...]*/
-    int number = callNumber();
-
-    switch (number ^ hash(n ^ 0x9932783)) {
-        case 0x928EF8C: 
-            System.out.println("Hello world!");
-            break
-        case 0x9873783: 
-            System.out.println("Oh no!");
-            break;
-        default: 
-            throw new IllegalStateException("Something went wrong!");
-    }
-    /*[...]*/
-}
-/*[...]*/
+int dgr = 0xA0290233 ^ n;
+System.out.println(dgr + 0x92083838 ^ n + 0x92083839 ^ n + 0x92083840 ^ n);
 ```
