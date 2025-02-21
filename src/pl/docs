@@ -1,55 +1,57 @@
-## Flow Switch
+## Number Encryption
 
-Ten specyficzny transformer skupia się wyłącznie na instrukcjach switch, aby zaciemnić zmienne i ukryć wyliczenia oraz stringi w kodzie. Jest to osiągane poprzez zastosowanie trudno zrozumiałego predykatu oraz specjalnego mechanizmu haszowania, który ma na celu zapobieganie oczywistym metodach deobfuskacji.
+Transformer szyfrujący liczbę przekształca dowolne liczby, które mają być ukryte, za pomocą specjalnego szyfru. To doskonałe rozwiązanie, które utrudnia dekompilatorom uzyskanie czytelnego kodu źródłowego. Dodatkowo, to wzmocnienie dotyczy wszelkich warunków opartych na wartościach logicznych (boolean).
+
+Szyfrowanie liczb polega na zaciemnianiu przepływu GEN3 i może być przedstawione w zdekompilowanym kodzie wynikowym w sposób następujący:
+
+Przyjmijmy następujący scenariusz:
+- $x$ to liczba, którą chcemy zaszyfrować
+- $n$ to "ziarno" bloku
+- $d$ jest zaszyfrowaną liczbą
+
+Zgodnie z prostą mechaniką xor: $x\oplus n\oplus n=x$
+
+Tak więc, z definicji, jeśli $n$ jest naszym seedem, w czasie wykonywania musimy obliczyć $d$ w taki sposób, że $d = x\oplus n$. Następnie musimy zmodyfikować instrukcję kodu bajtowego, np:
+
+```java
+int value = x;
+```
+
+staje się
+```java
+int value = d ^ n;
+```
+
+Gdzie $d$ jest wartością obliczoną z wyprzedzeniem w postaci stałej, a $n$ nieprzezroczystym predykatem. Np.
+```java
+int value = 5;
+```
+staje się
+```java
+int predicate = 0x100;
+int value = 105 ^ predicate;
+```
 
 ## Konfiguracja
 
+Obecnie dostępny jest tylko jeden tryb szyfrowania liczb, `STANDARD`.
+
 ```js
-flowSwitch {
+numberEncryption {
     enabled: true
     exempt: []
 }
 ```
 
 ## Przykłady
-
 #### Brak zaciemnienia
 ```java
-public static void main(String[] args) {
-    int number = callNumber();
-
-    switch (number) {
-        case 1: 
-            System.out.println("Oh no!");
-            break;
-        case 2: 
-            System.out.println("Hello world!");
-            break
-        default: 
-            throw new IllegalStateException("Something went wrong!");
-    }
-    /*[...]*/
-}
-/*[...]*/
+int var = 1000;
+System.out.println(var + 1 + 2 + 3);
 ```
 
 #### Zaciemniony kod
 ```java
-public static void main(String[] args) {
-    /*[...]*/
-    int number = callNumber();
-
-    switch (number ^ hash(n ^ 0x9932783)) {
-        case 0x928EF8C: 
-            System.out.println("Hello world!");
-            break
-        case 0x9873783: 
-            System.out.println("Oh no!");
-            break;
-        default: 
-            throw new IllegalStateException("Something went wrong!");
-    }
-    /*[...]*/
-}
-/*[...]*/
+int var = 0xA0290233 ^ n;
+System.out.println(var + 0x92083838 ^ n + 0x92083839 ^ n + 0x92083840 ^ n);
 ```
