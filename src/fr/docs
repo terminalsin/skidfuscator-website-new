@@ -1,254 +1,58 @@
+## Chiffrement des annotations (Annotation Encryption)
 
-# Configuration
+Le transformateur de chiffrement d'annotation transforme chaque chaîne de caractères et entier contenu dans les annotations en un appel de méthode spécifique, dans le but de le masquer à l'exécution. Cela peut être pratique pour les URL non sensibles, les clés privées, etc...
 
-Ici, vous apprendrez tout sur ce que la configuration a à offrir. Assurez-vous de lire ces détails avec un œil très attentif. Si vous rencontrez un problème, veuillez contacter le support. Pour les membres premium, vous avez droit à un service de configuration gratuit assuré par notre équipe.
+::: warning
+Vous ne devriez pas faire confiance au client. Ne comptez pas sur le cryptage de chaînes de caractères comme seule protection pour votre logiciel . En règle générale, vous devriez supposer qu'un rétro-ingénieur suffisamment talentueux pourrait y accéder avec suffisamment de temps et de patience.
+:::
 
-## Base de la configuration
 
-La base de la configuration est basée sur la configuration [lightbend](https://github.com/lightbend/config). Cela signifie que par défaut, nous supportons les trois formats suivants : Java Properties, JSON et HOCON.
+## Configuration
 
-Par principe, nous **recommandons fortement d'utiliser HOCON** car il est plus simple, plus élégant et facile à utiliser. Voir ci-joint la configuration par défaut :
-
-```javascript
-exempt: []
-
-libs: []
-
-stringEncryption {
-  type: STANDARD
-  enabled: true
-  exempt: []
-}
-
-numberEncryption {
-  enabled: true
-  exempt: []
+```js
+stringAnnotationEncryption {
+    enabled: true
+    exempt: []
 }
 
 intAnnotationEncryption {
-  enabled: true
-  exempt: []
-}
-
-stringAnnotationEncryption {
-  enabled: true
-  exempt: []
-}
-
-exceptionReturn {
-  enabled: true
-  exempt: []
-}
-
-flowCondition {
-  enabled: true
-  exempt: []
-}
-
-flowException {
-  enabled: true
-  strength: AGGRESSIVE
-  exempt: []
-}
-
-flowRange {
-  enabled: true
-  exempt: []
-}
-
-flowFactoryMaker {
-  enabled: true
-  exempt: []
-}
-
-flowSwitch {
-  enabled: true
-  exempt: []
-}
-
-outliner {
-  enabled: true
-  exempt: []
-}
-
-ahegao {
-  enabled: true
-  exempt: []
-}
-
-native: {
-  enabled: false
-  exempt: []
-}
-
-driver: {
-  enabled: false
-}
-
-reference {
-  enabled: false
-}
-
-fileCrasher: {
-  enabled: false
-}
-
-classRenamer {
-  enabled: false
-  type: CUSTOM
-  prefix: "skido/"
-  chars: [
-    "K"
-    "oO",
-    "o0"
-  ]
-  depth: 3
-}
-
-methodRenamer {
-  enabled: false
-  type: CUSTOM
-  chars: [
-    "K"
-    "oO",
-    "o0"
-  ]
-  depth: 3
-}
-
-fieldRenamer {
-  enabled: false
-  type: ALPHABETICAL
+    enabled: true
+    exempt: []
 }
 ```
 
-## Exemptions
+## Examples
 
-L'utilisation d'exemptions est identique à la façon dont elles ont été faites précédemment dans l'ancien système. Pour en savoir plus sur les exemptions, accédez à [la page](../exclusion.md)
+### Non obfusqué
 
-::: warning 
-En Java, les chaînes de caractères sont analysées en effectuant une opération de "sanitization" (ou "nettoyage") des barres obliques inverses (backslashes). Cela signifie que vous DEVEZ doubler toutes les barres obliques arrières
-:::
-
-### Exclure une classe
-
-En tant que base de départ, pour exclure une classe spécifique, vous devez utiliser l'exemption de regex de classe :
-```js
-class{^my\/class}
-```
-
-Pour l'intégrer dans la config, vous devez le passer comme une chaîne de caractères .
-
-
-```js
-exempt: [
-    "class{^my\\/class}"
-]
-```
-
-### Exclure une méthode
-
-Comme base de départ, pour exclure une méthode spécifique, vous devez utiliser l'exemption de méthode de classe :
-```js
-method{^myMethod}
-```
-
-Pour l'intégrer dans la config, vous devez le passer comme une chaîne de caractères .
-
-```js
-exempt: [
-    "method{^myMethod}"
-]
-```
-
-### Exclure une méthode dans une classe spécifique
-
-Tout comme nous avons appris précédemment, pour exclure une méthode et une classe, nous devons faire ce qui suit :
-```js
-class{^my\/class}
-method{^myMethod}
-```
-
-Désormais, pour exclure une méthode dans cette classe spécifique il suffit de les chaîner en une seule ligne, comme ceci :
-
-```js
-class{^my\/class} method{^myMethod}
-```
-
-Ainsi, dans la config, ce serait comme suit :
-
-```js
-exempt: [
-    "class{^my\/class} method{^myMethod}"
-]
-```
-
-## Bibliothèques
-
-Les bibliothèques sont un aspect important du calcul du "classpath" et garantissent une protection maximale pour votre logiciel. Dans cette instance, vous devez fournir un argument de chemin Java valide sous forme de chaîne de caractères.
-
-Voici le code d'implémentation :
 ```java
-public File[] getLibs() {
-    return this.getStringList("libraries", Collections.emptyList())
-                .stream()
-                .map(File::new)
-                .distinct()
-                .toArray(File[]::new);
+@SecretAnnotation(secret = "Super secret", secret2 = 1337)
+public class Fancy {
+    public String getSecret() {
+        return this.getClass().getAnnotation(SecretAnnotation.class).secret();
+    }
+
+    public int getSecre2t() {
+        return this.getClass().getAnnotation(SecretAnnotation.class).secret2();
+    }
 }
 ```
 
-Voici un exemple de chemins Java valides :
+### Obfusqué
+
+```java
+@SecretAnnotation(secret = "oifjaioejaifjea9è!efèaefFEf==", secret2 = 0x9FE7FE7F)
+public class Fancy {
+    public String getSecret() {
+        /* [...] */
+        return this.aofheoafo(this.getClass().getAnnotation(SecretAnnotation.class).secret(), n ^ 0x997AF8F);
+    }
+
+    public int getSecre2t() {
+        /* [...] */
+        return this.getClass().getAnnotation(SecretAnnotation.class).secret2() ^ n ^ 0x90AF9F7;
+    }
+
+    /* [...] */
+}
 ```
-C:\test.jar
-test.jar
-./test.jar
-/Home/test.jar
-```
-
-Dans la configuration, ils seraient représentés comme suit :
-
-```js
-libraries [
-    "C:\\test.jar",
-    "test.jar",
-    "./test.jar",
-    "/Home/test.jar"
-]
-```
-
-## Pilote
-
-Le pilote (driver) est la partie de durcissement (hardening) de Skidfuscator. Cette fonctionnalité est réservée aux membres Premium. En résumé, pour chaque obfuscation, un nouveau pilote est généré et compilé pour les architectures suivantes :
-
-| Système d'exploitation | Architectures supportées |
-| ---------------------- | ------------------------ |
-| Windows                | x64_86                   |
-| MacOS                  | x64_86, AARCH64 (ARM)    |
-| Linux                  | x64_86 (AMD64)           |
-
-Pour désactiver cette fonctionnalité (:warning: cela diminue considérablement la force d'obfuscation), vous devez basculer le booléen :
-
-```js
-driver: false
-```
-
-
-## Transformateurs
-
-Vous pouvez individuellement activer/désactiver chaque transformateur.
-
-
-#### Chiffrement de chaîne de caractères (String Encryption)
-
-Le transformateur de chiffrement des chaînes de caractères transforme chaque chaîne en un appel de méthode spécifique, dans le but de la masquer à l'exécution. Cela peut être pratique pour les URL non sensibles, les clés privées, etc...
-
-::: warning
-Vous ne devriez pas faire confiance au client. Ne comptez pas sur le cryptage de chaînes de caractères comme seule protection pour votre logiciel. En règle générale, vous devriez supposer qu'un rétro-ingénieur suffisamment talentueux pourrait y accéder avec suffisamment de temps et de patience.
-:::
-
-Il y a actuellement deux modes pour le chiffrement des chaînes de caractères : `STANDARD` et `POLYMORPHIC`
-
-#### Chiffrement des nombres (Number Encryption)
-
-Le transformateur de chiffrement des nombres chiffre tout chiffre basé sur des entiers pour le masquer. Ceci est parfait pour rendre le code illisible en général et rendre plus difficile pour les rétro-ingénieurs d'obtenir un code source clair. Cela renforce en outre toutes les conditions basées sur des booléens.
