@@ -1,60 +1,15 @@
-## Flow Exceptions
+# Selam Yabancı
 
-Flow Exception, kod çözücülerin geçerli Java kodu çıktısı almasını zorlaştırmak için Java kodunuza ek güvenlik katmanları ekleyen bir gizleme dönüşümüdür. Bunu, kontrol akışını değiştirerek ve programın işlevselliğini değiştirmeden mantığı karmaşıklaştıracak şekilde istisna düşme kodu ekleyerek yapar.
+skidfuscator-java-obfuscator wikisine hoş geldin!
 
-Yüksek seviyede, transformatör aşağıdaki şekilde çalışır:
-- İlk olarak, dönüştürücü kodunuzdaki yöntemleri inceler ve uyumluluk sorunlarını önlemek için soyut yöntemleri, init yöntemlerini ve kod içermeyenleri atlar.
-- Daha sonra dönüştürücü, yapılandırma ayarlarına göre uygun gizleme stratejisini (Zayıf, İyi veya Agresif) belirler. Her strateji farklı bir gizleme düzeyi sunar ve exceptionlarla ilgili kodun ne sıklıkta eklendiğini etkiler.
-- Once such is done, for each block in the control flow graph, the transformer checks whether it should be exempt from obfuscation. Boş blokları, proxy bloklarını ve istisnaya duyarlı blokları atlar. Bir blok gizleme için uygunsa, dönüştürücü seçilen stratejiye göre gizlemenin uygulanıp uygulanmayacağına karar verir.
-- Uygulandığında, dönüştürücü benzersiz bir tohum üretir ve opak yüklemi güvence altına almak için hashing kullanır. Daha sonra throw deyimine sahte bir koşullu atlama ekleyerek akışın düşmesine neden olur.
-- Bazı durumlarda dönüştürücü, bloğun hem başlangıcına hem de rastgele konumlarına ikincil bir koşullu atlama ifadesi ekleyerek ek bir gizleme katmanı ekleyebilir.
+Önceden konuşacağımız pek bir şey olmadığını sanmıştın, değil mi? Şimdi tüm maller bizde, ha.
 
-## Yapılandırma Ayarı
-
-Bu özel transformatör için üç mod mevcuttur:
-- `ZAYIF`: Daha önce çalıştırıldıysa, rastgele bir boolean değeri çalıştırır; daha önce çalıştırılmadıysa (ortalama %75 ekleme oranıyla) çalıştırır
-- `İYİ`: Her zaman bir kez çalıştır (ortalama %100 ekleme oranı)
-- `AGRESİF`: Her zaman iki kere çalıştır (ortalama 200% ekleme oranı)
-
-```js
-flowException {
-    enabled: true
-    strength: AGGRESSIVE // Can be 'WEAK', 'GOOD' or 'AGGRESSIVE'
-    exempt: []
-}
-```
-
-## Örnekler
-
-#### Gizlenmemiş Kod
-```java
-public static void main(String[] args) {
-    int number = callNumber();
-    /*[...]*/
-}
-/*[...]*/
-```
-
-#### Gizlenmiş Kod
-```java
-public static void main(String[] args) {
-    /*[...]*/
-    while (true) {
-        if (n ^ 0x8AF8EF8F == 0xA88FFA) {
-            break;
-        }
-
-        n = n ^ 0x28847D;
-        int number = callNumber();
-
-        if (n ^ 0xAA9F8FFD == 0x989F7AF) {
-            break;
-        }
-
-        throw new IllegalStateException();
-    }
-
-    /*[...]*/
-}
-/*[...]*/
-```
+# İçindekiler
+1. [İndirme](/docs/installation.html)
+2. [Başlangıç](/docs/gettingstarted.html)
+3. [Ayrıştırmalar](/docs/exclusion.html)
+4. [Kütüphaneler](/docs/libraries.html)
+5. [Hakkında](/docs/about.html)
+6. [Java Kod Gizlemesine Giriş](/docs/javaobf.html)
+7. [Hata Bildirme](/docs/bugreporting.html)
+8. [Dönüştürücüler](/docs/transformers.html)
