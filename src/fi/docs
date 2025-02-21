@@ -1,19 +1,45 @@
-## Kehittyneet Järjestelmäohjaimen Kovennustekniikat
+## Poikkeuksen Palautus
 
-Kuljettaja on karkaisu osa Skidfuscator. Tämä ominaisuus on varattu Premiumille. Yksinkertaista on, että tuote luo jokaista ajoa varten automaattisesti ainutlaatuisen järjestelmäajurin sovelluksesi suojaamiseksi. Ajuri tukee seuraavia:
+Edistyksellinen poikkeuspalautussuojamme on tehokas ohjelmointitekniikka, jota käytetään tekemään ohjelman ohjausvirrasta huomattavasti vaikeammin ymmärrettävää ja analysoitavaa häivyttämällä palautustulokset ja standardoimalla jokaisen metodin palautusarvo tyhjäksi.
 
-| Käyttöjärjestelmä | Tuetut Arkkitehtuurit |
-| ----------------- | --------------------- |
-| Ikkunat           | x64_86                |
-| MacOS             | x64_86, AARCH64 (ARM) |
-| Linux             | x64_86 (AMD64)        |
+Lyhyesti sanottuna tämä tekniikka korvaa normaalit palautuslausekkeet poikkeuskäsittelylohkoilla, jotka tekevät ohjelman ohjausvirrasta vähemmän ennustettavan. Kun poikkeus herää, ohjelma hyppää nimetylle poikkeuskäsittelijälle, joka palauttaa halutun arvon tai suorittaa halutun toiminnon. Tämä tekee koodista vaikean lukea, analysoida ja takaisinmallintaa, mikä tarjoaa suojan peukalointia tai piratismia vastaan.
 
+'''warning Tämä tekniikka on erittäin tehokas, sen poistaminen käytöstä voi vähentää suojauksen voimakkuutta. Juuri tästä syystä se on oletusarvoisesti pois päältä. '''
 
 ## Konfiguroi
-Jotta voit ottaa tämän ominaisuuden käyttöön (:warning: tämä lisää merkittävästi obfuscation vahvuutta), sinun on vaihdettava vaihtoehto:
 
 ```js
-driver: {
-    enabled: false // Oletuksena pois päältä.
+exceptionReturn {
+    enabled: false
+    exempt: []
+}
+```
+
+## Esimerkkejä
+
+### Suojaamaton
+
+```java
+int number = callNumber();
+ [...]
+}
+
+int callNumber() {
+    return 1;
+}
+```
+
+### Suojattu
+```java
+try {
+    callNumber();
+} catch (IntNumberException ex) {
+    int number = ex.getValue();
+}
+
+[...]
+
+void callNumber() {
+    throw new IntNumberException(1);
 }
 ```
