@@ -1,58 +1,19 @@
-## Annotációk Titkosítása
+## Driver Hardening
 
-Az annotáció titkosításra alkalamas átalakító átalakít minden string- és integer értéket, melyek az annotáció tartalmaz. Ezeket egy adott metódussá alakítja, azzal a céllal hogy futtatási időben rejtve maradjanak. Ez praktikus lehet nem szenzitív URL-ek, privát kulcsok, stb... esetében.
+The driver is the hardening part of Skidfuscator. This feature is reserved to Premium. In a nutshell, per obfuscation, a new driver is generated and compiled for the following architectures:
 
-::: figyelem
-Alapvetően ne bízz meg a klienben. Ne támaszkodj a String titkosításra, mint egyetlen védelemre a szoftveredhez. Feltételezd, hogy egy eléggé képzett egyén, elegendő idő és türelem függvényében, visszafejtheti és hozzáférhet ezekhez az információkhoz.
-:::
+| Operating System | Supported Architectures |
+| ---------------- | ----------------------- |
+| Windows          | x64_86                  |
+| MacOS            | x64_86, AARCH64 (ARM)   |
+| Linux            | x64_86 (AMD64)          |
 
 
-## Konfiguráció
+## Config
+To enable this feature (:warning: this significantly increases obfuscation strength), you must toggle the boolean:
 
 ```js
-stringAnnotationEncryption {
-    enabled: true
-    exempt: []
-}
-
-intAnnotationEncryption {
-    enabled: true
-    exempt: []
-}
-```
-
-## Példák
-
-### Nem Titkosított
-
-```java
-@SecretAnnotation(secret = "Super secret", secret2 = 1337)
-public class Fancy {
-    public String getSecret() {
-        return this.getClass().getAnnotation(SecretAnnotation.class).secret();
-    }
-
-    public int getSecre2t() {
-        return this.getClass().getAnnotation(SecretAnnotation.class).secret2();
-    }
-}
-```
-
-### Titkosított
-
-```java
-@SecretAnnotation(secret = "oifjaioejaifjea9è!efèaefFEf==", secret2 = 0x9FE7FE7F)
-public class Fancy {
-    public String getSecret() {
-        /* [...] */
-        return this.aofheoafo(this.getClass().getAnnotation(SecretAnnotation.class).secret(), n ^ 0x997AF8F);
-    }
-
-    public int getSecre2t() {
-        /* [...] */
-        return this.getClass().getAnnotation(SecretAnnotation.class).secret2() ^ n ^ 0x90AF9F7;
-    }
-
-    /* [...] */
+driver: {
+    enabled: false // Disabled by default
 }
 ```
