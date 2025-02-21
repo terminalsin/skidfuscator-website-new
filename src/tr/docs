@@ -1,25 +1,17 @@
-## Outliner
 
-Dışarı çıkarma, bir methoddan kodu çıkartarak ayrı, bağımsız bir methoda yerleştirme işlemini yapar. Bu genellikle kodun okunabilirliğini ve geliştirebilirliğini artırmak için yapılır, çünkü methodu daha küçük, daha odaklanmış kod parçalarına bölmek, methodun ne yaptığını anlamayı kolaylaştırır.
+## Akış Aralığı (Flow Range)
+Akış istisna aralığı gizleme geçişi, bir programın istisna işleme koduna gizleme eklemek için derleyici optimizasyonunda kullanılan bir tekniktir.
 
-Dışarı çıkarma, kodu tersine mühendislik yapmaya veya kodu anlamaya çalışan birinin programın genel akışını ve yapısını görmesini zorlaştırarak kod şifrelemesi olarak da kullanılabilir. Kodu daha küçük parçalara bölmek ve farklı methodlara ayırmak, birinin akışın farklı parçaları arasındaki ilişkileri anlamasını ve bu parçaların belirli bir işlevi nasıl gerçekleştirdiğini anlamasını daha zor bir hale getirebilir.
+Bu tekniğin arkasındaki fikir, programın istisna işleme rutinlerini (try-catch blokları gibi), programın mantıksal akışını anlamayı zorlaştıran ek kontrol akışı talimatları içerecek şekilde değiştirmektir.
 
-![Outlining graph explanation](https://i.imgur.com/2HMq0a4.png)
+Örneğin, basit bir try-catch bloğu, iç içe geçmiş try-catch blokları veya ek dallanma talimatları içeren daha karmaşık bir yapıya dönüştürülebilir. Bu, bir gözlemcinin programın istisna işleme davranışını anlamasını ve potansiyel olarak istismar edilebilecek güvenlik açıklarını ortaya çıkarmasını daha zor hale getirebilir.
 
-Dışarı çıkarma ile ilgili harika şey: *teknik olarak* geri döndürülemez olmasıdır! İyi bir dışarı çıkarmayı (outlining) şifrelemenin orijinal durumuna döndürebilmek için bir deobfuscator, *yöntem gömme (inlining)* yapmak zorundadır, ki bu sonucun her zaman orijinal kaynak koduyla aynı olucağını *garantilemez*. Ayrıca, bu şifreleme çözücünün(deobfuscator) değişkenlerle(integer) ve diğer çeşitli hassas bytecode manipülasyonlarıyla uğraşması gerektiğinden, hepsi hesaplama hatalarına sebep olabilir.
-
-Yani dışarı çıkarma(outlining) şifrelemeyi genel olarak oldukça etkilleyen ve kullanışlı yapan bir yöntemdir :)
-
-::: warning
-Bu dışarı çıkartma dönüştürücüsü hala geliştirme aşamasındadır. Java doğrulayıcının çalışma şeklinden dolayı, bazı senaryoların doğru bir şekilde doğrulanamaması, bazı derleme sorunlarına yol açabilir. Lütfen kendi riskinizle kullanın ve herhangi bir sorun oluşursa lütfen bunları bildirin.
-
-Kendime not: Stack çerçevelerinden nefret ediyorum
-:::
+Bu teknik genellikle ek koruma katmanları sağlamak için diğer gizleme teknikleriyle birlikte kullanılır. Ancak, istisna işleme koduna gereksiz karmaşıklık eklemenin de programın hata ayıklama ve bakımını zorlaştırabileceği unutulmamalıdır, bu nedenle mantıklı bir şekilde kullanılmalıdır.
 
 ## Yapılandırma Ayarı
 
 ```js
-outliner {
+flowRange {
      enabled: true
      exempt: []
 }
@@ -27,32 +19,55 @@ outliner {
 
 ## Örnekler
 
-#### Şifrelenmemiş
-
+#### Gizlenmemiş Kod
 ```java
-public static void main(String[] args) {
-    int number = callNumber();
-    /*[...]*/
-}
+final String uwu = "UwU";
+System.out.println(uwu);
+```
 
-static int callNumber() {
-    return 1;
+#### Gizlenmiş Kod
+```java
+final String uwu = "UwU";
+
+while (true) {
+     label1: {
+          try {
+               if (this.a(0x92A8B44, n) >> 8 != 0x97F7F)
+                    throw new IllegalReflectiveException();
+               break label1;
+          } catch (IllegalReflectiveException ex) {
+               System.out.println(uwu);
+          }
+     }
 }
 ```
 
-#### Şifrelenmiş
-```java
-public static void main(String[] args) {
-    step1_AF8FZE8EF7Z89F();
-    /*[...]*/
-}
+#### IR Temsili (IR Representation)
+```
+ Original flow:       Obfuscated Flow:
 
-static void step1_AF8FZE8EF7Z89F() {
-    int number = callNumber();
-}
+ ┌─────────┐            ┌─────────┐
+ │ Block A │            │ Block A │
+ └────┬────┘            └────┬────┘
+      │                      │
+ ┌────▼────┐         ┌───────▼────────┐
+ │ Block B │         │ Random If Stmt │
+ └─────────┘         └───────┬────────┘
+                             │
+                   ┌─────┐◄──┴───►┌─────┐
+                   │ Yes │        │ No  │
+                   └─────┘        └──┬──┘
+                                     │
+                               ┌─────▼─────┐
+                               │ Exception │
+                               └───────────┘
 
-
-static int callNumber() {
-    return 1;
-}
+                      ┌─────────────┐
+                      │  Exception  │
+                      │   Catcher   │
+                      └──────┬──────┘
+                             │
+                        ┌────▼────┐
+                        │ Block B │
+                        └─────────┘
 ```
