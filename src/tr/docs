@@ -1,25 +1,37 @@
-# Kurulum
+# Java Şifrelemesine Giriş
 
-Skidfuscator websitemiz, GitHub, veya Discord sunucumuzun duyurular kanalı üzerinden dağıtılır.
+Java şifrelemesine yeni başlayanlar için, Java şifrelemesinin nasıl çalışabileceği hakkında temel bir anlayış kazanmak için aşağıdaki basit rehberi okumanızı öneririz. Daha karmaşık tartışmalar için, blogumuzu ziyaret etmenizi öneririz: https://blog.skidfuscator.dev
 
-## Platformlarımız
-- [Website](https://skidfuscator.dev)
-- [Discord](https://discord.gg/7pVgsRweeh)
-- [GitHub](https://github.com/terminalsin/skidfuscator-java-obfuscator)
+## Java şifrelemesi nedir?
+Şifreleme bir şeyleri anlamayı daha zor bir hale getirmeye yarayan bir işlemdir. Bu genellikle haklarınızı izinsiz erişim ve kullanımdan korumak için kullanılır. Şifreleme, hassas bilgileri (örneğin şifreler) hackerlar veya diğer kötü niyetli kişiler tarafından kolayca ele geçirilmesini engellemek için gizlemek için kullanılabilir. Aynı zamanda yazılımın nasıl çalıştığını keşfetmek ve rakip ürünler oluşturmak için kullanılabilen tersine mühendislikten yazılımınızı korumak için de kullanılır.
 
-GitHub'un sadece Skidfuscator'un bedava topluluk versiyonu için olduğunu unutmayın.
+### Obscurity
+Java şifreleme araçlarında, şifreleme bir Java uygulamasının kod tabanını açığa çıkmaktan, kopyalanmaktan veya değiştirilmekten korumak için kullanılır. Bu şekilde, uygulamanın güvenliğini korumak amaçlanır. Şifreleme, kodun anlaşılmasını zorlaştırarak, yazılımın kaynak kodunun çalınmasını veya tersine mühendislik yapılmasını engellemeye yardımcı olur. Bu, yazılım geliştiricileri ve şirketlerin haklarını korumalarına yardımcı olur ve yazılımın güvenliğini artırır. Şifreleme, sınıf isimlerini (class), değişkenleri(variable) ve methodları değiştirerek, gereksiz veya istenmeyen kodları kaldırarak ve çeşitli diğer manipülatif tekniklerle, orijinal Java koduna ulaşmayı zorlaştırmak için yapılır. Bu, kodun daha zor anlaşılmasını sağlar ve böylece hacker'ların açıkları tespit etmesini veya kodun nasıl çalıştığını anlamasını zorlaştırır.
 
-## Topluluk Versiyonu
+### Redundancy (Tekrarlama)
+Java şifrelemesi aynı zamanda uygulamanın boyutunu azaltmak için de kullanılabilir. Gereksiz kodları kaldırarak sınıfları, methodları ve değişkenleri yeniden adlandırarak, uygulamanın boyutu önemli ölçüde azaltılabilir. Bu, internet üzerinden dağıtılması gereken uygulamalar için faydalı olabilir, çünkü indirme süresini azaltabilir ve uygulamanın performansını artırabilir.
 
-Topluluk versiyonu için indirme linkini [buraya](https://github.com/skidfuscatordev/skidfuscator-java-obfuscator/releases/) tıklayarak bulabilirsiniz, premium versiyon için lütfen websitemizi ziyaret edin veya Discord'umuza katılın.
+## Bilinen şifreleme teknikleri
 
-Skidfuscator'ın düzgün çalışması için Java 8 (yani JDK 1.8 veya daha üstü) gerektirdiğini unutmayın.
+### Akış kontrolü şifrelemesi (Control flow obfuscation)
+Java'da control flow şifrelemesi, bir programın kod yapısını gizlemek ve kodun anlanmasını veya tersine mühendislik yapılmasını zorlaştırmak için kullanılan bir tekniktir. Bu, programın kontrol akışını veya talimatların hangi sıra ile çalıştırıldığını değiştirerek çalışır. Bu, talimatları yeniden düzenleyerek, gereksiz talimatlar ekleyerek ve ek düzeylerde kontrol akışı ekleyerek yapılır. Örneğin, bir döngü, kodun farklı bir bölümüne atlama talimatıyla değiştirilebilir veya bir işlev, sırayla yürütülmesi gereken iç içe geçmiş bir dizi işleve dönüştürülebilir. Ayrıca, kontrol akışı karıştırma, kodun nasıl çalıştığını anlamayı zorlaştırabilir ve tersine mühendislik yapmayı da güçleştirebilir. Ayrıca bu programa zararlı kod enjekte etmeyi zorlaştırarak kodu bozulmaya karşı korumaya yardımcı olur.
 
-Skidfuscator'ı çalıştırmak için en temiz yol komut satırında `-jar` parametresini kullanmaktır, dosyanızın kodunu gizleme işlemine nasıl başlanacağı hakkında seçenekler sunulacaktır.
+### String ve sayı şifrelemesi
+Sayı ve string şifrelemesi Java programlamasında kullanılan bir kod gizleme türüdür. Sayı şifrelemesi, sayıları düz metinde görülemeyecek şekilde gizleme işlemidir. Bu işlem, sayıları ikili veya onaltılık gibi farklı bir forma dönüştürerek veya sayıları şifrelemek için bir anahtar kullanarak gerçekleştirilir. Bu birilerinin sayıları deşifre ederek koda erişim kazanmasını zorlaştırır. String şifrelemesi, sayı şifrelemeye benzer ancak metin stringlerini korumak için kullanılır. Bunun için, string içindeki karakterler farklı bir şekilde dönüştürülür, örneğin base64 kodlaması kullanılır, veya dizeyi şifrelemek için bir anahtar kullanılır. Bu birilerinin stringleri deşifre edip ne içerdiklerini öğrenmelerini zorlaştırır.
 
-## Daha fazla bellek ayırmak
-Genellikle JVM'ye çalışması için varsayılan bellek miktarından daha fazlasını ayırmanız gerektiğini unutmayın. Eğer -Xmx512m parametresini kullanırsanız JVM'ye kullanması için maksimum 512MB bellek ayırmış olursunuz ki bu çoğu durumda uygun olmalıdır. Ancak, JVM'ye fiziksel olarak kullanılabilir bellekten daha fazla bellek ayırmadığınıza emin olun. Aksi takdirde JVM sanal belleği kullanmaya başlayacağı için performans büyük ölçüde düşecektir.
+## Kalite Değerlendirmesi
 
-Aşağıda Skidfuscator'a nasıl daha fazla bellek ayıracağınızı inceleyin:
+Şifreyicinin, şifreleme dönüştürücülerini uyguladıktan sonra yüksek kaliteli bir çıktı sağlaması önemlidir. Skidfuscator'da, şifreleme sonucu elde edilen Java kodunun kalitesini etkileyebilecek çeşitli faktörleri değerlendiriyoruz.
 
-`java -Xmx4G -jar skidfuscator.jar` in your command line interface tool.
+### Kod boyutu ve karışıklık
+Şifreleme sonucu elde edilen Java kodunun boyutu ve karmaşıklığı, kalitesini değerlendirirken önemli faktörlerdir. Şifreleme, kodun boyutunu önemli ölçüde artırmamalıdır, çünkü bu performans sorunlarına ve potansiyel hatalara yol açabilir. Skidfuscator olarak, kodunuzu maksimum güvenlikle korurken önemli ölçüde büyütmeden mümkün olduğunca belirsiz hale getirmeyi hedefliyoruz.
+
+### Güvenlik
+Güvenlik, şifreleme yapılmış Java kodunun kalitesini değerlendirirken kritik bir faktördür. Şifreleme tekniği, kodu tersine mühendislik girişimlerine karşı etkili bir şekilde korumalıdır. Bu, kodun tersine mühendislik araçlarına (decompiler ve disassembler gibi) karşı direncini analiz etmek için değerlendirilebilir.
+
+### Performans
+Şifreli kodun performansı, kodun kalitesini değerlendirmede başka önemli bir faktördür. Şifreleme, kodun yürütme süresini veya bellek kullanımını önemli ölçüde etkilememelidir. Ayrıca, şifreleme işlemi sonucunda oluşan kodun, genel performansı etkileyebilecek yeni hatalar içermemesi de önemlidir. Şifreleme teknikleri yüzünden ortaya çıkan performans sorunları tespit edilmeli ve gerekli önlemler alınmalıdır.
+
+### Özet
+
+Genel olarak, şifreleme işleminden geçmiş Java kodunun kalitesi, kodun boyutu ve karmaşıklığı, güvenlik, sürdürülebilirlik ve performans gibi birkaç faktöre dayanarak değerlendirilebilir. Şifreleme, bu faktörleri önemli ölçüde etkilememeli ve şifreleme tekniği tarafından ortaya çıkan herhangi bir sorun hızlı bir şekilde tespit edilmeli ve çözülmelidir.
