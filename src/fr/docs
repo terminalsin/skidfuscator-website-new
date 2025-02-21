@@ -1,25 +1,17 @@
-## Détourage
 
-Le détourage fait référence au processus d'extraction de code d'une méthode et de placement dans une méthode séparée et indépendante. Cela est souvent fait pour améliorer la lisibilité et la maintenabilité du code, car cela peut rendre plus facile de comprendre ce qu'une méthode fait en la divisant en parties plus petites et plus ciblées.
+## Plage de flux
+Une passe d'obfuscation de la plage de flux est une technique utilisée dans l'optimisation du compilateur pour ajouter de l'obfuscation au code de gestion des exceptions d'un programme.
 
-Le détourage peut également être utilisé comme une forme d'obfuscation du code, car il peut rendre plus difficile pour quelqu'un qui tente de décompiler ou de comprendre le code de voir le flux global et la structure du programme. En divisant le code en morceaux plus petits et en le séparant dans différentes méthodes, il peut être beaucoup plus difficile pour quelqu'un de comprendre les relations entre différentes parties du flux et comment elles s'assemblent pour effectuer une fonction particulière.
+L'idée derrière cette technique est de modifier les routines de gestion des exceptions du programme (comme les blocs "try-catch") pour inclure des instructions de flux de contrôle supplémentaires qui rendent plus difficile la compréhension du flux logique du programme.
 
-![Explication du graphe de détourage](https://i.imgur.com/2HMq0a4.png)
+Par exemple, un simple bloc "try-catch" peut être transformé en une structure plus complexe qui comprend des blocs "try-catch" imbriqués ou des instructions de branchement supplémentaires. Cela peut rendre plus difficile pour un observateur de comprendre le comportement de gestion des exceptions du programme et potentiellement découvrir des vulnérabilités exploitables.
 
-La chose fantastique à propos du détourage, c'est que ce n'est pas *techniquement* réversible ! Pour pouvoir revenir à un état original d'une bonne obfuscation par détourage, un désobfuscateur *doit effectuer l'insertion de code (inlining)*, qui est une heuristique et *ne garantit pas* que la sortie soit toujours sémantiquement correcte par rapport au code source original. De plus, cela nécessite au désobfuscateur de manipuler les variables et autres formes de manipulation délicate du bytecode, ce qui peut entraîner des exceptions de cadre et de calcul.
-
-Dans l'ensemble, l'obfuscation par détourage est plutôt astucieuse :)
-
-::: warning
-Le transformateur d'extraction est encore au tout début de son développement. En raison du fonctionnement du vérificateur Java, tous les scénarios peuvent ne pas être correctement vérifiés, ce qui peut entraîner des problèmes de compilation. Veuillez l'utiliser à vos propres risques, et si vous rencontrez des problèmes, veuillez les signaler.
-
-Note pour moi-même : Je déteste les cadres de pile
-:::
+Cette technique est souvent utilisée en conjonction avec d'autres techniques d'obfuscation pour fournir des couches de protection supplémentaires. Cependant, il convient de noter que l'ajout d'une complexité inutile au code de gestion des exceptions peut également rendre plus difficile le débogage et la maintenance du programme, il convient donc de l'utiliser avec discernement.
 
 ## Configuration
 
 ```js
-outliner {
+flowRange {
      enabled: true
      exempt: []
 }
@@ -28,31 +20,54 @@ outliner {
 ## Examples
 
 #### Non obfusqué
-
 ```java
-public static void main(String[] args) {
-    int number = callNumber();
-    /*[...]*/
-}
-
-static int callNumber() {
-    return 1;
-}
+final String uwu = "UwU";
+System.out.println(uwu);
 ```
 
 #### Obfusqué
 ```java
-public static void main(String[] args) {
-    step1_AF8FZE8EF7Z89F();
-    /*[...]*/
-}
+final String uwu = "UwU";
 
-static void step1_AF8FZE8EF7Z89F() {
-    int number = callNumber();
+while (true) {
+     label1: {
+          try {
+               if (this.a(0x92A8B44, n) >> 8 != 0x97F7F)
+                    throw new IllegalReflectiveException();
+               break label1;
+          } catch (IllegalReflectiveException ex) {
+               System.out.println(uwu);
+          }
+     }
 }
+```
 
+#### Représentation IR (Représentation intermédiaire)
+```
+ Flux original :       Flux obfusqué :
 
-static int callNumber() {
-    return 1;
-}
+ ┌─────────┐            ┌─────────┐
+ │ Block A │            │ Block A │
+ └────┬────┘            └────┬────┘
+      │                      │
+ ┌────▼────┐         ┌───────▼────────┐
+ │ Block B │         │ Random If Stmt │
+ └─────────┘         └───────┬────────┘
+                             │
+                   ┌─────┐◄──┴───►┌─────┐
+                   │ Yes │        │ No  │
+                   └─────┘        └──┬──┘
+                                     │
+                               ┌─────▼─────┐
+                               │ Exception │
+                               └───────────┘
+
+                      ┌─────────────┐
+                      │  Exception  │
+                      │   Catcher   │
+                      └──────┬──────┘
+                             │
+                        ┌────▼────┐
+                        │ Block B │
+                        └─────────┘
 ```
