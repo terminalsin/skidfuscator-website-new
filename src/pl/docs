@@ -1,25 +1,17 @@
-## Outliner
 
-Konturowanie odnosi się do procesu wyciągania pewnej części kodu z metody i przenoszenia go do osobnej, samodzielnej metody. Konturowanie jest często stosowane w celu poprawy czytelności i łatwości konserwacji kodu poprzez podzielenie dużej metody na mniejsze, bardziej skoncentrowane fragmenty. Dzięki temu można łatwiej zrozumieć, co dokładnie wykonuje dana metoda, ponieważ jej logika jest podzielona na bardziej zrozumiałe części.
+## Flow Range
+Ta technika jest używana w optymalizacji kompilatora, aby zwiększyć zabezpieczenia w kodzie obsługi wyjątków programu poprzez wprowadzenie zaciemnienia.
 
-Konturowanie może być również używane jako sposób na utrudnienie analizy kodu, ponieważ może uniemożliwić osobie próbującej zrozumieć program zobaczenie ogólnej struktury. Rozbijając kod na mniejsze fragmenty i dzieląc go na różne metody, może być trudniej dla kogoś zrozumieć, jak poszczególne części kodu ze sobą współgrają i jak pasują do siebie, aby osiągnąć określoną funkcjonalność.
+Idea tej techniki polega na zmodyfikowaniu procedur obsługi wyjątków programu, takich jak bloki try-catch, poprzez dodanie dodatkowych instrukcji kontrolujących przepływ sterowania. Te zmiany mają na celu utrudnienie zrozumienia logicznego przepływu programu.
 
-![Outlining graph explanation](https://i.imgur.com/2HMq0a4.png)
+Na przykład, prosty blok try-catch może zostać przekształcony w bardziej skomplikowaną strukturę, która zawiera zagnieżdżone bloki try-catch lub dodatkowe instrukcje warunkowe, co sprawia, że kod staje się trudniejszy do zrozumienia. Takie przekształcenie utrudnia osobie analizującej zdekompilowany kod zrozumienie sposobu obsługi wyjątków w programie oraz potencjalne wykrycie luk, które mogą być wykorzystane.
 
-Fantastyczną rzeczą w outliningu jest to, że nie jest on *technicznie* odwracalny! Aby odzyskać pierwotny, czytelny kod zaciemnionego kodu, deobfuscator musi dokonać procesu *inliningu*. Dodatkowo, proces deobfuskacji wymaga manipulacji zmiennymi oraz innymi delikatnymi operacjami na kodzie bajtowym, co może prowadzić do błędów i nieprawidłowego działania.
-
-Ogólnie rzecz biorąc, outlining jest całkiem fajny :)
-
-::: warning
-Transformer jest wciąż na bardzo wczesnym etapie rozwoju. Ze względu na sposób działania weryfikatora Java, nie wszystkie scenariusze mogą zostać poprawnie zweryfikowane, co może prowadzić do pewnych problemów z kompilacją. Używaj na własne ryzyko, a jeśli pojawią się jakiekolwiek problemy, zgłoś je.
-
-Note to self: I hate stack frames
-:::
+Ta technika jest często używana w połączeniu z innymi metodami zaciemniania w celu dodania dodatkowych warstw ochrony kodu. Warto jednak pamiętać, że nadmierna złożoność w obszarze obsługi wyjątków może utrudniać proces debugowania i konserwacji programu, dlatego należy stosować tę technikę z umiarem.
 
 ## Konfiguracja
 
 ```js
-outliner {
+flowRange {
      enabled: true
      exempt: []
 }
@@ -28,31 +20,54 @@ outliner {
 ## Przykłady
 
 #### Brak zaciemnienia
-
 ```java
-public static void main(String[] args) {
-    int number = callNumber();
-    /*[...]*/
-}
-
-static int callNumber() {
-    return 1;
-}
+final String uwu = "UwU";
+System.out.println(uwu);
 ```
 
 #### Zaciemniony kod
 ```java
-public static void main(String[] args) {
-    step1_AF8FZE8EF7Z89F();
-    /*[...]*/
-}
+final String uwu = "UwU";
 
-static void step1_AF8FZE8EF7Z89F() {
-    int number = callNumber();
+while (true) {
+     label1: {
+          try {
+               if (this.a(0x92A8B44, n) >> 8 != 0x97F7F)
+                    throw new IllegalReflectiveException();
+               break label1;
+          } catch (IllegalReflectiveException ex) {
+               System.out.println(uwu);
+          }
+     }
 }
+```
 
+#### IR Representation
+```
+ Original flow:       Obfuscated Flow:
 
-static int callNumber() {
-    return 1;
-}
+ ┌─────────┐            ┌─────────┐
+ │ Block A │            │ Block A │
+ └────┬────┘            └────┬────┘
+      │                      │
+ ┌────▼────┐         ┌───────▼────────┐
+ │ Block B │         │ Random If Stmt │
+ └─────────┘         └───────┬────────┘
+                             │
+                   ┌─────┐◄──┴───►┌─────┐
+                   │ Yes │        │ No  │
+                   └─────┘        └──┬──┘
+                                     │
+                               ┌─────▼─────┐
+                               │ Exception │
+                               └───────────┘
+
+                      ┌─────────────┐
+                      │  Exception  │
+                      │   Catcher   │
+                      └──────┬──────┘
+                             │
+                        ┌────▼────┐
+                        │ Block B │
+                        └─────────┘
 ```
