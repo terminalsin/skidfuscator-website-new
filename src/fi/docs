@@ -1,61 +1,58 @@
-## Ohjausvirran kulkuväylän tila
+## Outliner
 
-Tämä transfomer toimii ensimmäisenä kilvenä vaikeaselkoisen ennustaa analyysi. Voit estää staattisen analyysin havaitsemisesta mikä kokonaisluku on läpinäkymätön ennuste, käytämme tätä erityistä kokonaislukua lisätä ylimääräisiä ehtoja jo olemassa jos lausekkeet. Tämä ei ainoastaan lisää ohjelmiston turvallisuutta, vaan myös vaikeuttaa monien työkalujen deobfuskurointi ja dekompilointiprosessia.
+Outlining tarkoittaa prosessia, jossa koodia irrotetaan metodista ja sijoitetaan erilliseen, itsenäiseen metodiin. Tämä tehdään usein keinona parantaa koodin luettavuutta ja ylläpidettävyyttä, koska se voi helpottaa menetelmän toiminnan ymmärtämistä jakamalla se pienempiin, parempiin ja kohdistetumpiin koodin osiin.
 
-Flow Exception -muuntimeen verrattuna tämä on paljon yksinkertaisempi versio, joka käsittelee vain yhtä ääritapausta.
+Outlining voidaan käyttää myös eräänlaisena koodin hämärtämisen muotona, sillä se voi vaikeuttaa sitä, että joku, joka yrittää jäljittää tai ymmärtää koodia, näkee ohjelman yleisen virtauksen ja rakenteen. Jakamalla koodi pienemmiksi paloiksi ja erottamalla se eri menetelmiin, se voi olla paljon vaikeampi menettely, että joku ymmärtää suhteita virtaus eri osien välillä ja miten he sopivat yhteen suorittaa tietyn toiminnon.
+
+![Kaavio Viipalointijärjestelmän selitys](https://i.imgur.com/2HMq0a4.png)
+
+Fantastinen asia siinä on: se ei Ole *Teknisesti* Käännettävä! Voidakseen palata alkuperäiseen tilaan hyvä ääriviivat hämärtyminen, suojan poisto *täytyy tehdä inlining*, joka on heuristinen ja *ei* takaa, että ulostulo on aina semanttisesti oikein alkuperäisellä lähdekoodilla. Lisäksi tämä necessites deobfuscator mangle kanssa muuttujat ja muut eri muotoja herkkä bytecode manipulointi joka kaikki voi johtaa runko ja laskenta poikkeuksia.
+
+Kaiken kaikkiaan obfuscation hahmottaminen on melko siisti :)
+
+::: Varoitus
+Ulompi muuntaja on vielä hyvin varhain kehitykseen. Koska Java todentaja toimii, kaikki skenaariot voidaan tarkastaa oikein, mikä voi aiheuttaa joitakin kokoamiseen liittyviä ongelmia. Ole hyvä ja käytä omalla vastuullasi, ja jos ilmenee ongelmia, ilmoita niistä.
+
+Huomautus itse: vihaan pinon kehyksiä
+:::
 
 ## Konfiguroi
 
 ```js
-flowCondition {
-    enabled: true
-    exempt: []
+outliner {
+     enabled: true
+     exempt: []
 }
 ```
 
 ## Esimerkkejä
 
 #### Suojaamaton
+
 ```java
 public static void main(String[] args) {
     int number = callNumber();
-
-    if (number == 1) {
-        System.out.println("Hello world");
-    }
     /*[...]*/
 }
-/*[...]*/
+
+static int callNumber() {
+    return 1;
+}
 ```
 
 #### Suojattu
 ```java
 public static void main(String[] args) {
-    /*[...]*/
-    label1: {
-        while (true) {
-            if (n ^ 0x8AF8EF8F == 0xA88FFA) {
-                break;
-            }
-
-            n = n ^ 0x28847D;
-            int number = callNumber();
-
-            label2: {
-                if (number != 1)
-                    break label1;
-
-                if (n ^ 0xAA9F8FFD != 0x989F7AF)
-                    break label2;
-
-                System.out.println("Hei maailma");
-                break label1;
-            }
-
-            throw new IllegalStateException();
-        }
-    }
+    step1_AF8FZE8EF7Z89F();
     /*[...]*/
 }
-/*[...]*/
+
+static void step1_AF8FZE8EF7Z89F() {
+    int number = callNumber();
+}
+
+
+static int callNumber() {
+    return 1;
+}
 ```
