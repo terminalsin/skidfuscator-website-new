@@ -1,19 +1,45 @@
-## Sürücü Güçlendirmesi
+## Exception Return
 
-Sürücü, Skidfuscator'ın güçlendirme kısmıdır. Bu özellik sadece premiumda vardır. Özetle, gizleme başına, aşağıdaki mimariler için yeni bir sürücü oluşturulur ve derlenir:
+İstisna dönüşü gizleme, dönüş sonuçlarını gizleyerek ve her yöntemi boş bir dönüş değerine sahip olacak şekilde standartlaştırarak bir programın kontrol akışını anlamayı ve analiz etmeyi daha zor hale getirmek için kullanılan bir programlama tekniğidir.
 
-| İşletim sistemi | Desteklenen mimariler |
-| --------------- | --------------------- |
-| Windows         | x64_86                |
-| MacOS           | x64_86, AARCH64 (ARM) |
-| Linux           | x64_86 (AMD64)        |
+Özetle, bu teknik normal geri dönüş deyimlerinin yerine programın kontrol akışını daha az tahmin edilebilir hale getiren istisna işleme bloklarını koyar. Bir istisna ortaya çıktığında, program belirlenmiş bir istisna işleyicisine atlar ve bu işleyici istenen değeri döndürür veya amaçlanan eylemi gerçekleştirir. Bu, kodun okunmasını, analiz edilmesini ve tersine mühendislik yapılmasını zorlaştırır, böylece kurcalama veya korsanlığa karşı bir koruma düzeyi sağlar.
 
+Bu şifreleme tekniği hala deneyseldir ve daha büyük programlarda başarılı bir şekilde çalışmayabilir. Bu sebeple, varsayılan olarak bu özellik kapalıdır. '''
 
 ## Yapılandırma Ayarı
-Bu özelliği etkinleştirmek için (:warning: bu, şifreleme gücünü önemli ölçüde artırır), boolean'ı değiştirmeniz gerekir:
 
 ```js
-driver: {
-    enabled: false // Disabled by default
+exceptionReturn {
+    enabled: false
+    exempt: []
+}
+```
+
+## Örnekler
+
+### Şifrelenmemiş
+
+```java
+int number = callNumber();
+ [...]
+}
+
+int callNumber() {
+    return 1;
+}
+```
+
+### Şifrelenmiş
+```java
+try {
+    callNumber();
+} catch (IntNumberException ex) {
+    int number = ex.getValue();
+}
+
+[...]
+
+void callNumber() {
+    throw new IntNumberException(1);
 }
 ```
