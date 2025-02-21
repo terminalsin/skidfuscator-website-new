@@ -1,60 +1,15 @@
-## Exceptions de flux
+# Hello Stranger
 
-Les exceptions de flux sont une transformation d'obfuscation qui ajoute des couches de sécurité supplémentaires à votre code Java pour rendre plus difficile la génération de code Java valide par les décompileurs. Elle le fait en modifiant le flux de contrôle et en introduisant du code de dérivation des exceptions de manière à complexifier la logique sans modifier la fonctionnalité du programme.
+Bienvenue sur le wiki de skidfuscator-java-obfuscator !
 
-De manière générale, le transformateur fonctionne de la manière suivante :
-- Tout d'abord, le transformateur examine les méthodes de votre code et saute les méthodes abstraites, les méthodes d'initialisation et celles sans code pour éviter les problèmes de compatibilité.
-- Ensuite, le transformateur détermine la stratégie d'obfuscation appropriée (Faible, Bonne ou Aggressive) en fonction des paramètres de configuration. Chaque stratégie offre un niveau d'obfuscation différent et impacte la fréquence à laquelle le code lié aux exceptions est inséré.
-- Once such is done, for each block in the control flow graph, the transformer checks whether it should be exempt from obfuscation. Il saute les blocs vides, les blocs proxy et les blocs sensibles aux exceptions. Si un bloc est éligible à l'obfuscation, le transformateur décide d'appliquer ou non l'obfuscation en fonction de la stratégie choisie.
-- Lorsqu'elle est appliquée, le transformateur génère une graine (seed) unique et utilise le hachage pour sécuriser le prédicat opaque. Il insère ensuite un saut conditionnel bidon vers une instruction "throw", provoquant une dérivation du flux.
-- Dans certains cas, le transformateur peut ajouter une couche supplémentaire d'obfuscation en insérant une deuxième instruction de saut conditionnel à la fois au début et à des emplacements aléatoires dans le bloc.
+Vous pensiez que nous n'avions pas grand-chose à dire, n'est-ce pas ? Maintenant, nous avons tous les bons sujets, ahah.
 
-## Configuration
-
-Il existe trois modes disponibles pour ce transformateur spécifique :
-- `WEAK` : Si elle a été exécutée précédemment, exécute un booléen aléatoire. Sinon, exécute (taux d'insertion moyen de 75%)
-- `GOOD` : Exécute toujours une fois (taux d'insertion moyen de 100%)
-- `AGGRESSIVE` : Exécute toujours deux fois (taux d'insertion moyen de 200%)
-
-```js
-flowException {
-    enabled: true
-    strength: AGGRESSIVE // Peut être 'WEAK', 'GOOD' ou 'AGGRESSIVE'
-    exempt: []
-}
-```
-
-## Examples
-
-#### Non obfusqué
-```java
-public static void main(String[] args) {
-    int number = callNumber();
-    /*[...]*/
-}
-/*[...]*/
-```
-
-#### Obfusqué
-```java
-public static void main(String[] args) {
-    /*[...]*/
-    while (true) {
-        if (n ^ 0x8AF8EF8F == 0xA88FFA) {
-            break;
-        }
-
-        n = n ^ 0x28847D;
-        int number = callNumber();
-
-        if (n ^ 0xAA9F8FFD == 0x989F7AF) {
-            break;
-        }
-
-        throw new IllegalStateException();
-    }
-
-    /*[...]*/
-}
-/*[...]*/
-```
+# Table des matières
+1. [Installation](/docs/installation.html)
+2. [Mise en route](/docs/gettingstarted.html)
+3. [Exclusions](/docs/exclusion.html)
+4. [Bibliothèques](/docs/libraries.html)
+5. [À propos de nous](/docs/about.html)
+6. [Introduction à l'obfuscation Java](/docs/javaobf.html)
+7. [Signalement de bugs](/docs/bugreporting.html)
+8. [Transformateurs](/docs/transformers.html)
