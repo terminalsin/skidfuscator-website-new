@@ -1,60 +1,15 @@
-## Flow Exceptions
+# Witaj!
 
-Flow Exception to zaciemnienie, które dodaje dodatkowe warstwy zabezpieczeń do kodu Java, aby utrudnić dekompilatorom odczytanie prawidłowego kodu. Robi to poprzez zmianę przepływu sterowania i wprowadzenie kodu obsługi wyjątków w sposób, który komplikuje logikę bez zmiany funkcjonalności programu.
+Cieszymy się, że odwiedzasz wiki Skidfuscatora!
 
-Opis działania:
-- Po pierwsze, transformator sprawdza metody w kodzie i pomija metody abstrakcyjne, metody inicjujące i te bez kodu, aby uniknąć problemów z kompatybilnością.
-- Następnie transformator określa odpowiednią strategię zaciemniania (słaba, dobra lub agresywna) na podstawie ustawień konfiguracji. Każda strategia oferuje inny poziom zaciemniania.
-- Once such is done, for each block in the control flow graph, the transformer checks whether it should be exempt from obfuscation. Pomija puste bloki, bloki proxy i bloki wrażliwe na wyjątki. Jeśli blok kwalifikuje się do zaciemnienia, transformer decyduje, czy zastosować zaciemnienie w oparciu o wybraną strategię.
-- Po zastosowaniu, transformator generuje unikalny seed i używa hashowania. Następnie wstawia fałszywy skok warunkowy do instrukcji throw, powodując przerwanie przepływu.
-- W niektórych przypadkach transformator może dodać dodatkową warstwę zaciemniającą, wstawiając dodatkową instrukcję skoku warunkowego zarówno na początku, jak i w losowych miejscach bloku.
+Teraz wszystkie nasze informacje są dokładnie opisane. Wcześniej mogło wydawać się, że nie mieliśmy wielu treści, ale teraz zyskaliśmy pełną dokumentację.
 
-## Konfiguracja
-
-Dla tego konkretnego transformatora dostępne są trzy tryby:
-- `ŚREDNI`: Jeśli był wcześniej wykonywany, uruchamia losową wartość boolean, jeśli nie był ostatnio wykonywany, uruchamia (średni współczynnik wstawiania - 75%).
-- `DOBRY`: Zawsze uruchamiaj raz (średni współczynnik wstawiania - 100%)
-- `AGRESYWNY`: Zawsze uruchamiaj dwa razy (średni współczynnik wstawiania - 200%)
-
-```js
-flowException {
-    enabled: true
-    strength: AGGRESSIVE // Can be 'WEAK', 'GOOD' or 'AGGRESSIVE'
-    exempt: []
-}
-```
-
-## Przykłady
-
-#### Brak zaciemnienia
-```java
-public static void main(String[] args) {
-    int number = callNumber();
-    /*[...]*/
-}
-/*[...]*/
-```
-
-#### Zaciemniony kod
-```java
-public static void main(String[] args) {
-    /*[...]*/
-    while (true) {
-        if (n ^ 0x8AF8EF8F == 0xA88FFA) {
-            break;
-        }
-
-        n = n ^ 0x28847D;
-        int number = callNumber();
-
-        if (n ^ 0xAA9F8FFD == 0x989F7AF) {
-            break;
-        }
-
-        throw new IllegalStateException();
-    }
-
-    /*[...]*/
-}
-/*[...]*/
-```
+# Spis treści
+1. [Instalacja](/docs/installation.html)
+2. [Pierwsze kroki](/docs/gettingstarted.html)
+3. [Wykluczenia](/docs/exclusion.html)
+4. [Biblioteki](/docs/libraries.html)
+5. [O nas](/docs/about.html)
+6. [Wprowadzenie](/docs/javaobf.html)
+7. [Zgłaszanie błędów](/docs/bugreporting.html)
+8. [Transformers](/docs/transformers.html)
