@@ -1,61 +1,58 @@
-## Condition de flux
+## Détourage
 
-Ce transformateur sert de première protection contre l'analyse de prédicat opaque. Pour empêcher l'analyse statique de détecter quel entier est un prédicat opaque, nous utilisons cet entier spécifique pour ajouter des conditions supplémentaires aux instructions "if" déjà existantes. Cela ajoute non seulement une sécurité supplémentaire à votre logiciel, mais cela entrave également le processus de désobfuscation et de décompilation de nombreux outils.
+Le détourage fait référence au processus d'extraction de code d'une méthode et de placement dans une méthode séparée et indépendante. Cela est souvent fait pour améliorer la lisibilité et la maintenabilité du code, car cela peut rendre plus facile de comprendre ce qu'une méthode fait en la divisant en parties plus petites et plus ciblées.
 
-Comparé au transformateur d'exception de flux, ceci est une version beaucoup plus simplifiée qui ne gère qu'un seul cas particulier.
+Le détourage peut également être utilisé comme une forme d'obfuscation du code, car il peut rendre plus difficile pour quelqu'un qui tente de décompiler ou de comprendre le code de voir le flux global et la structure du programme. En divisant le code en morceaux plus petits et en le séparant dans différentes méthodes, il peut être beaucoup plus difficile pour quelqu'un de comprendre les relations entre différentes parties du flux et comment elles s'assemblent pour effectuer une fonction particulière.
+
+![Explication du graphe de détourage](https://i.imgur.com/2HMq0a4.png)
+
+La chose fantastique à propos du détourage, c'est que ce n'est pas *techniquement* réversible ! Pour pouvoir revenir à un état original d'une bonne obfuscation par détourage, un désobfuscateur *doit effectuer l'insertion de code (inlining)*, qui est une heuristique et *ne garantit pas* que la sortie soit toujours sémantiquement correcte par rapport au code source original. De plus, cela nécessite au désobfuscateur de manipuler les variables et autres formes de manipulation délicate du bytecode, ce qui peut entraîner des exceptions de cadre et de calcul.
+
+Dans l'ensemble, l'obfuscation par détourage est plutôt astucieuse :)
+
+::: warning
+Le transformateur d'extraction est encore au tout début de son développement. En raison du fonctionnement du vérificateur Java, tous les scénarios peuvent ne pas être correctement vérifiés, ce qui peut entraîner des problèmes de compilation. Veuillez l'utiliser à vos propres risques, et si vous rencontrez des problèmes, veuillez les signaler.
+
+Note pour moi-même : Je déteste les cadres de pile
+:::
 
 ## Configuration
 
 ```js
-flowCondition {
-    enabled: true
-    exempt: []
+outliner {
+     enabled: true
+     exempt: []
 }
 ```
 
 ## Examples
 
 #### Non obfusqué
+
 ```java
 public static void main(String[] args) {
     int number = callNumber();
-
-    if (number == 1) {
-        System.out.println("Hello world");
-    }
     /*[...]*/
 }
-/*[...]*/
+
+static int callNumber() {
+    return 1;
+}
 ```
 
 #### Obfusqué
 ```java
 public static void main(String[] args) {
-    /*[...]*/
-    label1: {
-        while (true) {
-            if (n ^ 0x8AF8EF8F == 0xA88FFA) {
-                break;
-            }
-
-            n = n ^ 0x28847D;
-            int number = callNumber();
-
-            label2: {
-                if (number != 1)
-                    break label1;
-
-                if (n ^ 0xAA9F8FFD != 0x989F7AF)
-                    break label2;
-
-                System.out.println("Hello world");
-                break label1;
-            }
-
-            throw new IllegalStateException();
-        }
-    }
+    step1_AF8FZE8EF7Z89F();
     /*[...]*/
 }
-/*[...]*/
+
+static void step1_AF8FZE8EF7Z89F() {
+    int number = callNumber();
+}
+
+
+static int callNumber() {
+    return 1;
+}
 ```
